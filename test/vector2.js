@@ -94,14 +94,6 @@ module.exports = {
         test.equals(result, expectedOutputCross, "Cross product AxB");
         result = Vector2.zero;
         test.done();
-        /*
-         cross2A(1.0, inputA, result);
-         relativeTest(result, new Vector2(-inputA.y, inputA.x));
-         cross2B(inputA, 1.0, result);
-         relativeTest(result, new Vector2(inputA.y, -inputA.x));
-         cross2B(inputA, 1.0, result);
-         relativeTest(result, new Vector2(inputA.y, -inputA.x));
-         */
     },
         /*
          void testVector2OrthogonalScale() {
@@ -235,37 +227,48 @@ module.exports = {
          var v0 = new Vector2(-2.0 * x, 2.0 * x)..clampScalar(-x, x);
          expect(v0.storage, orderedEquals([-x, x]));
          }
+*/
+    testVector2Floor: function(test) {
+        test.expect(3);
+        var comp = new Vector2(-1.0, 0.0);
+        var v0 = new Vector2(-0.1, 0.1).floor();
+        var v1 = new Vector2(-0.5, 0.5).floor();
+        var v2 = new Vector2(-0.9, 0.9).floor();
 
-         void testVector2Floor() {
-         var v0 = new Vector2(-0.1, 0.1)..floor();
-         var v1 = new Vector2(-0.5, 0.5)..floor();
-         var v2 = new Vector2(-0.9, 0.9)..floor();
+        test.ok(v0.equals(comp), "Ceil [-0.1, 0.1] = [-1.0, 0.0]");
+        test.ok(v1.equals(comp), "Ceil [-0.5, 0.5] = [-1.0, 0.0]");
+        test.ok(v2.equals(comp), "Ceil [-0.9, 0.9] = [-1.0, 0.0]");
+        test.done();
+    },
 
-         expect(v0.storage, orderedEquals([-1.0, 0.0]));
-         expect(v1.storage, orderedEquals([-1.0, 0.0]));
-         expect(v2.storage, orderedEquals([-1.0, 0.0]));
-         }
+    testVector2Ceil: function(test) {
+        test.expect(3);
+        var comp = new Vector2(0.0, 1.0);
+        var v0 = new Vector2(-0.1, 0.1).ceil();
+        var v1 = new Vector2(-0.5, 0.5).ceil();
+        var v2 = new Vector2(-0.9, 0.9).ceil();
 
-         void testVector2Ceil() {
-         var v0 = new Vector2(-0.1, 0.1)..ceil();
-         var v1 = new Vector2(-0.5, 0.5)..ceil();
-         var v2 = new Vector2(-0.9, 0.9)..ceil();
+        test.ok(v0.equals(comp), "Ceil [-0.1, 0.1] = [0.0, 1.0]");
+        test.ok(v1.equals(comp), "Ceil [-0.5, 0.5] = [0.0, 1.0]");
+        test.ok(v2.equals(comp), "Ceil [-0.9, 0.9] = [0.0, 1.0]");
+        test.done();
+    },
 
-         expect(v0.storage, orderedEquals([0.0, 1.0]));
-         expect(v1.storage, orderedEquals([0.0, 1.0]));
-         expect(v2.storage, orderedEquals([0.0, 1.0]));
-         }
+    testVector2Round: function(test) {
+        test.expect(3);
+        var v0 = new Vector2(-0.1, 0.1).round();
+        var v1 = new Vector2(-0.51, 0.5).round();
+        var v2 = new Vector2(-0.9, 0.9).round();
 
-         void testVector2Round() {
-         var v0 = new Vector2(-0.1, 0.1)..round();
-         var v1 = new Vector2(-0.5, 0.5)..round();
-         var v2 = new Vector2(-0.9, 0.9)..round();
+        var comp = new Vector2(0.0, 0.0);
+        test.ok(v0.equals(comp), "Round [-0.1, 0.1] = [0.0, 0.0]");
+        var comp2 = new Vector2(-1.0, 1.0);
+        test.ok(v1.equals(comp2), "Round [-0.5, 0.5] = [-1.0, 1.0]");
+        test.ok(v2.equals(comp2), "Round [-0.9, 0.9] = [-1.0, 1.0]");
 
-         expect(v0.storage, orderedEquals([0.0, 0.0]));
-         expect(v1.storage, orderedEquals([-1.0, 1.0]));
-         expect(v2.storage, orderedEquals([-1.0, 1.0]));
-         }
-
+        test.done();
+    }
+/*
          void testVector2RoundToZero() {
          var v0 = new Vector2(-0.1, 0.1)..roundToZero();
          var v1 = new Vector2(-0.5, 0.5)..roundToZero();
