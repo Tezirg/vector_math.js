@@ -3,7 +3,6 @@
  */
 
 module.exports = Vector2;
-var EPSILON = module.EPSILON;
 
 /**
  * @class Vector2
@@ -128,7 +127,7 @@ Vector2.prototype.splat = function(value) {
 
 Vector2.prototype.almostEquals = function(v, precision) {
     if (precision === undefined) {
-        precision = EPSILON;
+        precision = Number.EPSILON;
     }
     if (Math.abs(this.x-v.x) > precision ||
         Math.abs(this.y-v.y) > precision) {
@@ -143,7 +142,7 @@ Vector2.prototype.equals = function(v) {
 
 Vector2.prototype.almostZero = function(precision) {
     if (precision === undefined) {
-        precision = EPSILON;
+        precision = Number.EPSILON;
     }
     if (Math.abs(this.x) > precision ||
         Math.abs(this.y) > precision) {

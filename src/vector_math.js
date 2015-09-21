@@ -4,7 +4,6 @@
 module.exports = {
     version:     require('../package.json').version,
 
-    EPSILON:     require('../package.json').EPSILON,
 
     Vector2:     require('./vector2.js'),
     Vector3:     require('./vector3.js'),

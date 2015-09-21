@@ -2,7 +2,6 @@
   "name": "vector_math.js",
   "version": "0.0.1",
   "author": "jean Grizet <jean.grizet@gmail.com>",
-  "EPSILON": 1e-6,
   "keywords": [
     "vector_math",
     "vector_math.js",
