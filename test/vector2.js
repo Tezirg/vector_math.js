@@ -83,7 +83,6 @@ module.exports = {
          assert((resultNew - resultOldvInv).length < .00001);
          }
          */
-
     testVector2CrossProduct: function (test) {
         test.expect(1);
         var inputA = new Vector2(0.417267069084370, 0.049654430325742);
@@ -95,22 +94,22 @@ module.exports = {
         result = Vector2.zero;
         test.done();
     },
-        /*
-         void testVector2OrthogonalScale() {
-         var input = new Vector2(0.5, 0.75);
-         var output = new Vector2.zero();
+    testVector2OrthogonalScale: function(test) {
+        test.expect(5);
+        var input = new Vector2(0.5, 0.75);
+        var output = Vector2.zero;
 
-         input.scaleOrthogonalInto(2.0, output);
-         expect(output.x, equals(-1.5));
-         expect(output.y, equals(1.0));
+        input.scaleOrthogonalInto(2.0, output);
+        test.equals(output.x, -1.5, "Orthogonalscale X == -1.5");
+        test.equals(output.y, 1.0, "Orthogonalscale Y == 1.0");
 
-         input.scaleOrthogonalInto(-2.0, output);
-         expect(output.x, equals(1.5));
-         expect(output.y, equals(-1.0));
+        input.scaleOrthogonalInto(-2.0, output);
+        test.equals(output.x, 1.5, "Orthogonalscale X == 1.5");
+        test.equals(output.y, -1.0, "Orthogonalscale Y == -1.0");
 
-         expect(0.0, equals(input.dot(output)));
-         }
-*/
+        test.equals(0.0, input.dot(output), "Orthogonal vectors cross == 0.0");
+        test.done();
+    },
     testVector2Constructor: function(test) {
         test.expect(4);
 
@@ -212,22 +211,28 @@ module.exports = {
         test.done();
     },
 
-    /*
+
     testVector2Clamp: function(test) {
+        test.expect(1);
         var x = 2.0, y = 3.0;
         var v0 = new Vector2(x, y);
         var v1 = new Vector2(-x, -y);
-        var v2 = new Vector2(-2.0 * x, 2.0 * y)..clamp(v1, v0);
+        var v2 = new Vector2(-2.0 * x, 2.0 * y).clamp(v1, v0);
 
-         expect(v2.storage, orderedEquals([-x, y]));
-         }
+        var cmp = new Vector2(-x, y);
+        test.ok(v2.equals(cmp), "Clamp result is [-2.0, 3.0]");
+        test.done();
+    },
 
-         void testVector2ClampScalar() {
-         var x = 2.0;
-         var v0 = new Vector2(-2.0 * x, 2.0 * x)..clampScalar(-x, x);
-         expect(v0.storage, orderedEquals([-x, x]));
-         }
-*/
+    testVector2ClampScalar: function(test) {
+        test.expect(1);
+        var x = 2.0;
+        var v0 = new Vector2(-2.0 * x, 2.0 * x).clampScalar(-x, x);
+        var cmp = new Vector2(-x, x);
+        test.ok(v0.equals(cmp), "Clamp scalar result is [-2.0, 2.0]");
+        test.done();
+    },
+
     testVector2Floor: function(test) {
         test.expect(3);
         var comp = new Vector2(-1.0, 0.0);
@@ -268,22 +273,4 @@ module.exports = {
 
         test.done();
     }
-/*
-         void testVector2RoundToZero() {
-         var v0 = new Vector2(-0.1, 0.1)..roundToZero();
-         var v1 = new Vector2(-0.5, 0.5)..roundToZero();
-         var v2 = new Vector2(-0.9, 0.9)..roundToZero();
-         var v3 = new Vector2(-1.1, 1.1)..roundToZero();
-         var v4 = new Vector2(-1.5, 1.5)..roundToZero();
-         var v5 = new Vector2(-1.9, 1.9)..roundToZero();
-
-         expect(v0.storage, orderedEquals([0.0, 0.0]));
-         expect(v1.storage, orderedEquals([0.0, 0.0]));
-         expect(v2.storage, orderedEquals([0.0, 0.0]));
-         expect(v3.storage, orderedEquals([-1.0, 1.0]));
-         expect(v4.storage, orderedEquals([-1.0, 1.0]));
-         expect(v5.storage, orderedEquals([-1.0, 1.0]));
-         }
-         */
-   // });
 };
