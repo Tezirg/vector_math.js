@@ -3,6 +3,7 @@
  */
 
 var Vector2 = require('../src/vector2.js');
+var TEST = require('./test_utils.js');
 
 module.exports = {
 
@@ -179,17 +180,13 @@ module.exports = {
 
         v = new Vector2(4.0, 4.0);
         v.reflect(new Vector2(-1.0, -1.0).normalized());
-        v.round();
-        test.equals(v.x, -4.0, "Reflected 4.0 to -1.0 is -4.0");
-        test.equals(v.y, -4.0, "Reflected 4.0 to -1.0 is -4.0");
+        TEST.relativeTest(test, v.x, -4.0); //, "Reflected 4.0 to -1.0 is -4.0");
+        TEST.relativeTest(test, v.y, -4.0); //, "Reflected 4.0 to -1.0 is -4.0");
 
         v = new Vector2(-4.0, -4.0);
         v.reflect(new Vector2(1.0, 1.0).normalized());
-        //v.round();
         TEST.relativeTest(test, v.x, 4.0);
         TEST.relativeTest(test, v.y, 4.0);
-        //test.equals(v.x, 4.0, "Reflected -4.0 to 1.0 is 4.0");
-        test.equals(v.y, 4.0, "Reflected -4.0 to 1.0 is 4.0");
         test.done();
     },
 

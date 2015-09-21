@@ -12,7 +12,6 @@ var Vector4 = require('../src/vector4.js');
 
 function TEST() {}
 
-
 TEST.relativeError = function(calculated, correct) {
     if (calculated.isNumber && correct.isNumber && correct != 0.0) {
         var diff = Math.abs(calculated - correct);

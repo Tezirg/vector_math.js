@@ -3,6 +3,8 @@
  */
 
 var Matrix2 = require('../src/matrix2.js');
+var Vector2 = require('../src/vector2.js');
+var TEST = require('./test_utils.js');
 
 module.exports = {
     testMatrix2Adjoint : function(test) {
@@ -10,10 +12,10 @@ module.exports = {
         var input = [];
         var expectedOutput = [];
 
-        input.add(parseMatrix("0.830828627896291   0.549723608291140    0.585264091152724   0.917193663829810"));
-        expectedOutput.add(parseMatrix(" 0.917193663829810  -0.549723608291140    -0.585264091152724   0.830828627896291"));
-        input.add(parseMatrix(" 1     0    0     1"));
-        expectedOutput.add(parseMatrix(" 1     0    0     1"));
+        input.add(TEST.parseMatrix("0.830828627896291   0.549723608291140    0.585264091152724   0.917193663829810"));
+        expectedOutput.add(TEST.parseMatrix(" 0.917193663829810  -0.549723608291140    -0.585264091152724   0.830828627896291"));
+        input.add(TEST.parseMatrix(" 1     0    0     1"));
+        expectedOutput.add(TEST.parseMatrix(" 1     0    0     1"));
 
         assert(input.length == expectedOutput.length);
 
@@ -32,7 +34,7 @@ module.exports = {
         var input = [];
         expectedOutput =  [];
 
-        input.add(parseMatrix("0.830828627896291   0.549723608291140    0.585264091152724   0.917193663829810"));
+        input.add(TEST.parseMatrix("0.830828627896291   0.549723608291140    0.585264091152724   0.917193663829810"));
         expectedOutput.add(0.440297265243183);
 
         assert(input.length == expectedOutput.length);

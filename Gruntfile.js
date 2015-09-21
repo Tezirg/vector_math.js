@@ -34,7 +34,10 @@ module.exports = function(grunt) {
 
 
         nodeunit: {
-            all: ['test/*.js']
+            all: [
+                'test/vector2.js',
+                'test/vector3.js'
+            ]
         }
     });
 
