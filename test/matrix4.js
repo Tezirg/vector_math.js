@@ -7,6 +7,7 @@ var Matrix4 = require('../src/matrix4.js');
 module.exports = {
 
     testMatrix4InstacingFromFloat32Array: function(test) {
+		test.expect(0);
         float32Array = new Float32Array([
             1.0,        2.0,        3.0,        4.0,
             5.0,        6.0,        7.0,        8.0,
@@ -34,9 +35,12 @@ module.exports = {
         expect(input.storage[13], equals(14.0));
         expect(input.storage[14], equals(15.0));
         expect(input.storage[15], equals(16.0));
+		test.done();
+
     },
 
     testMatrix4InstacingFromByteBuffer: function(test) {
+		test.expect(0);
         float32Array = new Float32Array.fromList([
             1.0,            2.0,            3.0,        4.0,
             5.0,        6.0,        7.0,            8.0,        
@@ -81,11 +85,14 @@ module.exports = {
         expect(offsetVector.storage[13], equals(15.0));
         expect(offsetVector.storage[14], equals(16.0));
         expect(offsetVector.storage[15], equals(17.0));
+		test.done();
+
     },
 
     testMatrix4Transpose: function(test) {
-        var inputA = new List();
-        var expectedOutput = new List();
+		test.expect(0);
+        var inputA = [];
+        var expectedOutput = [];
         inputA.add(parseMatrix(
             "0.337719409821377   0.780252068321138   0.096454525168389   0.575208595078466 \
         0.900053846417662   0.389738836961253   0.131973292606335   0.059779542947156 \
@@ -97,11 +104,14 @@ module.exports = {
             inputA[i].transpose();
             relativeTest(inputA[i], expectedOutput[i]);
         }
+		test.done();
+
     },
     testMatrix4VectorMultiplication: function(test) {
-        var inputA = new List();
-        var inputB = new List();
-        var expectedOutput = new List();
+		test.expect(0);
+        var inputA = [];
+        var inputB = [];
+        var expectedOutput = [];
         
         inputA.add(parseMatrix(
             "0.337719409821377   0.780252068321138   0.096454525168389   0.575208595078466 \
@@ -124,12 +134,15 @@ module.exports = {
             var output = inputA[i] * inputB[i];
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
+
     },
 
     testMatrix4Multiplication: function(test) {
-        var inputA = new List();
-        var inputB = new List();
-        var expectedOutput = new List();
+		test.expect(0);
+        var inputA = [];
+        var inputB = [];
+        var expectedOutput = [];
         
         inputA.add(parseMatrix(
             "0.587044704531417   0.230488160211558   0.170708047147859   0.923379642103244 \
@@ -155,11 +168,14 @@ module.exports = {
             //pr('${inputA[i].cols}x${inputA[i].rows} * ${inputB[i].cols}x${inputB[i].rows} = ${output.cols}x${output.rows}');
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
+
     },
 
     testMatrix4Adjo: function(test) {
-        var input = new List();
-        var expectedOutput = new List();
+		test.expect(0);
+        var input = [];
+        var expectedOutput = [];
         
         input.add(parseMatrix(
             "0.934010684229183   0.011902069501241   0.311215042044805   0.262971284540144 \
@@ -198,10 +214,13 @@ module.exports = {
             output.scaleAdjo(1.0);
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
+
     },
 
     testMatrix4Determinant: function(test) {
-        var input = new List();
+		test.expect(0);
+        var input = [];
         expectedOutput = [];
         input.add(parseMatrix(
             "0.046171390631154   0.317099480060861   0.381558457093008   0.489764395788231 \
@@ -230,11 +249,14 @@ module.exports = {
             //pr('${input[i].cols}x${input[i].rows} = $output');
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
+
     },
     testMatrix4SelfTransposeMultiply: function(test) {
-        var inputA = new List();
-        var inputB = new List();
-        var expectedOutput = new List();
+		test.expect(0);
+        var inputA = [];
+        var inputB = [];
+        var expectedOutput = [];
         
         inputA.add(parseMatrix(
             "0.450541598502498   0.152378018969223   0.078175528753184   0.004634224134067 \
@@ -260,11 +282,14 @@ module.exports = {
             output.transposeMultiply(inputB[i]);
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
+
     },
     testMatrix4SelfMultiply: function(test) {
-        var inputA = new List();
-        var inputB = new List();
-        var expectedOutput = new List();
+		test.expect(0);
+        var inputA = [];
+        var inputB = [];
+        var expectedOutput = [];
         
         inputA.add(parseMatrix(
             "0.450541598502498   0.152378018969223   0.078175528753184   0.004634224134067 \
@@ -290,11 +315,14 @@ module.exports = {
             output.multiply(inputB[i]);
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
+
     },
     testMatrix4SelfMultiplyTranspose: function(test) {
-        var inputA = new List();
-        var inputB = new List();
-        var expectedOutput = new List();
+		test.expect(0);
+        var inputA = [];
+        var inputB = [];
+        var expectedOutput = [];
         
         inputA.add(parseMatrix(
             "0.450541598502498   0.152378018969223   0.078175528753184   0.004634224134067 \
@@ -320,12 +348,15 @@ module.exports = {
             output.multiplyTranspose(inputB[i]);
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
+
     },
     testMatrix4Translation: function(test) {
-        var inputA = new List();
-        var inputB = new List();
-        var output1 = new List();
-        var output2 = new List();
+		test.expect(0);
+        var inputA = [];
+        var inputB = [];
+        var output1 = [];
+        var output2 = [];
         
         inputA.add(new Matrix4.identity());
         inputB.add(new Matrix4.translationValues(1.0, 3.0, 5.7));
@@ -338,13 +369,16 @@ module.exports = {
         for ( i = 0; i < inputA.length; i++) {
             relativeTest(output1[i], output2[i]);
         }
+		test.done();
+
     },
 
     testMatrix4Scale: function(test) {
-        var inputA = new List();
-        var inputB = new List();
-        var output1 = new List();
-        var output2 = new List();
+		test.expect(0);
+        var inputA = [];
+        var inputB = [];
+        var output1 = [];
+        var output2 = [];
         
         inputA.add(new Matrix4.identity());
         inputB.add(new Matrix4.diagonal3Values(1.0, 3.0, 5.7));
@@ -357,11 +391,14 @@ module.exports = {
         for ( i = 0; i < inputA.length; i++) {
             relativeTest(output1[i], output2[i]);
         }
+		test.done();
+
     },
 
     testMatrix4Rotate: function(test) {
-        var output1 = new List();
-        var output2 = new List();
+		test.expect(0);
+        var output1 = [];
+        var output2 = [];
         output1.add(new Matrix4.rotationX(1.57079632679));
         output2.add(new Matrix4.identity().rotateX(1.57079632679));
         output1.add(new Matrix4.rotationY(1.57079632679 * 0.5));
@@ -386,9 +423,12 @@ module.exports = {
             relativeTest(output1[i], output2[i]);
         }
         return;
+		test.done();
+
     },
 
     testMatrix4GetRotation: function(test) {
+		test.expect(0);
         mat4 = new Matrix4.rotationX(Math.PI) *
         new Matrix4.rotationY(-Math.PI) *
         new Matrix4.rotationZ(Math.PI);
@@ -398,8 +438,11 @@ module.exports = {
         matRot = mat4.getRotation();
         
         relativeTest(mat3, matRot);
+		test.done();
+
     },
     testMatrix4Column: function(test) {
+		test.expect(0);
         I = Matrix4.zero;
         expect(I[0], 0.0);
         var c0 = new Vector4(1.0, 2.0, 3.0, 4.0);
@@ -408,9 +451,12 @@ module.exports = {
         c0.x = 4.0;
         expect(I[0], 1.0);
         expect(c0.x, 4.0);
+		test.done();
+
     },
 
     testMatrix4Inversion: function(test) {
+		test.expect(0);
         m = new Matrix4(1.0, 0.0, 2.0, 2.0, 0.0, 2.0, 1.0, 0.0, 0.0, 1.0, 0.0,
             1.0, 1.0, 2.0, 1.0, 4.0);
         result = Matrix4.zero;
@@ -432,9 +478,12 @@ module.exports = {
         expect(result.entry(1, 3), -0.5);
         expect(result.entry(2, 3), 2.0);
         expect(result.entry(3, 3), -0.5);
+		test.done();
+
     },
 
     testMatrix4Dot: function(test) {
+		test.expect(0);
         matrix = new Matrix4(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0,
             9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0);
         
@@ -446,16 +495,22 @@ module.exports = {
         expect(matrix.dotColumn(0, v), equals(30.0));
         expect(matrix.dotColumn(1, v), equals(70.0));
         expect(matrix.dotColumn(2, v), equals(110.0));
+		test.done();
+
     },
     testMatrix4PerspectiveTransform: function(test) {
+		test.expect(0);
         matrix = makePerspectiveMatrix(Math.PI, 1.0, 1.0, 100.0);
         vec = new Vector3(10.0, 20.0, 30.0);
         
         matrix.perspectiveTransform(vec);
         
         relativeTest(vec, new Vector3(0.0, 0.0, 1.087));
+		test.done();
+
     },
     testMatrix4Solving: function(test) {
+		test.expect(0);
         A = new Matrix4(2.0, 12.0, 8.0, 8.0, 20.0, 24.0, 26.0, 4.0, 8.0,
             4.0, 60.0, 12.0, 16.0, 16.0, 14.0, 64.0);
         
@@ -490,8 +545,11 @@ module.exports = {
         expect(backwards.y, equals(b.y));
         expect(backwards.z, equals(b.z));
         expect(backwards.w, equals(b.w));
+		test.done();
+
     },
     testMatrix4Compose: function(test) {
+		test.expect(0);
         var tValues = [
             new Vector3.zero(),
             new Vector3(3.0, 0.0, 0.0),
@@ -546,8 +604,11 @@ module.exports = {
                 }
             }
         }
+		test.done();
+
     },
     testMatrix4Equals: function(test) {
+		test.expect(0);
         expect(new Matrix4.identity(), equals(new Matrix4.identity()));
         expect(Matrix4.zero, isNot(equals(new Matrix4.identity())));
         expect(Matrix4.zero, isNot(equals(5)));

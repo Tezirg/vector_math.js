@@ -7,8 +7,9 @@ var Matrix3 = require('../src/matrix3.js');
 module.exports = {
 
     testMatrix3Adjo : function(test) {
-        var input = new List();
-        var expectedOutput = new List();
+		test.expect(0);
+		var input = [];
+        var expectedOutput = [];
         
         input.add(
             parseMatrix(" 0.285839018820374   0.380445846975357   0.053950118666607    0.757200229110721   0.567821640725221   0.530797553008973    0.753729094278495   0.075854289563064   0.779167230102011"));
@@ -26,10 +27,12 @@ module.exports = {
             output.scaleAdjo(1.0);
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
     },
     
     testMatrix3Determinant : function(test) {
-        var input = new List();
+		test.expect(0);
+        var input = [];
          expectedOutput = new [];
         
         input.add(
@@ -43,12 +46,14 @@ module.exports = {
             //pr('${input[i].cols}x${input[i].rows} = $output');
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
     },
     
     testMatrix3SelfTransposeMultiply : function(test) {
-        var inputA = new List();
-        var inputB = new List();
-        var expectedOutput = new List();
+		test.expect(0);
+        var inputA = [];
+        var inputB = [];
+        var expectedOutput = [];
         
         inputA.add(
             parseMatrix("0.084435845510910   0.800068480224308   0.181847028302852    0.399782649098896   0.431413827463545   0.263802916521990    0.259870402850654   0.910647594429523   0.145538980384717"));
@@ -71,12 +76,14 @@ module.exports = {
             output.transposeMultiply(inputB[i]);
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
     },
     
     testMatrix3SelfMultiply : function(test) {
-        var inputA = new List();
-        var inputB = new List();
-        var expectedOutput = new List();
+		test.expect(0);
+        var inputA = [];
+        var inputB = [];
+        var expectedOutput = [];
         
         inputA.add(
             parseMatrix("0.084435845510910   0.800068480224308   0.181847028302852    0.399782649098896   0.431413827463545   0.263802916521990    0.259870402850654   0.910647594429523   0.145538980384717"));
@@ -99,12 +106,14 @@ module.exports = {
             output.multiply(inputB[i]);
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
     },
     
     testMatrix3SelfMultiplyTranspose : function(test) {
-        var inputA = new List();
-        var inputB = new List();
-        var expectedOutput = new List();
+		test.expect(0);
+        var inputA = [];
+        var inputB = [];
+        var expectedOutput = [];
         
         inputA.add(
             parseMatrix("0.084435845510910   0.800068480224308   0.181847028302852    0.399782649098896   0.431413827463545   0.263802916521990    0.259870402850654   0.910647594429523   0.145538980384717"));
@@ -127,9 +136,11 @@ module.exports = {
             output.multiplyTranspose(inputB[i]);
             relativeTest(output, expectedOutput[i]);
         }
+		test.done();
     },
     
     testMatrix3Transform : function(test) {
+		test.expect(0);
         rotX = new Matrix3.rotationX(Math.PI / 4);
         rotY = new Matrix3.rotationY(Math.PI / 4);
         rotZ = new Matrix3.rotationZ(Math.PI / 4);
@@ -140,9 +151,11 @@ module.exports = {
             new Vector3(1.0 / Math.sqrt(2.0), 0.0, 1.0 / Math.sqrt(2.0)));
         relativeTest(rotZ.transformed(input),
             new Vector3(1.0 / Math.sqrt(2.0), 1.0 / Math.sqrt(2.0), 0.0));
+		test.done();
     },
     
     testMatrix3Transform2 : function(test) {
+		test.expect(0);
         rotZ = new Matrix3.rotationZ(Math.PI / 4);
         trans = new Matrix3(1.0, 0.0, 3.0, 0.0, 1.0, 2.0, 3.0, 2.0, 1.0);
         
@@ -152,9 +165,11 @@ module.exports = {
             new Vector2(Math.sqrt(0.5), Math.sqrt(0.5)));
         
         relativeTest(trans.transform2(input.clone()), new Vector2(4.0, 2.0));
+		test.done();
     },
     
     testMatrix3AbsoluteRotate2 : function(test) {
+		test.expect(0);
         rotZ = new Matrix3.rotationZ(-Math.PI / 4);
         rotZcw = new Matrix3.rotationZ(Math.PI / 4);
         // Add translation
@@ -168,9 +183,11 @@ module.exports = {
         
         relativeTest(rotZcw.absoluteRotate2(input.clone()),
             new Vector2(Math.sqrt(0.5), Math.sqrt(0.5)));
+		test.done();
     },
     
     testMatrix3ConstructorCopy : function(test) {
+		test.expect(0);
         var a = new Vector3(1.0, 2.0, 3.0);
         var b = new Vector3(4.0, 5.0, 6.0);
         var c = new Vector3(7.0, 8.0, 9.0);
@@ -181,9 +198,11 @@ module.exports = {
         a.x = 2.0;
         expect(m.entry(0, 0), 1.0);
         expect(m.entry(2, 2), 9.0);
+		test.done();
     },
     
     testMatrix3Inversion : function(test) {
+		test.expect(0);
         m = new Matrix3(1.0, 0.0, 5.0, 2.0, 1.0, 6.0, 3.0, 4.0, 0.0);
         result = Matrix3.zero;
         det = result.copyInverse(m);
@@ -197,9 +216,11 @@ module.exports = {
         expect(result.entry(0, 2), 5.0);
         expect(result.entry(1, 2), -4.0);
         expect(result.entry(2, 2), 1.0);
+		test.done();
     },
     
     testMatrix3Dot : function(test) {
+		test.expect(0);
         matrix =
             new Matrix3(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0);
         
@@ -211,9 +232,11 @@ module.exports = {
         expect(matrix.dotColumn(0, v), equals(20.0));
         expect(matrix.dotColumn(1, v), equals(47.0));
     expect(matrix.dotColumn(2, v), equals(74.0));
+		test.done();
     },
     
     testMatrix3Scale : function(test) {
+		test.expect(0);
      m = new Matrix3(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0);
         n = m.scaled(2.0);
         
@@ -226,9 +249,11 @@ module.exports = {
         expect(n.storage[6], equals(14.0));
         expect(n.storage[7], equals(16.0));
         expect(n.storage[8], equals(18.0));
+		test.done();
     },
     
     testMatrix3Solving : function(test) {
+		test.expect(0);
         A = new Matrix3(2.0, 12.0, 8.0, 20.0, 24.0, 26.0, 8.0, 4.0, 60.0);
         
         b = new Vector3(32.0, 64.0, 72.0);
@@ -249,9 +274,11 @@ module.exports = {
         
         expect(backwards2.x, equals(b2.x));
         expect(backwards2.y, equals(b2.y));
+		test.done();
     },
     
     testMatrix3Equals : function(test) {
+		test.expect(0);
         expect(new Matrix3.identity(), equals(new Matrix3.identity()));
         expect(Matrix3.zero, isNot(equals(new Matrix3.identity())));
         expect(Matrix3.zero, isNot(equals(5)));
