@@ -85,16 +85,16 @@ TEST.parseMatrix = function(input) {
 };
 
 TEST.parseVector = function(v) {
-    v = v.trim();
-    pattern = new RegExp('[\\s]+',true, false);
-    rows = v.split(pattern.toString());
-    values = [];
-    for (i = 0; i < rows.length; i++) {
+    //v = v.trim();
+    //pattern = new RegExp('[\\s]+',true, false);
+    var rows = v.split(" ");//pattern.toString());
+    var values = [];
+    for (var i = 0; i < rows.length; i++) {
         rows[i] = rows[i].trim();
         if (rows[i].isEmpty) {
             continue;
         }
-        values.add(parseFloat(rows[i]));
+        values.push(Number.parseFloat(rows[i]));
     }
 
     var r;

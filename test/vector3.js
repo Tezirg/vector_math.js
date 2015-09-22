@@ -6,7 +6,7 @@ var TEST = require('./test_utils.js');
 
 module.exports = {
 
-    testVector3InstacinfFromFloat32Array: function(test) {
+    testVector3InstacingfFromFloat32Array: function(test) {
         test.expect(3);
         float32List = new Float32Array([1.0, 2.0, 3.0]);
         input = Vector3.fromFloat32Array(float32List);
@@ -40,12 +40,12 @@ module.exports = {
         a = new Vector3(5.0, 7.0, 3.0);
         b = new Vector3(3.0, 8.0, 2.0);
 
-        a.add(b);
+        a.push(b);
         test.equals(a.x, 8.0);
         test.equals(a.y, 15.0);
         test.equals(a.z, 5.0);
 
-        b.add(a.scale(0.5));
+        b.push(a.scale(0.5));
         test.equals(b.x, 7.0);
         test.equals(b.y, 15.5);
         test.equals(b.z, 4.5);
@@ -97,20 +97,20 @@ module.exports = {
     },
 
     testVector3DotProduct: function(test) {
-        test.expect(4);
+        test.expect(2);
         inputA = [];
         inputB = [];
         expectedOutput = [];
-        inputA.add(parseVector("0.417267069084370 0.049654430325742 0.902716109915281"));
-        inputB.add(parseVector("0.944787189721646 0.490864092468080 0.489252638400019"));
-        expectedOutput.add(0.860258396944727);
-        assert(inputA.length == inputB.length);
-        assert(inputB.length == expectedOutput.length);
-        for (i = 0; i < inputA.length; i++) {
-            output1 = dot3(inputA[i], inputB[i]);
-            output2 = dot3(inputB[i], inputA[i]);
-            TEST.relativeTest(output1, expectedOutput[i]);
-            TEST.relativeTest(output2, expectedOutput[i]);
+        inputA.push(TEST.parseVector("0.417267069084370 0.049654430325742 0.902716109915281"));
+        inputB.push(TEST.parseVector("0.944787189721646 0.490864092468080 0.489252638400019"));
+        expectedOutput.push(0.860258396944727);
+        //assert(inputA.length == inputB.length);
+        //assert(inputB.length == expectedOutput.length);
+        for (var i = 0; i < inputA.length; i++) {
+            var output1 = inputA[i].dot(inputB[i]);
+            var output2 = inputB[i].dot(inputA[i]);
+            TEST.relativeTest(test, output1, expectedOutput[i]);
+            TEST.relativeTest(test, output2, expectedOutput[i]);
         }
         test.done();
     },
@@ -139,13 +139,13 @@ module.exports = {
         inputB = [];
         expectedOutput = [];
 
-        inputA.add(parseVector("0.417267069084370 0.049654430325742 0.902716109915281"));
-        inputB.add(parseVector("0.944787189721646 0.490864092468080 0.489252638400019"));
-        expectedOutput.add(parseVector("-0.418817363004761 0.648725602136344 0.157908551498227"));
+        inputA.push(parseVector("0.417267069084370 0.049654430325742 0.902716109915281"));
+        inputB.push(parseVector("0.944787189721646 0.490864092468080 0.489252638400019"));
+        expectedOutput.push(parseVector("-0.418817363004761 0.648725602136344 0.157908551498227"));
 
-        inputA.add(parseVector("0.944787189721646 0.490864092468080 0.489252638400019"));
-        inputB.add(parseVector("0.417267069084370 0.049654430325742 0.902716109915281"));
-        expectedOutput.add(parseVector("0.418817363004761 -0.648725602136344 -0.157908551498227"));
+        inputA.push(parseVector("0.944787189721646 0.490864092468080 0.489252638400019"));
+        inputB.push(parseVector("0.417267069084370 0.049654430325742 0.902716109915281"));
+        expectedOutput.push(parseVector("0.418817363004761 -0.648725602136344 -0.157908551498227"));
 
         assert(inputA.length == inputB.length);
         assert(inputB.length == expectedOutput.length);

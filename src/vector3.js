@@ -80,7 +80,6 @@ Vector3.fromFloat32Array = function(array) {
 Vector3.fromBuffer = function(buffer, offset) {
     var vec = Vector3.zero;
     vec.storage = new Float32Array(buffer, offset, 3);
-    console.log("FromBuffer" + vec);
     return vec.clone();
 };
 
@@ -254,7 +253,7 @@ Vector3.prototype.scale = function(arg) {
 /// Reflect [this].
 Vector3.prototype.reflect = function(normal) {
     var n_copy = normal.clone();
-    n_copy.scale(2.0 * normal.dot(this));
+    n_copy.scale(2.0 * normal(this));
     this.sub(n_copy);
     return this;
 };
@@ -265,9 +264,9 @@ Vector3.prototype.reflect = function(normal) {
  * @returns {Number}
  */
 Vector3.prototype.dot = function(v) {
-    return this.storage[0] * v.storage[0] +
-           this.storage[1] * v.storage[1] +
-           this.storage[2] * v.storage[2];
+    return this.storage[0] * v.x +
+           this.storage[1] * v.y +
+           this.storage[2] * v.z;
 };
 
 Vector3.prototype.cross = function(v) {
