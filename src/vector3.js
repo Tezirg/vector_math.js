@@ -59,6 +59,35 @@ Vector3.prototype.__defineSetter__("z", function(value) {
  */
 Vector3.zero = new Vector3(0.0, 0.0, 0.0);
 
+/// Zero the vector.
+Vector3.prototype.setZero = function() {
+    this.storage[0] = 0.0;
+    this.storage[1] = 0.0;
+    this.storage[2] = 0.0;
+    return this;
+};
+
+/// Constructs Vector2 with a given [Float32List] as [storage].
+Vector3.prototype.fromFloat32Array = function(array) {
+    this.storage = array;
+};
+
+/// Constructs Vector2 with a [storage] that views given [buffer] starting at
+/// [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
+Vector3.prototype.fromBuffer = function(buffer, offset) {
+    this.storage = new Float32Array(buffer, offset, 3);
+    return this;
+};
+
+/// Set the values of the vector.
+Vector3.prototype.setValues = function(x, y, z) {
+    this.storage[0] = x;
+    this.storage[1] = y;
+    this.storage[2] = z;
+    return this;
+};
+
+
 /**
  * @static
  * @property copy

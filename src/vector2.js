@@ -46,6 +46,32 @@ Vector2.prototype.__defineSetter__("y", function(value) {
  */
 Vector2.zero = new Vector2(0.0, 0.0);
 
+/// Zero the vector.
+Vector2.prototype.setZero = function() {
+    this.storage[0] = 0.0;
+    this.storage[1] = 0.0;
+    return this;
+};
+
+/// Constructs Vector2 with a given [Float32List] as [storage].
+Vector2.prototype.fromFloat32Array = function(array) {
+    this.storage = array;
+};
+
+/// Constructs Vector2 with a [storage] that views given [buffer] starting at
+/// [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
+Vector2.prototype.fromBuffer = function(buffer, offset) {
+    this.storage = new Float32Array(buffer, offset, 2);
+    return this;
+};
+
+/// Set the values of the vector.
+Vector2.prototype.setValues = function(x, y) {
+    this.storage[0] = x;
+    this.storage[1] = y;
+    return this;
+};
+
 /**
  * @static
  * @property copy
