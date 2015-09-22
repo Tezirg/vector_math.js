@@ -40,12 +40,12 @@ module.exports = {
         a = new Vector3(5.0, 7.0, 3.0);
         b = new Vector3(3.0, 8.0, 2.0);
 
-        a.push(b);
+        a.add(b);
         test.equals(a.x, 8.0);
         test.equals(a.y, 15.0);
         test.equals(a.z, 5.0);
 
-        b.push(a.scale(0.5));
+        b.add(a.scale(0.5));
         test.equals(b.x, 7.0);
         test.equals(b.y, 15.5);
         test.equals(b.z, 4.5);
@@ -125,12 +125,12 @@ module.exports = {
         resultOldvInv = inputInv * inputVector;
         resultNew = inputVector.postmultiply(inputMatrix);
 
-        expect(resultNew.x, equals(resultOld.x));
-        expect(resultNew.y, equals(resultOld.y));
-        expect(resultNew.z, equals(resultOld.z));
-        expect(resultNew.x, equals(resultOldvInv.x));
-        expect(resultNew.y, equals(resultOldvInv.y));
-        expect(resultNew.z, equals(resultOldvInv.z));
+        expect(resultNew.x,resultOld.x);
+        expect(resultNew.y,resultOld.y);
+        expect(resultNew.z,resultOld.z);
+        expect(resultNew.x,resultOldvInv.x);
+        expect(resultNew.y,resultOldvInv.y);
+        expect(resultNew.z,resultOldvInv.z);
         test.done();
     },
 
@@ -139,56 +139,58 @@ module.exports = {
         inputB = [];
         expectedOutput = [];
 
-        inputA.push(parseVector("0.417267069084370 0.049654430325742 0.902716109915281"));
-        inputB.push(parseVector("0.944787189721646 0.490864092468080 0.489252638400019"));
-        expectedOutput.push(parseVector("-0.418817363004761 0.648725602136344 0.157908551498227"));
+        inputA.push(TEST.parseVector("0.417267069084370 0.049654430325742 0.902716109915281"));
+        inputB.push(TEST.parseVector("0.944787189721646 0.490864092468080 0.489252638400019"));
+        expectedOutput.push(TEST.parseVector("-0.418817363004761 0.648725602136344 0.157908551498227"));
 
-        inputA.push(parseVector("0.944787189721646 0.490864092468080 0.489252638400019"));
-        inputB.push(parseVector("0.417267069084370 0.049654430325742 0.902716109915281"));
-        expectedOutput.push(parseVector("0.418817363004761 -0.648725602136344 -0.157908551498227"));
+        inputA.push(TEST.parseVector("0.944787189721646 0.490864092468080 0.489252638400019"));
+        inputB.push(TEST.parseVector("0.417267069084370 0.049654430325742 0.902716109915281"));
+        expectedOutput.push(TEST.parseVector("0.418817363004761 -0.648725602136344 -0.157908551498227"));
 
-        assert(inputA.length == inputB.length);
-        assert(inputB.length == expectedOutput.length);
+        //assert(inputA.length == inputB.length);
+        //assert(inputB.length == expectedOutput.length);
 
         for (i = 0; i < inputA.length; i++) {
-            output = Vector3.zero;
-            cross3(inputA[i], inputB[i], output);
-            TEST.relativeTest(output, expectedOutput[i]);
+            var output = inputA[i].clone();
+            output.cross(inputB[i]);
+//            cross3(inputA[i], inputB[i], output);
+            TEST.relativeTest(test, output, expectedOutput[i]);
         }
 
         {
-            x = new Vector3(1.0, 0.0, 0.0);
-            y = new Vector3(0.0, 1.0, 0.0);
-            z = new Vector3(0.0, 0.0, 1.0);
+            var x = new Vector3(1.0, 0.0, 0.0);
+            var y = new Vector3(0.0, 1.0, 0.0);
+            var z = new Vector3(0.0, 0.0, 1.0);
 
             output = x.cross(y);
-            TEST.relativeTest(output, new Vector3(0.0, 0.0, 1.0));
+            TEST.relativeTest(test, output, new Vector3(0.0, 0.0, 1.0));
             output = y.cross(x);
-            TEST.relativeTest(output, new Vector3(0.0, 0.0, -1.0));
+            TEST.relativeTest(test, output, new Vector3(0.0, 0.0, -1.0));
 
             output = x.cross(z);
-            TEST.relativeTest(output, new Vector3(0.0, -1.0, 0.0));
+            TEST.relativeTest(test, output, new Vector3(0.0, -1.0, 0.0));
             output = z.cross(x);
-            TEST.relativeTest(output, new Vector3(0.0, 1.0, 0.0));
+            TEST.relativeTest(test, output, new Vector3(0.0, 1.0, 0.0));
 
             output = y.cross(z);
-            TEST.relativeTest(output, new Vector3(1.0, 0.0, 0.0));
+            TEST.relativeTest(test, output, new Vector3(1.0, 0.0, 0.0));
             output = z.cross(y);
-            TEST.relativeTest(output, new Vector3(-1.0, 0.0, 0.0));
+            TEST.relativeTest(test, output, new Vector3(-1.0, 0.0, 0.0));
         }
+        test.done();
     },
 
     testVector3Constructor: function(test) {
         test.expect(6);
         var v1 = new Vector3(2.0, 4.0, -1.5);
-        expect(v1.x, equals(2.0));
-        expect(v1.y, equals(4.0));
-        expect(v1.z, equals(-1.5));
+        test.equals(v1.x, 2.0);
+        test.equals(v1.y, 4.0);
+        test.equals(v1.z, -1.5);
 
-        var v2 = new Vector3.all(2.0);
-        expect(v2.x, equals(2.0));
-        expect(v2.y, equals(2.0));
-        expect(v2.z, equals(2.0));
+        var v2 = Vector3.all(2.0);
+        test.equals(v2.x, 2.0);
+        test.equals(v2.y, 2.0);
+        test.equals(v2.z, 2.0);
         test.done();
     },
 
@@ -196,16 +198,17 @@ module.exports = {
         test.expect(6);
         a = new Vector3(5.0, 7.0, 3.0);
 
-        TEST.TEST.relativeTest(a.length, 9.1104);
-        TEST.TEST.relativeTest(a.length2, 83.0);
+        TEST.relativeTest(test, a.length, 9.1104);
+        TEST.relativeTest(test, a.length2, 83.0);
 
-        TEST.relativeTest(a.normalizeLength(), 9.1104);
-        TEST.relativeTest(a.x, 0.5488);
-        TEST.relativeTest(a.y, 0.7683);
-        TEST.relativeTest(a.z, 0.3292);
+        TEST.relativeTest(test, a.normalizeLength(), 9.1104);
+        TEST.relativeTest(test, a.x, 0.5488);
+        TEST.relativeTest(test, a.y, 0.7683);
+        TEST.relativeTest(test, a.z, 0.3292);
         test.done();
     },
 
+    /*
     testVector3SetLength: function(test) {
         v0 = new Vector3(1.0, 2.0, 1.0);
         v1 = new Vector3(3.0, -2.0, 2.0);
@@ -213,13 +216,13 @@ module.exports = {
         v3 = new Vector3(1.0, 0.0, 0.0);
 
         v0.length = 0.0;
-        TEST.relativeTest(v0, Vector3.zero);
-        TEST.relativeTest(v0.length, 0.0);
+        TEST.relativeTest(test, v0, Vector3.zero);
+        TEST.relativeTest(test, v0.length, 0.0);
 
         v1.length = 2.0;
-        TEST.relativeTest(v1,
+        TEST.relativeTest(test, v1,
             new Vector3(1.4552137851715088, -0.9701424837112427, 0.9701424837112427));
-        TEST.relativeTest(v1.length, 2.0);
+        TEST.relativeTest(test, v1.length, 2.0);
 
         v2.length = 0.5;
         TEST.relativeTest(
@@ -232,61 +235,63 @@ module.exports = {
         TEST.relativeTest(v3, new Vector3(-1.0, 0.0, 0.0));
         TEST.relativeTest(v3.length, 1.0);
     },
-
+*/
     testVector3Negate: function(test) {
-        var vec3 = new Vector4(1.0, 2.0, 3.0, 4.0);
+        test.expect(4);
+        var vec3 = new Vector3(1.0, 2.0, 3.0);
         vec3.negate();
-        expect(vec3.x, equals(-1.0));
-        expect(vec3.y, equals(-2.0));
-        expect(vec3.z, equals(-3.0));
-        expect(vec3.w, equals(-4.0));
+        test.equals(vec3.x, -1.0);
+        test.equals(vec3.y, -2.0);
+        test.equals(vec3.z, -3.0);
+        test.done();
     },
 
     testVector3Equals: function(test) {
+        test.expect(4);
         var v3 = new Vector3(1.0, 2.0, 3.0);
-        expect(v3 == new Vector3(1.0, 2.0, 3.0), isTrue);
-        expect(v3 == new Vector3(0.0, 2.0, 3.0), isFalse);
-        expect(v3 == new Vector3(1.0, 0.0, 3.0), isFalse);
-        expect(v3 == new Vector3(1.0, 2.0, 0.0), isFalse);
-        expect(new Vector3(1.0, 2.0, 3.0).hashCode,
-            equals(new Vector3(1.0, 2.0, 3.0).hashCode));
+        test.ok(v3.equals(new Vector3(1.0, 2.0, 3.0)));
+        test.ok(! v3.equals(new Vector3(0.0, 2.0, 3.0)));
+        test.ok(! v3.equals(new Vector3(1.0, 0.0, 3.0)));
+        test.ok(! v3.equals(new Vector3(1.0, 2.0, 0.0)));
+        test.done();
     },
     testVector3Reflect: function(test) {
+        test.expect(27);
         var v = new Vector3(5.0, 0.0, 0.0);
         v.reflect(new Vector3(-1.0, 0.0, 0.0));
-        expect(v.x, equals(-5.0));
-        expect(v.y, equals(0.0));
-        expect(v.y, equals(0.0));
+        test.equals(v.x, -5.0);
+        test.equals(v.y, 0.0);
+        test.equals(v.y, 0.0);
 
         v = new Vector3(0.0, 5.0, 0.0);
         v.reflect(new Vector3(0.0, -1.0, 0.0));
-        expect(v.x, equals(0.0));
-        expect(v.y, equals(-5.0));
-        expect(v.z, equals(0.0));
+        test.equals(v.x, 0.0);
+        test.equals(v.y, -5.0);
+        test.equals(v.z, 0.0);
 
         v = new Vector3(0.0, 0.0, 5.0);
         v.reflect(new Vector3(0.0, 0.0, -1.0));
-        expect(v.x, equals(0.0));
-        expect(v.y, equals(0.0));
-        expect(v.z, equals(-5.0));
+        test.equals(v.x,0.0);
+        test.equals(v.y,0.0);
+        test.equals(v.z,-5.0);
 
         v = new Vector3(-5.0, 0.0, 0.0);
         v.reflect(new Vector3(1.0, 0.0, 0.0));
-        expect(v.x, equals(5.0));
-        expect(v.y, equals(0.0));
-        expect(v.y, equals(0.0));
+        test.equals(v.x,5.0);
+        test.equals(v.y,0.0);
+        test.equals(v.y,0.0);
 
         v = new Vector3(0.0, -5.0, 0.0);
         v.reflect(new Vector3(0.0, 1.0, 0.0));
-        expect(v.x, equals(0.0));
-        expect(v.y, equals(5.0));
-        expect(v.z, equals(0.0));
+        test.equals(v.x,0.0);
+        test.equals(v.y,5.0);
+        test.equals(v.z,0.0);
 
         v = new Vector3(0.0, 0.0, -5.0);
         v.reflect(new Vector3(0.0, 0.0, 1.0));
-        expect(v.x, equals(0.0));
-        expect(v.y, equals(0.0));
-        expect(v.z, equals(5.0));
+        test.equals(v.x,0.0);
+        test.equals(v.y,0.0);
+        test.equals(v.z,5.0);
 
         v = new Vector3(4.0, 4.0, 4.0);
         v.reflect(new Vector3(-1.0, -1.0, -1.0).normalized());
@@ -305,6 +310,7 @@ module.exports = {
         TEST.relativeTest(v.x, -10.0);
         TEST.relativeTest(v.y, -20.0);
         TEST.relativeTest(v.z, -2.0);
+        test.done();
     },
 
     testVector3Projection: function(test) {
@@ -325,8 +331,8 @@ module.exports = {
         var b = new Vector3(1.0, 3.0, 1.0);
         var c = new Vector3(1.0, 1.0, -1.0);
 
-        expect(a.distanceTo(b), equals(2.0));
-        expect(a.distanceTo(c), equals(2.0));
+        expect(a.distanceTo(b),2.0);
+        expect(a.distanceTo(c),2.0);
     },
 
     testVector3DistanceToSquared: function(test) {
@@ -334,24 +340,24 @@ module.exports = {
         var b = new Vector3(1.0, 3.0, 1.0);
         var c = new Vector3(1.0, 1.0, -1.0);
 
-        expect(a.distanceToSquared(b), equals(4.0));
-        expect(a.distanceToSquared(c), equals(4.0));
+        expect(a.distanceToSquared(b),4.0);
+        expect(a.distanceToSquared(c),4.0);
     },
     testVector3AngleTo: function(test) {
         v0 = new Vector3(1.0, 0.0, 0.0);
         v1 = new Vector3(0.0, 1.0, 0.0);
 
-        expect(v0.angleTo(v0), equals(0.0));
-        expect(v0.angleTo(v1), equals(Math.PI / 2.0));
+        expect(v0.angleTo(v0),0.0);
+        expect(v0.angleTo(v1),Math.PI / 2.0);
     },
     testVector3AngleToSigned: function(test) {
         v0 = new Vector3(1.0, 0.0, 0.0);
         v1 = new Vector3(0.0, 1.0, 0.0);
         n = new Vector3(0.0, 0.0, 1.0);
 
-        expect(v0.angleToSigned(v0, n), equals(0.0));
-        expect(v0.angleToSigned(v1, n), equals(Math.PI / 2.0));
-        expect(v1.angleToSigned(v0, n), equals(-Math.PI / 2.0));
+        expect(v0.angleToSigned(v0, n),0.0);
+        expect(v0.angleToSigned(v1, n),Math.PI / 2.0);
+        expect(v1.angleToSigned(v0, n),-Math.PI / 2.0);
     },
 
     testVector3Clamp: function(test) {
