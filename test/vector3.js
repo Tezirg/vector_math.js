@@ -9,7 +9,7 @@ module.exports = {
     testVector3InstacinfFromFloat32Array: function(test) {
         test.expect(3);
         float32List = new Float32Array([1.0, 2.0, 3.0]);
-        input = new Vector3.fromFloat32Array(float32List);
+        input = Vector3.fromFloat32Array(float32List);
 
         test.equals(input.x, 1.0);
         test.equals(input.y, 2.0);
@@ -19,18 +19,18 @@ module.exports = {
 
     testVector3InstacingFromByteBuffer: function(test) {
         test.expect(6);
-        float32List = Float32List([1.0, 2.0, 3.0, 4.0]);
-        buffer = float32List.buffer;
-        zeroOffset = new Vector3.fromBuffer(buffer, 0);
-        offsetVector = new Vector3.fromBuffer(buffer, Float32List.BYTES_PER_ELEMENT);
+        float32Array = new Float32Array([1.0, 2.0, 3.0, 4.0]);
+        buffer = float32Array.buffer;
+        zeroOffset = Vector3.fromBuffer(buffer, 0);
+        offsetVector = Vector3.fromBuffer(buffer, Float32Array.BYTES_PER_ELEMENT);
 
-        test.equals(zeroOffset.x, 1.0);
+        test.equals(zeroOffset.x, 1.0, "Buffer [0] == 1.0");
         test.equals(zeroOffset.y, 2.0);
         test.equals(zeroOffset.z, 3.0);
 
         test.equals(offsetVector.x, 2.0);
-        test.equals(offsetVector.x, 3.0);
-        test.equals(offsetVector.x, 4.0);
+        test.equals(offsetVector.y, 3.0);
+        test.equals(offsetVector.z, 4.0);
 
         test.done();
     },

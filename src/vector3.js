@@ -68,15 +68,20 @@ Vector3.prototype.setZero = function() {
 };
 
 /// Constructs Vector2 with a given [Float32List] as [storage].
-Vector3.prototype.fromFloat32Array = function(array) {
-    this.storage = array;
+Vector3.fromFloat32Array = function(array) {
+    var vec = Vector3.zero;
+    vec.storage = array;
+    return vec;
 };
 
-/// Constructs Vector2 with a [storage] that views given [buffer] starting at
+
+/// Constructs Vector3 with a [storage] that views given [buffer] starting at
 /// [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
-Vector3.prototype.fromBuffer = function(buffer, offset) {
-    this.storage = new Float32Array(buffer, offset, 3);
-    return this;
+Vector3.fromBuffer = function(buffer, offset) {
+    var vec = Vector3.zero;
+    vec.storage = new Float32Array(buffer, offset, 3);
+    console.log("FromBuffer" + vec);
+    return vec.clone();
 };
 
 /// Set the values of the vector.
