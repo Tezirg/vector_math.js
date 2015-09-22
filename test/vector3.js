@@ -81,7 +81,7 @@ module.exports = {
 
         Vector3.mix(a, b, 0.5, result);
         test.equals(result.x, 4.0);
-        test.equals(result.y, 7.0);
+        test.equals(result.y, 7.5);
         test.equals(result.z, 2.5);
 
         Vector3.mix(a, b, 0.0, result);
