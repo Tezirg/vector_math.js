@@ -198,10 +198,10 @@ module.exports = {
         test.expect(6);
         a = new Vector3(5.0, 7.0, 3.0);
 
-        TEST.relativeTest(test, a.length, 9.1104);
-        TEST.relativeTest(test, a.length2, 83.0);
+        TEST.relativeTest(test, a.length(), 9.1104);
+        TEST.relativeTest(test, a.length2(), 83.0);
 
-        TEST.relativeTest(test, a.normalizeLength(), 9.1104);
+        TEST.relativeTest(test, a.normalize().length(), 9.1104);
         TEST.relativeTest(test, a.x, 0.5488);
         TEST.relativeTest(test, a.y, 0.7683);
         TEST.relativeTest(test, a.z, 0.3292);
@@ -237,7 +237,7 @@ module.exports = {
     },
 */
     testVector3Negate: function(test) {
-        test.expect(4);
+        test.expect(3);
         var vec3 = new Vector3(1.0, 2.0, 3.0);
         vec3.negate();
         test.equals(vec3.x, -1.0);
@@ -295,21 +295,21 @@ module.exports = {
 
         v = new Vector3(4.0, 4.0, 4.0);
         v.reflect(new Vector3(-1.0, -1.0, -1.0).normalized());
-        TEST.relativeTest(v.x, -4.0);
-        TEST.relativeTest(v.y, -4.0);
-        TEST.relativeTest(v.z, -4.0);
+        TEST.relativeTest(test, v.x, -4.0);
+        TEST.relativeTest(test, v.y, -4.0);
+        TEST.relativeTest(test, v.z, -4.0);
 
         v = new Vector3(-4.0, -4.0, -4.0);
         v.reflect(new Vector3(1.0, 1.0, 1.0).normalized());
-        TEST.relativeTest(v.x, 4.0);
-        TEST.relativeTest(v.y, 4.0);
-        TEST.relativeTest(v.z, 4.0);
+        TEST.relativeTest(test, v.x, 4.0);
+        TEST.relativeTest(test, v.y, 4.0);
+        TEST.relativeTest(test, v.z, 4.0);
 
         v = new Vector3(10.0, 20.0, 2.0);
         v.reflect(new Vector3(-10.0, -20.0, -2.0).normalized());
-        TEST.relativeTest(v.x, -10.0);
-        TEST.relativeTest(v.y, -20.0);
-        TEST.relativeTest(v.z, -2.0);
+        TEST.relativeTest(test, v.x, -10.0);
+        TEST.relativeTest(test, v.y, -20.0);
+        TEST.relativeTest(test, v.z, -2.0);
         test.done();
     },
 

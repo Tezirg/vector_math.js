@@ -253,7 +253,7 @@ Vector3.prototype.scale = function(arg) {
 /// Reflect [this].
 Vector3.prototype.reflect = function(normal) {
     var n_copy = normal.clone();
-    n_copy.scale(2.0 * normal(this));
+    n_copy.scale(2.0 * normal.dot(this));
     this.sub(n_copy);
     return this;
 };
