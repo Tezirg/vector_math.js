@@ -246,6 +246,22 @@ Vector2.prototype.absolute = function() {
     this.storage[1] = Math.abs(this.storage[1]);
 };
 
+/// Clamp each entry n in [this] in the range [min[n]]-[max[n]].
+Vector2.prototype.clamp = function(min, max) {
+    var minStorage = min.storage;
+    var maxStorage = max.storage;
+    this.storage[0] = Math.min(Math.max(this.storage[0], minStorage[0]), maxStorage[0]);
+    this.storage[1] = Math.min(Math.max(this.storage[1], minStorage[1]), maxStorage[1]);
+    return this;
+};
+
+/// Clamp entries in [this] in the range [min]-[max].
+Vector2.prototype.clampScalar = function(min, max) {
+    this.storage[0] = Math.min(Math.max(this.storage[0], min), max);
+    this.storage[1] = Math.min(Math.max(this.storage[1], min), max);
+    return this;
+};
+
 Vector2.prototype.isNaN = function() {
     var is_nan = false;
     is_nan = is_nan || this.storage[0].isNaN;
@@ -315,5 +331,16 @@ Vector2.prototype.ceil = function() {
 Vector2.prototype.round = function() {
     this.storage[0] = Math.round(this.x);
     this.storage[1] = Math.round(this.y);
+    return this;
+};
+
+/// Round entries in [this] towards zero.
+Vector2.prototype.roundToZero = function() {
+    this.storage[0] = this.storage[0] < 0.0
+        ? Math.ceil(this.storage[0])
+        : Math.floor(this.storage[0]);
+    this.storage[1] = this.storage[1] < 0.0
+        ? Math.ceil(this.storage[1])
+        : Math.floor(this.storage[1]);
     return this;
 };

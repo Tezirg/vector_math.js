@@ -283,6 +283,24 @@ Vector3.prototype.absolute = function() {
     this.storage[2] = Math.abs(this.storage[2]);
 };
 
+/// Clamp each entry n in [this] in the range [min[n]]-[max[n]].
+Vector3.prototype.clamp = function(min, max) {
+    var minStorage = min.storage;
+    var maxStorage = max.storage;
+    this.storage[0] = Math.min(Math.max(this.storage[0], minStorage[0]), maxStorage[0]);
+    this.storage[1] = Math.min(Math.max(this.storage[1], minStorage[1]), maxStorage[1]);
+    this.storage[2] = Math.min(Math.max(this.storage[2], minStorage[2]), maxStorage[2]);
+    return this;
+};
+
+/// Clamp entries in [this] in the range [min]-[max].
+Vector3.prototype.clampScalar = function(min, max) {
+    this.storage[0] = Math.min(Math.max(this.storage[0], min), max);
+    this.storage[1] = Math.min(Math.max(this.storage[1], min), max);
+    this.storage[2] = Math.min(Math.max(this.storage[2], min), max);
+    return this;
+};
+
 Vector3.prototype.isNaN = function() {
     var is_nan = false;
     is_nan = is_nan || this.storage[0].isNaN;
@@ -340,6 +358,30 @@ Vector3.prototype.distanceTo = function(v) {
    return Math.sqrt(this.distanceToSquared(v));
 };
 
+/// Returns the angle between [this] vector and [other] in radians.
+Vector3.prototype.angleTo = function(other) {
+    otherStorage = other.storage;
+    if (this.storage[0] == otherStorage[0] &&
+        this.storage[1] == otherStorage[1] &&
+        this.storage[2] == otherStorage[2]) {
+        return 0.0;
+    }
+
+    d = this.dot(other);
+
+    return Math.acos(Math.min(Math.max(d, -1.0), 1.0));
+};
+
+/// Returns the signed angle between [this] and [other] around [normal]
+/// in radians.
+Vector3.prototype.angleToSigned = function(other, normal) {
+    var angle = this.angleTo(other);
+    var c = this.cross(other);
+    var d = c.dot(normal);
+
+    return d < 0.0 ? -angle : angle;
+};
+
 /// Floor entries in [this].
 Vector3.prototype.floor = function() {
     this.storage[0] = Math.floor(this.x);
@@ -361,5 +403,19 @@ Vector3.prototype.round = function() {
     this.storage[0] = Math.round(this.x);
     this.storage[1] = Math.round(this.y);
     this.storage[2] = Math.round(this.z);
+    return this;
+};
+
+/// Round entries in [this] towards zero.
+Vector3.prototype.roundToZero = function() {
+    this.storage[0] = this.storage[0] < 0.0
+        ? Math.ceil(this.storage[0])
+        : Math.floor(this.storage[0]);
+    this.storage[1] = this.storage[1] < 0.0
+        ? Math.ceil(this.storage[1])
+        : Math.floor(this.storage[1]);
+    this.storage[2] = this.storage[2] < 0.0
+        ? Math.ceil(this.storage[2])
+        : Math.floor(this.storage[2]);
     return this;
 };
