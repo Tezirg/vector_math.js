@@ -53,30 +53,30 @@ TEST.makeMatrix = function (rows, cols) {
 TEST.parseMatrix = function(input) {
     input = input.trim();
     rows = input.split("\n");
-    values = [];
-    col_count = 0;
-    for (i = 0; i < rows.length; i++) {
+    var values = [];
+    var col_count = 0;
+    for (var i = 0; i < rows.length; i++) {
         rows[i] = rows[i].trim();
-        cols = rows[i].split(" ");
-        for (j = 0; j < cols.length; j++) {
+        var cols = rows[i].split(" ");
+        for (var j = 0; j < cols.length; j++) {
             cols[j] = cols[j].trim();
         }
 
         for (j = 0; j < cols.length; j++) {
-            if (cols[j].isEmpty) {
+            if (cols[j].length == 0) {
                 continue;
             }
             if (i == 0) {
                 col_count++;
             }
-            values.add(Number.parseFloat(cols[j]));
+            values.push(Number.parseFloat(cols[j]));
         }
     }
 
     var m = TEST.makeMatrix(rows.length, col_count);
     for (j = 0; j < rows.length; j++) {
         for (i = 0; i < col_count; i++) {
-            m[m.index(j, i)] = values[j * col_count + i];
+            m.setAt(m.index(j, i), values[j * col_count + i]);
             //m[i][j] = values[j*col_count+i];
         }
     }

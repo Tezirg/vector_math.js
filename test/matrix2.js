@@ -12,17 +12,20 @@ module.exports = {
         var input = [];
         var expectedOutput = [];
 
-        input.add(TEST.parseMatrix("0.830828627896291   0.549723608291140    0.585264091152724   0.917193663829810"));
-        expectedOutput.add(TEST.parseMatrix(" 0.917193663829810  -0.549723608291140    -0.585264091152724   0.830828627896291"));
-        input.add(TEST.parseMatrix(" 1     0    0     1"));
-        expectedOutput.add(TEST.parseMatrix(" 1     0    0     1"));
+        input.push(TEST.parseMatrix("0.830828627896291   0.549723608291140\n \
+        0.585264091152724   0.917193663829810"));
+        expectedOutput.push(TEST.parseMatrix(" 0.917193663829810  -0.549723608291140\n \
+         -0.585264091152724   0.830828627896291"));
+        input.push(TEST.parseMatrix(" 1     0\n  0     1"));
+        expectedOutput.push(TEST.parseMatrix(" 1     0\n  0     1"));
 
-        assert(input.length == expectedOutput.length);
+        //assert(input.length == expectedOutput.length);
 
         for ( i = 0; i < input.length; i++) {
             var output = input[i].clone();
             output.scaleAdjoint(1.0);
             test.ok(output.almostEquals(expectedOutput[i]));
+            //TEST.relativeTest(test, output.relativeError(expectedOutput[i], 0.0));
         }
 		test.done();
     },
@@ -34,10 +37,10 @@ module.exports = {
         var input = [];
         expectedOutput =  [];
 
-        input.add(TEST.parseMatrix("0.830828627896291   0.549723608291140    0.585264091152724   0.917193663829810"));
-        expectedOutput.add(0.440297265243183);
+        input.push(TEST.parseMatrix("0.830828627896291   0.549723608291140  \n  0.585264091152724   0.917193663829810"));
+        expectedOutput.push(0.440297265243183);
 
-        assert(input.length == expectedOutput.length);
+        //assert(input.length == expectedOutput.length);
 
         for ( i = 0; i < input.length; i++) {
             output = input[i].determinant();
@@ -51,7 +54,7 @@ module.exports = {
 
     testMatrix2Transform : function(test) {
 		test.expect(2);
-        var rot = new Matrix2.rotation(Math.PI / 4);
+        var rot = Matrix2.rotation(Math.PI / 4);
         input = new Vector2(0.234245234259, 0.890723489233);
 
         expected = new Vector2(
@@ -73,7 +76,7 @@ module.exports = {
     testMatrix2Inversion : function(test) {
 		test.expect(5);
         m = new Matrix2(4.0, 3.0, 3.0, 2.0);
-        result = Matrix2.zero;
+        result = Matrix2.zero();
         det = result.copyInverse(m);
         test.equals(det, -1.0);
         test.equals(result.entry(0, 0), -2.0);
@@ -115,11 +118,11 @@ module.exports = {
 		test.expect(2);
         A = new Matrix2(2.0, 2.0, 8.0, 20.0);
         b = new Vector2(20.0, 64.0);
-        result = new Vector2.zero();
+        result = Vector2.zero();
 
         Matrix2.solve(A, result, b);
 
-        backwards = A.transform(new Vector2.copy(result));
+        backwards = A.transform(Vector2.copy(result));
 
         test.equals(backwards.x, b.x);
         test.equals(backwards.y, b.y);
