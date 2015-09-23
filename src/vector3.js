@@ -52,6 +52,28 @@ Vector3.prototype.__defineSetter__("z", function(value) {
     this.storage[2] = value;
 });
 
+/**
+ * @property length
+ * @type {number}
+ */
+Vector3.prototype.__defineGetter__("length", function() {
+    return Math.sqrt(this.length2());
+});
+Vector3.prototype.__defineSetter__("length", function(value) {
+    if (value == 0.0) {
+        this.setZero();
+    }
+    else {
+        l = this.length;
+        if (l == 0.0) {
+            return;
+        }
+        l = value / l;
+        this.storage[0] *= l;
+        this.storage[1] *= l;
+        this.storage[2] *= l;
+    }
+});
 
 /**
  * @static
@@ -321,10 +343,6 @@ Vector3.prototype.toString = function() {
     return '[x=' + this.storage[0] + ', y=' + this.storage[1] + ', z=' + this.storage[2] + ']';
 };
 
-Vector3.prototype.length = function() {
-    return Math.sqrt(this.length2());
-};
-
 Vector3.prototype.length2 = function() {
     return this.storage[0] * this.storage[0] +
            this.storage[1] * this.storage[1] +
@@ -332,7 +350,7 @@ Vector3.prototype.length2 = function() {
 };
 
 Vector3.prototype.normalize = function() {
-    var l = this.length();
+    var l = this.length;
     if (l != 0.0) {
         l = 1.0 / l;
         this.storage[0] *= l;

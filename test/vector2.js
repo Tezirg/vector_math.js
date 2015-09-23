@@ -130,7 +130,7 @@ module.exports = {
         test.expect(4);
         var a = new Vector2(5.0, 7.0);
 
-        test.equals(a.length(), 8.602325267042627, "Length a = 8.602");
+        test.equals(a.length, 8.602325267042627, "Length a = 8.602");
         test.equals(a.length2(), 74.0, "Length2 a = 74.0");
 
         a.normalize();

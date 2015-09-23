@@ -41,6 +41,28 @@ Vector2.prototype.__defineSetter__("y", function(value) {
 });
 
 /**
+ * @property length
+ * @type {number}
+ */
+Vector2.prototype.__defineGetter__("length", function() {
+    return Math.sqrt(this.length2());
+});
+Vector2.prototype.__defineSetter__("length", function(value) {
+    if (value == 0.0) {
+        this.setZero();
+    }
+    else {
+        l = this.length;
+        if (l == 0.0) {
+            return;
+        }
+        l = value / l;
+        this.storage[0] *= l;
+        this.storage[1] *= l;
+    }
+});
+
+/**
  * @static
  * @property {Vector2} zero
  */
@@ -280,16 +302,13 @@ Vector2.prototype.toString = function() {
     return '[x=' + this.storage[0] + ', y=' + this.storage[1] + ']';
 };
 
-Vector2.prototype.length = function() {
-    return Math.sqrt(this.length2());
-};
 
 Vector2.prototype.length2 = function() {
     return this.x * this.x + this.y * this.y;
 };
 
 Vector2.prototype.normalize = function() {
-    var l = this.length();
+    var l = this.length;
     if (l != 0.0) {
         l = 1.0 / l;
         this.storage[0] = this.x * l;
