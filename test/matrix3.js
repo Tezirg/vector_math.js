@@ -10,7 +10,7 @@ var TEST = require('./test_utils.js');
 module.exports = {
 
     testMatrix3Adjo : function(test) {
-		test.expect(0);
+		test.expect(3);
 		var input = [];
         var expectedOutput = [];
         
@@ -28,13 +28,14 @@ module.exports = {
         for ( i = 0; i < input.length; i++) {
             var output = input[i].clone();
             output.scaleAdjo(1.0);
-            relativeTest(output, expectedOutput[i]);
+            test.ok(output.almostEquals(expectedOutput[i]));
+            //relativeTest(output, expectedOutput[i]);
         }
 		test.done();
     },
     
     testMatrix3Determinant : function(test) {
-		test.expect(0);
+		test.expect(1);
         var input = [];
          expectedOutput = new [];
         
@@ -47,13 +48,13 @@ module.exports = {
         for ( i = 0; i < input.length; i++) {
              output = input[i].determinant();
             //pr('${input[i].cols}x${input[i].rows} = $output');
-            relativeTest(output, expectedOutput[i]);
+            TEST.relativeTest(test, output, expectedOutput[i]);
         }
 		test.done();
     },
     
     testMatrix3SelfTransposeMultiply : function(test) {
-		test.expect(0);
+		test.expect(2);
         var inputA = [];
         var inputB = [];
         var expectedOutput = [];
@@ -77,13 +78,14 @@ module.exports = {
         for ( i = 0; i < inputA.length; i++) {
             var output = inputA[i].clone();
             output.transposeMultiply(inputB[i]);
-            relativeTest(output, expectedOutput[i]);
+            test.ok(output.almostEquals(expectedOutput[i]));
+            // relativeTest(output, expectedOutput[i]);
         }
 		test.done();
     },
     
     testMatrix3SelfMultiply : function(test) {
-		test.expect(0);
+		test.expect(2);
         var inputA = [];
         var inputB = [];
         var expectedOutput = [];
@@ -107,13 +109,14 @@ module.exports = {
         for ( i = 0; i < inputA.length; i++) {
             var output = inputA[i].clone();
             output.multiply(inputB[i]);
-            relativeTest(output, expectedOutput[i]);
+            test.ok(output.almostEquals(expectedOutput[i]));
+            // relativeTest(output, expectedOutput[i]);
         }
 		test.done();
     },
     
     testMatrix3SelfMultiplyTranspose : function(test) {
-		test.expect(0);
+		test.expect(2);
         var inputA = [];
         var inputB = [];
         var expectedOutput = [];
@@ -137,42 +140,47 @@ module.exports = {
         for ( i = 0; i < inputA.length; i++) {
             var output = inputA[i].clone();
             output.multiplyTranspose(inputB[i]);
-            relativeTest(output, expectedOutput[i]);
+            test.ok(output.almostEquals(expectedOutput[i]));
+            // relativeTest(output, expectedOutput[i]);
         }
 		test.done();
     },
     
     testMatrix3Transform : function(test) {
-		test.expect(0);
+		test.expect(3);
         rotX = new Matrix3.rotationX(Math.PI / 4);
         rotY = new Matrix3.rotationY(Math.PI / 4);
         rotZ = new Matrix3.rotationZ(Math.PI / 4);
         input = new Vector3(1.0, 0.0, 0.0);
-        
-        relativeTest(rotX.transformed(input), input);
-        relativeTest(rotY.transformed(input),
-            new Vector3(1.0 / Math.sqrt(2.0), 0.0, 1.0 / Math.sqrt(2.0)));
-        relativeTest(rotZ.transformed(input),
-            new Vector3(1.0 / Math.sqrt(2.0), 1.0 / Math.sqrt(2.0), 0.0));
+
+        test.ok(rotX.transformed(input).almostEquals(input));
+        test.ok(rotY.transformed(input).almostEquals(new Vector3(1.0 / Math.sqrt(2.0), 0.0, 1.0 / Math.sqrt(2.0))));
+        test.ok(rotZ.transformed(input).almostEquals(new Vector3(1.0 / Math.sqrt(2.0), 1.0 / Math.sqrt(2.0), 0.0)));
+        // relativeTest(rotX.transformed(input), input);
+        // relativeTest(rotY.transformed(input),
+        //    new Vector3(1.0 / Math.sqrt(2.0), 0.0, 1.0 / Math.sqrt(2.0)));
+        // relativeTest(rotZ.transformed(input),
+        //    new Vector3(1.0 / Math.sqrt(2.0), 1.0 / Math.sqrt(2.0), 0.0));
 		test.done();
     },
     
     testMatrix3Transform2 : function(test) {
-		test.expect(0);
+		test.expect(2);
         rotZ = new Matrix3.rotationZ(Math.PI / 4);
         trans = new Matrix3(1.0, 0.0, 3.0, 0.0, 1.0, 2.0, 3.0, 2.0, 1.0);
         
         input = new Vector2(1.0, 0.0);
-        
-        relativeTest(rotZ.transform2(input.clone()),
-            new Vector2(Math.sqrt(0.5), Math.sqrt(0.5)));
-        
-        relativeTest(trans.transform2(input.clone()), new Vector2(4.0, 2.0));
+
+        test.ok(rotZ.transform2(input.clone()).almostEquals(new Vector2(Math.sqrt(0.5), Math.sqrt(0.5))));
+        // relativeTest(rotZ.transform2(input.clone()),
+
+        test.ok(trans.transform2(input.clone()).almostEquals(new Vector2(4.0, 2.0)));
+        // relativeTest(trans.transform2(input.clone()), new Vector2(4.0, 2.0));
 		test.done();
     },
     
     testMatrix3AbsoluteRotate2 : function(test) {
-		test.expect(0);
+		test.expect(2);
         rotZ = new Matrix3.rotationZ(-Math.PI / 4);
         rotZcw = new Matrix3.rotationZ(Math.PI / 4);
         // Add translation
@@ -180,113 +188,115 @@ module.exports = {
         rotZ.setEntry(2, 1, 2.0);
         
         input = new Vector2(1.0, 0.0);
-        
-        relativeTest(rotZ.absoluteRotate2(input.clone()),
-            new Vector2(Math.sqrt(0.5), Math.sqrt(0.5)));
-        
-        relativeTest(rotZcw.absoluteRotate2(input.clone()),
-            new Vector2(Math.sqrt(0.5), Math.sqrt(0.5)));
+
+        test.ok(rotZ.absoluteRotate2(input.clone()).almostEquals(new Vector2(Math.sqrt(0.5), Math.sqrt(0.5))));
+        // relativeTest(rotZ.absoluteRotate2(input.clone()),
+        //     new Vector2(Math.sqrt(0.5), Math.sqrt(0.5)));
+
+        test.ok(rotZcw.absoluteRotate2(input.clone()).almostEquals(new Vector2(Math.sqrt(0.5), Math.sqrt(0.5))));
+        // relativeTest(rotZcw.absoluteRotate2(input.clone()),
+        //     new Vector2(Math.sqrt(0.5), Math.sqrt(0.5)));
 		test.done();
     },
     
     testMatrix3ConstructorCopy : function(test) {
-		test.expect(0);
+		test.expect(4);
         var a = new Vector3(1.0, 2.0, 3.0);
         var b = new Vector3(4.0, 5.0, 6.0);
         var c = new Vector3(7.0, 8.0, 9.0);
         m = new Matrix3.columns(a, b, c);
-        expect(m.entry(0, 0), 1.0);
-        expect(m.entry(2, 2), 9.0);
+        test.equals(m.entry(0, 0), 1.0);
+        test.equals(m.entry(2, 2), 9.0);
         c.z = 5.0;
         a.x = 2.0;
-        expect(m.entry(0, 0), 1.0);
-        expect(m.entry(2, 2), 9.0);
+        test.equals(m.entry(0, 0), 1.0);
+        test.equals(m.entry(2, 2), 9.0);
 		test.done();
     },
     
     testMatrix3Inversion : function(test) {
-		test.expect(0);
+		test.expect(10);
         m = new Matrix3(1.0, 0.0, 5.0, 2.0, 1.0, 6.0, 3.0, 4.0, 0.0);
         result = Matrix3.zero;
         det = result.copyInverse(m);
-        expect(det, 1.0);
-        expect(result.entry(0, 0), -24.0);
-        expect(result.entry(1, 0), 20.0);
-        expect(result.entry(2, 0), -5.0);
-        expect(result.entry(0, 1), 18.0);
-        expect(result.entry(1, 1), -15.0);
-        expect(result.entry(2, 1), 4.0);
-        expect(result.entry(0, 2), 5.0);
-        expect(result.entry(1, 2), -4.0);
-        expect(result.entry(2, 2), 1.0);
+        test.equals(det, 1.0);
+        test.equals(result.entry(0, 0), -24.0);
+        test.equals(result.entry(1, 0), 20.0);
+        test.equals(result.entry(2, 0), -5.0);
+        test.equals(result.entry(0, 1), 18.0);
+        test.equals(result.entry(1, 1), -15.0);
+        test.equals(result.entry(2, 1), 4.0);
+        test.equals(result.entry(0, 2), 5.0);
+        test.equals(result.entry(1, 2), -4.0);
+        test.equals(result.entry(2, 2), 1.0);
 		test.done();
     },
     
     testMatrix3Dot : function(test) {
-		test.expect(0);
+		test.expect(6);
         matrix =
             new Matrix3(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0);
         
         v = new Vector3(2.0, 3.0, 4.0);
         
-        expect(matrix.dotRow(0, v), equals(42.0));
-        expect(matrix.dotRow(1, v), equals(51.0));
-        expect(matrix.dotRow(2, v), equals(60.0));
-        expect(matrix.dotColumn(0, v), equals(20.0));
-        expect(matrix.dotColumn(1, v), equals(47.0));
-    expect(matrix.dotColumn(2, v), equals(74.0));
+        test.equals(matrix.dotRow(0, v), 42.0);
+        test.equals(matrix.dotRow(1, v), 51.0);
+        test.equals(matrix.dotRow(2, v), 60.0);
+        test.equals(matrix.dotColumn(0, v), 20.0);
+        test.equals(matrix.dotColumn(1, v), 47.0);
+    test.equals(matrix.dotColumn(2, v), 74.0);
 		test.done();
     },
     
     testMatrix3Scale : function(test) {
-		test.expect(0);
+		test.expect(9);
      m = new Matrix3(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0);
         n = m.scaled(2.0);
         
-        expect(n.storage[0], equals(2.0));
-        expect(n.storage[1], equals(4.0));
-        expect(n.storage[2], equals(6.0));
-        expect(n.storage[3], equals(8.0));
-        expect(n.storage[4], equals(10.0));
-        expect(n.storage[5], equals(12.0));
-        expect(n.storage[6], equals(14.0));
-        expect(n.storage[7], equals(16.0));
-        expect(n.storage[8], equals(18.0));
+        test.equals(n.storage[0], 2.0);
+        test.equals(n.storage[1], 4.0);
+        test.equals(n.storage[2], 6.0);
+        test.equals(n.storage[3], 8.0);
+        test.equals(n.storage[4], 10.0);
+        test.equals(n.storage[5], 12.0);
+        test.equals(n.storage[6], 14.0);
+        test.equals(n.storage[7], 16.0);
+        test.equals(n.storage[8], 18.0);
 		test.done();
     },
     
     testMatrix3Solving : function(test) {
-		test.expect(0);
+		test.expect(5);
         A = new Matrix3(2.0, 12.0, 8.0, 20.0, 24.0, 26.0, 8.0, 4.0, 60.0);
         
         b = new Vector3(32.0, 64.0, 72.0);
-        result = new Vector3.zero();
+        result = Vector3.zero();
         
         b2 = new Vector2(32.0, 64.0);
-        result2 = new Vector2.zero();
+        result2 =Vector2.zero();
         
         Matrix3.solve(A, result, b);
         Matrix3.solve2(A, result2, b2);
         
-        backwards = A.transform(new Vector3.copy(result));
-        backwards2 = A.transform2(new Vector2.copy(result2));
+        backwards = A.transform(Vector3.copy(result));
+        backwards2 = A.transform2(Vector2.copy(result2));
         
-        expect(backwards.x, equals(b.x));
-        expect(backwards.y, equals(b.y));
-        expect(backwards.z, equals(b.z));
+        test.equals(backwards.x, b.x);
+        test.equals(backwards.y, b.y);
+        test.equals(backwards.z, b.z);
         
-        expect(backwards2.x, equals(b2.x));
-        expect(backwards2.y, equals(b2.y));
+        test.equals(backwards2.x, b2.x);
+        test.equals(backwards2.y, b2.y);
 		test.done();
     },
     
     testMatrix3Equals : function(test) {
-		test.expect(0);
-        expect(new Matrix3.identity(), equals(new Matrix3.identity()));
-        expect(Matrix3.zero, isNot(equals(new Matrix3.identity())));
-        expect(Matrix3.zero, isNot(equals(5)));
-        expect(
-            new Matrix3.identity().hashCode, equals(new Matrix3.identity().hashCode));
+		test.expect(2);
+        test.ok(Matrix3.identity().equals(Matrix3.identity()));
+        test.ok(! Matrix3.zero.equals(Matrix3.identity()));
+        // expect(Matrix3.zero, isNot(equals(5)));
+        // expect(
+        //     new Matrix3.identity().hashCode, equals(new Matrix3.identity().hashCode));
     }
     
     

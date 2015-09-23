@@ -8,7 +8,7 @@ var TEST = require('./test_utils.js');
 
 module.exports = {
     testMatrix2Adjoint : function(test) {
-		test.expect(0);
+		test.expect(2);
         var input = [];
         var expectedOutput = [];
 
@@ -22,7 +22,7 @@ module.exports = {
         for ( i = 0; i < input.length; i++) {
             var output = input[i].clone();
             output.scaleAdjoint(1.0);
-            relativeTest(output, expectedOutput[i]);
+            test.ok(output.almostEquals(expectedOutput[i]));
         }
 		test.done();
     },
@@ -30,7 +30,7 @@ module.exports = {
 
 
     testMatrix2Determinant : function(test) {
-		test.expect(0);
+		test.expect(1);
         var input = [];
         expectedOutput =  [];
 
@@ -42,7 +42,7 @@ module.exports = {
         for ( i = 0; i < input.length; i++) {
             output = input[i].determinant();
             //print('${input[i].cols}x${input[i].rows} = $output');
-            relativeTest(output, expectedOutput[i]);
+            TEST.relativeTest(test, output, expectedOutput[i]);
         }
 		test.done();
     },
@@ -50,7 +50,7 @@ module.exports = {
 
 
     testMatrix2Transform : function(test) {
-		test.expect(0);
+		test.expect(2);
         var rot = new Matrix2.rotation(Math.PI / 4);
         input = new Vector2(0.234245234259, 0.890723489233);
 
@@ -62,55 +62,57 @@ module.exports = {
             rot.entry(0, 0) * input.x + rot.entry(1, 0) * input.y,
             rot.entry(0, 1) * input.x + rot.entry(1, 1) * input.y);
 
-        relativeTest(rot.transformed(input), expected);
-        relativeTest(rot.transposed().transformed(input), transExpected);
+        test.ok(rot.transformed(input).almostEquals(expected));
+        // relativeTest(rot.transformed(input), expected);
+        test.ok(rot.transposed().transformed(input).almostEquals(transExpected));
+        // relativeTest(rot.transposed().transformed(input), transExpected);
 		test.done();
     },
 
 
     testMatrix2Inversion : function(test) {
-		test.expect(0);
+		test.expect(5);
         m = new Matrix2(4.0, 3.0, 3.0, 2.0);
         result = Matrix2.zero;
         det = result.copyInverse(m);
-        expect(det, -1.0);
-        expect(result.entry(0, 0), -2.0);
-        expect(result.entry(1, 0), 3.0);
-        expect(result.entry(0, 1), 3.0);
-        expect(result.entry(1, 1), -4.0);
+        test.equals(det, -1.0);
+        test.equals(result.entry(0, 0), -2.0);
+        test.equals(result.entry(1, 0), 3.0);
+        test.equals(result.entry(0, 1), 3.0);
+        test.equals(result.entry(1, 1), -4.0);
 		test.done();
     },
 
 
     testMatrix2Dot : function(test) {
-		test.expect(0);
+		test.expect(4);
         matrix = new Matrix2(1.0, 2.0, 3.0, 4.0);
 
         v = new Vector2(3.0, 4.0);
 
-        expect(matrix.dotRow(0, v), equals(15.0));
-        expect(matrix.dotRow(1, v), equals(22.0));
-        expect(matrix.dotColumn(0, v), equals(11.0));
-        expect(matrix.dotColumn(1, v), equals(25.0));
+        test.equals(matrix.dotRow(0, v), 15.0);
+        test.equals(matrix.dotRow(1, v), 22.0);
+        test.equals(matrix.dotColumn(0, v), 11.0);
+        test.equals(matrix.dotColumn(1, v), 25.0);
 		test.done();
     },
 
 
     testMatrix2Scale : function(test) {
-		test.expect(0);
+		test.expect(4);
         m = new Matrix2(1.0, 2.0, 3.0, 4.0);
         n = m.scaled(2.0);
 
-        expect(n.storage[0], equals(2.0));
-        expect(n.storage[1], equals(4.0));
-        expect(n.storage[2], equals(6.0));
-        expect(n.storage[3], equals(8.0));
+        test.equals(n.storage[0], 2.0);
+        test.equals(n.storage[1], 4.0);
+        test.equals(n.storage[2], 6.0);
+        test.equals(n.storage[3], 8.0);
 		test.done();
     },
 
 
     testMatrix2Solving : function(test) {
-		test.expect(0);
+		test.expect(2);
         A = new Matrix2(2.0, 2.0, 8.0, 20.0);
         b = new Vector2(20.0, 64.0);
         result = new Vector2.zero();
@@ -119,19 +121,21 @@ module.exports = {
 
         backwards = A.transform(new Vector2.copy(result));
 
-        expect(backwards.x, equals(b.x));
-        expect(backwards.y, equals(b.y));
+        test.equals(backwards.x, b.x);
+        test.equals(backwards.y, b.y);
 		test.done();
     },
 
 
     testMatrix2Equals : function(test) {
-		test.expect(0);
-        expect(new Matrix2.identity(), equals(new Matrix2.identity()));
-        expect(Matrix2.zero, isNot(equals(new Matrix2.identity())));
-        expect(Matrix2.zero, isNot(equals(5)));
-        expect(
-            new Matrix2.identity().hashCode, equals(new Matrix2.identity().hashCode));
+		test.expect(2);
+        test.ok(Matrix2.identity().equals(Matrix2.identity()));
+        test.ok(! Matrix2.identity().equals(Matrix2.zero()));
+        //expect(new Matrix2.identity(), equals(new Matrix2.identity()));
+        // expect(Matrix2.zero, isNot(equals(new Matrix2.identity())));
+        // expect(Matrix2.zero, isNot(equals(5)));
+        // expect(
+            // new Matrix2.identity().hashCode, equals(new Matrix2.identity().hashCode));
         test.done();
     }
 };

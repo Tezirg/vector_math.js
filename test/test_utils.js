@@ -39,13 +39,13 @@ TEST.makeMatrix = function (rows, cols) {
     }
 
     if (cols == 2) {
-        return Matrix2.zero;
+        return Matrix2.zero();
     }
     if (cols == 3) {
-        return Matrix3.zero;
+        return Matrix3.zero();
     }
     if (cols == 4) {
-        return Matrix4.zero;
+        return Matrix4.zero();
     }
     return null;
 };
@@ -69,11 +69,11 @@ TEST.parseMatrix = function(input) {
             if (i == 0) {
                 col_count++;
             }
-            values.add(parseFloat(cols[j]));
+            values.add(Number.parseFloat(cols[j]));
         }
     }
 
-    var m = makeMatrix(rows.length, col_count);
+    var m = TEST.makeMatrix(rows.length, col_count);
     for (j = 0; j < rows.length; j++) {
         for (i = 0; i < col_count; i++) {
             m[m.index(j, i)] = values[j * col_count + i];

@@ -12,7 +12,7 @@ var TEST = require('./test_utils.js');
 module.exports = {
 
     testMatrix4InstacingFromFloat32Array: function(test) {
-		test.expect(0);
+		test.expect(16);
         float32Array = new Float32Array([
             1.0,        2.0,        3.0,        4.0,
             5.0,        6.0,        7.0,        8.0,
@@ -21,27 +21,26 @@ module.exports = {
         ]);
         input = new Matrix4.fromFloat32Array(float32Array);
         
-        expect(input.storage[0], equals(1.0));
-        expect(input.storage[1], equals(2.0));
-        expect(input.storage[2], equals(3.0));
-        expect(input.storage[3], equals(4.0));
+        test.equals(input.storage[0], 1.0);
+        test.equals(input.storage[1], 2.0);
+        test.equals(input.storage[2], 3.0);
+        test.equals(input.storage[3], 4.0);
 
-        expect(input.storage[4], equals(5.0));
-        expect(input.storage[5], equals(6.0));
-        expect(input.storage[6], equals(7.0));
-        expect(input.storage[7], equals(8.0));
+        test.equals(input.storage[4], 5.0);
+        test.equals(input.storage[5], 6.0);
+        test.equals(input.storage[6], 7.0);
+        test.equals(input.storage[7], 8.0);
         
-        expect(input.storage[8], equals(9.0));
-        expect(input.storage[9], equals(10.0));
-        expect(input.storage[10], equals(11.0));
-        expect(input.storage[11], equals(12.0));
+        test.equals(input.storage[8], 9.0);
+        test.equals(input.storage[9], 10.0);
+        test.equals(input.storage[10], 11.0);
+        test.equals(input.storage[11], 12.0);
         
-        expect(input.storage[12], equals(13.0));
-        expect(input.storage[13], equals(14.0));
-        expect(input.storage[14], equals(15.0));
-        expect(input.storage[15], equals(16.0));
+        test.equals(input.storage[12], 13.0);
+        test.equals(input.storage[13], 14.0);
+        test.equals(input.storage[14], 15.0);
+        test.equals(input.storage[15], 16.0);
 		test.done();
-
     },
 
     testMatrix4InstacingFromByteBuffer: function(test) {
@@ -57,39 +56,39 @@ module.exports = {
         offsetVector =
             new Matrix4.fromBuffer(buffer, Float32Array.BYTES_PER_ELEMENT);
         
-        expect(zeroOffset.storage[0], equals(1.0));
-        expect(zeroOffset.storage[1], equals(2.0));
-        expect(zeroOffset.storage[2], equals(3.0));
-        expect(zeroOffset.storage[3], equals(4.0));
-        expect(zeroOffset.storage[4], equals(5.0));
-        expect(zeroOffset.storage[5], equals(6.0));
-        expect(zeroOffset.storage[6], equals(7.0));
-        expect(zeroOffset.storage[7], equals(8.0));
-        expect(zeroOffset.storage[8], equals(9.0));
-        expect(zeroOffset.storage[9], equals(10.0));
-        expect(zeroOffset.storage[10], equals(11.0));
-        expect(zeroOffset.storage[11], equals(12.0));
-        expect(zeroOffset.storage[12], equals(13.0));
-        expect(zeroOffset.storage[13], equals(14.0));
-        expect(zeroOffset.storage[14], equals(15.0));
-        expect(zeroOffset.storage[15], equals(16.0));
+        test.equals(zeroOffset.storage[0], 1.0);
+        test.equals(zeroOffset.storage[1], 2.0);
+        test.equals(zeroOffset.storage[2], 3.0);
+        test.equals(zeroOffset.storage[3], 4.0);
+        test.equals(zeroOffset.storage[4], 5.0);
+        test.equals(zeroOffset.storage[5], 6.0);
+        test.equals(zeroOffset.storage[6], 7.0);
+        test.equals(zeroOffset.storage[7], 8.0);
+        test.equals(zeroOffset.storage[8], 9.0);
+        test.equals(zeroOffset.storage[9], 10.0);
+        test.equals(zeroOffset.storage[10], 11.0);
+        test.equals(zeroOffset.storage[11], 12.0);
+        test.equals(zeroOffset.storage[12], 13.0);
+        test.equals(zeroOffset.storage[13], 14.0);
+        test.equals(zeroOffset.storage[14], 15.0);
+        test.equals(zeroOffset.storage[15], 16.0);
         
-        expect(offsetVector.storage[0], equals(2.0));
-        expect(offsetVector.storage[1], equals(3.0));
-        expect(offsetVector.storage[2], equals(4.0));
-        expect(offsetVector.storage[3], equals(5.0));
-        expect(offsetVector.storage[4], equals(6.0));
-        expect(offsetVector.storage[5], equals(7.0));
-        expect(offsetVector.storage[6], equals(8.0));
-        expect(offsetVector.storage[7], equals(9.0));
-        expect(offsetVector.storage[8], equals(10.0));
-        expect(offsetVector.storage[9], equals(11.0));
-        expect(offsetVector.storage[10], equals(12.0));
-        expect(offsetVector.storage[11], equals(13.0));
-        expect(offsetVector.storage[12], equals(14.0));
-        expect(offsetVector.storage[13], equals(15.0));
-        expect(offsetVector.storage[14], equals(16.0));
-        expect(offsetVector.storage[15], equals(17.0));
+        test.equals(offsetVector.storage[0], 2.0);
+        test.equals(offsetVector.storage[1], 3.0);
+        test.equals(offsetVector.storage[2], 4.0);
+        test.equals(offsetVector.storage[3], 5.0);
+        test.equals(offsetVector.storage[4], 6.0);
+        test.equals(offsetVector.storage[5], 7.0);
+        test.equals(offsetVector.storage[6], 8.0);
+        test.equals(offsetVector.storage[7], 9.0);
+        test.equals(offsetVector.storage[8], 10.0);
+        test.equals(offsetVector.storage[9], 11.0);
+        test.equals(offsetVector.storage[10], 12.0);
+        test.equals(offsetVector.storage[11], 13.0);
+        test.equals(offsetVector.storage[12], 14.0);
+        test.equals(offsetVector.storage[13], 15.0);
+        test.equals(offsetVector.storage[14], 16.0);
+        test.equals(offsetVector.storage[15], 17.0);
 		test.done();
 
     },
@@ -107,7 +106,7 @@ module.exports = {
         
         for ( i = 0; i < inputA.length; i++) {
             inputA[i].transpose();
-            relativeTest(inputA[i], expectedOutput[i]);
+            TEST.relativeTest(test, inputA[i], expectedOutput[i]);
         }
 		test.done();
 
@@ -137,7 +136,7 @@ module.exports = {
         
         for ( i = 0; i < inputA.length; i++) {
             var output = inputA[i] * inputB[i];
-            relativeTest(output, expectedOutput[i]);
+            TEST.relativeTest(test, output, expectedOutput[i]);
         }
 		test.done();
 
@@ -171,7 +170,7 @@ module.exports = {
         for ( i = 0; i < inputA.length; i++) {
             var output = inputA[i] * inputB[i];
             //pr('${inputA[i].cols}x${inputA[i].rows} * ${inputB[i].cols}x${inputB[i].rows} = ${output.cols}x${output.rows}');
-            relativeTest(output, expectedOutput[i]);
+            TEST.relativeTest(test, output, expectedOutput[i]);
         }
 		test.done();
 
@@ -217,14 +216,14 @@ module.exports = {
         for ( i = 0; i < input.length; i++) {
             var output = input[i].clone();
             output.scaleAdjo(1.0);
-            relativeTest(output, expectedOutput[i]);
+            TEST.relativeTest(test, output, expectedOutput[i]);
         }
 		test.done();
 
     },
 
     testMatrix4Determinant: function(test) {
-		test.expect(0);
+		test.expect(3);
         var input = [];
         expectedOutput = [];
         input.add(TEST.parseMatrix(
@@ -252,7 +251,7 @@ module.exports = {
         for ( i = 0; i < input.length; i++) {
             output = input[i].determinant();
             //pr('${input[i].cols}x${input[i].rows} = $output');
-            relativeTest(output, expectedOutput[i]);
+            TEST.relativeTest(test, output, expectedOutput[i]);
         }
 		test.done();
 
@@ -285,7 +284,7 @@ module.exports = {
         for ( i = 0; i < inputA.length; i++) {
             var output = inputA[i].clone();
             output.transposeMultiply(inputB[i]);
-            relativeTest(output, expectedOutput[i]);
+            TEST.relativeTest(test, output, expectedOutput[i]);
         }
 		test.done();
 
@@ -318,7 +317,7 @@ module.exports = {
         for ( i = 0; i < inputA.length; i++) {
             var output = inputA[i].clone();
             output.multiply(inputB[i]);
-            relativeTest(output, expectedOutput[i]);
+            TEST.relativeTest(test, output, expectedOutput[i]);
         }
 		test.done();
 
@@ -351,7 +350,7 @@ module.exports = {
         for ( i = 0; i < inputA.length; i++) {
             var output = inputA[i].clone();
             output.multiplyTranspose(inputB[i]);
-            relativeTest(output, expectedOutput[i]);
+            TEST.relativeTest(test, output, expectedOutput[i]);
         }
 		test.done();
 
@@ -433,89 +432,87 @@ module.exports = {
     },
 
     testMatrix4GetRotation: function(test) {
-		test.expect(0);
-        mat4 = new Matrix4.rotationX(Math.PI) *
-        new Matrix4.rotationY(-Math.PI) *
-        new Matrix4.rotationZ(Math.PI);
-        mat3 = new Matrix3.rotationX(Math.PI) *
-        new Matrix3.rotationY(-Math.PI) *
-        new Matrix3.rotationZ(Math.PI);
+		test.expect(1);
+        mat4 = new Matrix4.rotationX(Math.PI).clone().mul(new Matrix4.rotationY(-Math.PI)).mul(new Matrix4.rotationZ(Math.PI));
+        mat3 = new Matrix3.rotationX(Math.PI).clone().mul(new Matrix3.rotationY(-Math.PI)).mul(new Matrix3.rotationZ(Math.PI));
         matRot = mat4.getRotation();
-        
-        relativeTest(mat3, matRot);
+
+        test.ok(mat3.almostEquals(matRot));
+        //relativeTest(mat3, matRot);
 		test.done();
 
     },
     testMatrix4Column: function(test) {
-		test.expect(0);
+		test.expect(4);
         I = Matrix4.zero;
-        expect(I[0], 0.0);
+        test.equals(I[0], 0.0);
         var c0 = new Vector4(1.0, 2.0, 3.0, 4.0);
         I.setColumn(0, c0);
-        expect(I[0], 1.0);
+        test.equals(I[0], 1.0);
         c0.x = 4.0;
-        expect(I[0], 1.0);
-        expect(c0.x, 4.0);
+        test.equals(I[0], 1.0);
+        test.equals(c0.x, 4.0);
 		test.done();
 
     },
 
     testMatrix4Inversion: function(test) {
-		test.expect(0);
+		test.expect(17);
         m = new Matrix4(1.0, 0.0, 2.0, 2.0, 0.0, 2.0, 1.0, 0.0, 0.0, 1.0, 0.0,
             1.0, 1.0, 2.0, 1.0, 4.0);
         result = Matrix4.zero;
         det = result.copyInverse(m);
-        expect(det, 2.0);
-        expect(result.entry(0, 0), -2.0);
-        expect(result.entry(1, 0), 1.0);
-        expect(result.entry(2, 0), -8.0);
-        expect(result.entry(3, 0), 3.0);
-        expect(result.entry(0, 1), -0.5);
-        expect(result.entry(1, 1), 0.5);
-        expect(result.entry(2, 1), -1.0);
-        expect(result.entry(3, 1), 0.5);
-        expect(result.entry(0, 2), 1.0);
-        expect(result.entry(1, 2), 0.0);
-        expect(result.entry(2, 2), 2.0);
-        expect(result.entry(3, 2), -1.0);
-        expect(result.entry(0, 3), 0.5);
-        expect(result.entry(1, 3), -0.5);
-        expect(result.entry(2, 3), 2.0);
-        expect(result.entry(3, 3), -0.5);
+        test.equals(det, 2.0);
+        test.equals(result.entry(0, 0), -2.0);
+        test.equals(result.entry(1, 0), 1.0);
+        test.equals(result.entry(2, 0), -8.0);
+        test.equals(result.entry(3, 0), 3.0);
+        test.equals(result.entry(0, 1), -0.5);
+        test.equals(result.entry(1, 1), 0.5);
+        test.equals(result.entry(2, 1), -1.0);
+        test.equals(result.entry(3, 1), 0.5);
+        test.equals(result.entry(0, 2), 1.0);
+        test.equals(result.entry(1, 2), 0.0);
+        test.equals(result.entry(2, 2), 2.0);
+        test.equals(result.entry(3, 2), -1.0);
+        test.equals(result.entry(0, 3), 0.5);
+        test.equals(result.entry(1, 3), -0.5);
+        test.equals(result.entry(2, 3), 2.0);
+        test.equals(result.entry(3, 3), -0.5);
 		test.done();
 
     },
 
     testMatrix4Dot: function(test) {
-		test.expect(0);
+		test.expect(6);
         matrix = new Matrix4(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0,
             9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0);
         
         v = new Vector4(1.0, 2.0, 3.0, 4.0);
         
-        expect(matrix.dotRow(0, v), equals(90.0));
-        expect(matrix.dotRow(1, v), equals(100.0));
-        expect(matrix.dotRow(2, v), equals(110.0));
-        expect(matrix.dotColumn(0, v), equals(30.0));
-        expect(matrix.dotColumn(1, v), equals(70.0));
-        expect(matrix.dotColumn(2, v), equals(110.0));
+        test.equals(matrix.dotRow(0, v), 90.0);
+        test.equals(matrix.dotRow(1, v), 100.0);
+        test.equals(matrix.dotRow(2, v), 110.0);
+        test.equals(matrix.dotColumn(0, v), 30.0);
+        test.equals(matrix.dotColumn(1, v), 70.0);
+        test.equals(matrix.dotColumn(2, v), 110.0);
 		test.done();
 
     },
     testMatrix4PerspectiveTransform: function(test) {
-		test.expect(0);
+		test.expect(1);
         matrix = makePerspectiveMatrix(Math.PI, 1.0, 1.0, 100.0);
         vec = new Vector3(10.0, 20.0, 30.0);
         
         matrix.perspectiveTransform(vec);
-        
-        relativeTest(vec, new Vector3(0.0, 0.0, 1.087));
+
+        test.ok(vec.almostEquals(new Vector3(0.0, 0.0, 1.087)));
+        //relativeTest(vec, new Vector3(0.0, 0.0, 1.087));
 		test.done();
 
     },
     testMatrix4Solving: function(test) {
-		test.expect(0);
+		test.expect(9);
         A = new Matrix4(2.0, 12.0, 8.0, 8.0, 20.0, 24.0, 26.0, 4.0, 8.0,
             4.0, 60.0, 12.0, 16.0, 16.0, 14.0, 64.0);
         
@@ -539,17 +536,17 @@ module.exports = {
         backwards3 = A.transform3(new Vector3.copy(result3));
         backwards2 = A_small.transform2(new Vector2.copy(result2));
         
-        expect(backwards2.x, equals(b.x));
-        expect(backwards2.y, equals(b.y));
+        test.equals(backwards2.x, b.x);
+        test.equals(backwards2.y, b.y);
         
-        expect(backwards3.x, equals(b.x));
-        expect(backwards3.y, equals(b.y));
-        expect(backwards3.z, equals(b.z));
+        test.equals(backwards3.x, b.x);
+        test.equals(backwards3.y, b.y);
+        test.equals(backwards3.z, b.z);
         
-        expect(backwards.x, equals(b.x));
-        expect(backwards.y, equals(b.y));
-        expect(backwards.z, equals(b.z));
-        expect(backwards.w, equals(b.w));
+        test.equals(backwards.x, b.x);
+        test.equals(backwards.y, b.y);
+        test.equals(backwards.z, b.z);
+        test.equals(backwards.w, b.w);
 		test.done();
 
     },
@@ -613,12 +610,15 @@ module.exports = {
 
     },
     testMatrix4Equals: function(test) {
-		test.expect(0);
-        expect(new Matrix4.identity(), equals(new Matrix4.identity()));
-        expect(Matrix4.zero, isNot(equals(new Matrix4.identity())));
-        expect(Matrix4.zero, isNot(equals(5)));
-        expect(
-            new Matrix4.identity().hashCode, equals(new Matrix4.identity().hashCode));
+		test.expect(2);
+        test.ok(Matrix4.indentity().equals(Matrix4.identity()));
+        test.ok(! Matrix4.indentity().equals(Matrix4.zero()));
+        // expect(new Matrix4.identity(), equals(new Matrix4.identity()));
+        // expect(Matrix4.zero, isNot(equals(new Matrix4.identity())));
+        //expect(Matrix4.zero, isNot(equals(5)));
+        //expect(
+        //    new Matrix4.identity().hashCode, equals(new Matrix4.identity().hashCode));
+        test.done();
     }
     
 };
