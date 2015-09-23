@@ -28,7 +28,7 @@ module.exports = {
 
         var a = new Vector2(5.0, 7.0);
         var b = new Vector2(3.0, 8.0);
-        var result = Vector2.zero;
+        var result = Vector2.zero();
 
         Vector2.min(a, b, result);
         test.equals(result.x, 3.0, "Min 5.0 3.0 is 3.0");
@@ -43,7 +43,7 @@ module.exports = {
         test.expect(6);
         var a = new Vector2(5.0, 7.0);
         var b = new Vector2(3.0, 8.0);
-        var result = Vector2.zero;
+        var result = Vector2.zero();
 
         Vector2.mix(a, b, 0.5, result);
         test.equals(result.x, 4.0, "Mix 5.0 3.0 at 0.5 is 4.0");
@@ -92,14 +92,14 @@ module.exports = {
         var result;
         result = inputA.cross(inputB);
         test.equals(result, expectedOutputCross, "Cross product AxB");
-        result = Vector2.zero;
+        result = Vector2.zero();
         test.done();
     },
     /*
     testVector2OrthogonalScale: function(test) {
         test.expect(5);
         var input = new Vector2(0.5, 0.75);
-        var output = Vector2.zero;
+        var output = Vector2.zero();
 
         input.scaleOrthogonalInto(2.0, output);
         test.equals(output.x, -1.5, "Orthogonalscale X == -1.5");

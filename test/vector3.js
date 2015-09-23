@@ -219,7 +219,7 @@ module.exports = {
         v3 = new Vector3(1.0, 0.0, 0.0);
 
         v0.length = 0.0;
-        TEST.relativeTest(test, v0, Vector3.zero);
+        TEST.relativeTest(test, v0, Vector3.zero());
         TEST.relativeTest(test, v0.length, 0.0);
 
         v1.length = 2.0;

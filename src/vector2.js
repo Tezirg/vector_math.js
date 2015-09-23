@@ -66,7 +66,10 @@ Vector2.prototype.__defineSetter__("length", function(value) {
  * @static
  * @property {Vector2} zero
  */
-Vector2.zero = new Vector2(0.0, 0.0);
+Vector2.zero = function() {
+    var v = new Vector2(0.0, 0.0);
+    return v;
+};
 
 /// Zero the vector.
 Vector2.prototype.setZero = function() {
@@ -83,8 +86,9 @@ Vector2.prototype.fromFloat32Array = function(array) {
 /// Constructs Vector2 with a [storage] that views given [buffer] starting at
 /// [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
 Vector2.prototype.fromBuffer = function(buffer, offset) {
-    this.storage = new Float32Array(buffer, offset, 2);
-    return this;
+    var vec = Vector2.zero();
+    vec.storage = new Float32Array(buffer, offset, 2);
+    return vec.clone();
 };
 
 /// Set the values of the vector.
@@ -109,7 +113,7 @@ Vector2.copy = function(v) {
  * @property {Vector2} all
  */
 Vector2.all = function(value) {
-    var v = Vector2.zero;
+    var v = Vector2.zero();
     v.splat(value);
     return v;
 };

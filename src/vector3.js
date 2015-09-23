@@ -79,7 +79,10 @@ Vector3.prototype.__defineSetter__("length", function(value) {
  * @static
  * @property {Vector3} zero
  */
-Vector3.zero = new Vector3(0.0, 0.0, 0.0);
+Vector3.zero = function() {
+    var v = new Vector3(0.0, 0.0, 0.0);
+    return v;
+};
 
 /// Zero the vector.
 Vector3.prototype.setZero = function() {
@@ -91,7 +94,7 @@ Vector3.prototype.setZero = function() {
 
 /// Constructs Vector2 with a given [Float32List] as [storage].
 Vector3.fromFloat32Array = function(array) {
-    var vec = Vector3.zero;
+    var vec = Vector3.zero();
     vec.storage = array;
     return vec;
 };
@@ -100,7 +103,7 @@ Vector3.fromFloat32Array = function(array) {
 /// Constructs Vector3 with a [storage] that views given [buffer] starting at
 /// [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
 Vector3.fromBuffer = function(buffer, offset) {
-    var vec = Vector3.zero;
+    var vec = Vector3.zero();
     vec.storage = new Float32Array(buffer, offset, 3);
     return vec.clone();
 };
@@ -129,7 +132,7 @@ Vector3.copy = function(v) {
  * @property {Vector3} all
  */
 Vector3.all = function(value) {
-    var v = Vector3.zero;
+    var v = Vector3.zero();
     v.splat(value);
     return v;
 };
