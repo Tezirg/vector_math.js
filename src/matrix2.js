@@ -310,7 +310,7 @@ Matrix2.prototype.equals = function(other) {
 
 /**
  * @method
- * /// Check if two matrices are the almost same.
+ * /// Check if two matrices are almost the same.
  * @param other {Matrix2}
  * @returns {boolean}
  */
