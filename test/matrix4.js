@@ -499,7 +499,7 @@ module.exports = {
 		test.done();
 
     },
-    /*
+    
     testMatrix4PerspectiveTransform: function(test) {
 		test.expect(1);
         matrix = makePerspectiveMatrix(Math.PI, 1.0, 1.0, 100.0);
@@ -512,7 +512,7 @@ module.exports = {
 		test.done();
 
     },
-    */
+
     testMatrix4Solving: function(test) {
 		test.expect(9);
         A = new Matrix4(2.0, 12.0, 8.0, 8.0, 20.0, 24.0, 26.0, 4.0, 8.0,
