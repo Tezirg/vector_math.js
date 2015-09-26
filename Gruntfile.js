@@ -39,7 +39,8 @@ module.exports = function(grunt) {
                 'test/vector3.js',
                 'test/vector4.js',
                 'test/matrix2.js',
-                'test/matrix3.js'
+                'test/matrix3.js',
+                'test/matrix4.js'
             ]
         }
     });

@@ -39,6 +39,33 @@ function Matrix3(m00, m10, m20, m01, m11, m21, m02, m12, m22) {
 
 /**
  * @static
+ * /// Constructs Matrix3 with a given [Float32Array] as [storage].
+ * @param array {Float32Array}
+ * @return {Matrix4}
+ */
+Matrix3.fromFloat32Array = function(array) {
+    var m = Matrix3.zero();
+    m.storage = array;
+    return m;
+};
+
+/**
+ * @static
+ * /// Constructs Matrix3 with a [storage] that views given [buffer] starting at
+ * [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
+ * @param buffer {buffer}
+ * @param offset {number}
+ * @return {Matrix3}
+ */
+Matrix3.fromBuffer = function(buffer, offset) {
+    var m = Matrix3.zero();
+    m.storage = new Float32Array(buffer, offset, 9);
+    return m.clone();
+};
+
+
+/**
+ * @static
  * Solve [A] * [x] = [b].
  * @param A {Matrix3}
  * @param x {Vector2}
@@ -474,7 +501,7 @@ Matrix3.prototype.almostEquals = function(other, precision) {
 /**
  * @property
  * row 0
- * @returns {Vector2}
+ * @type {Vector3}
  */
 Matrix3.prototype.__defineGetter__("row0", function() {
     return this.getRow(0);
@@ -486,7 +513,7 @@ Matrix3.prototype.__defineSetter__("row0", function(v) {
 /**
  * @property
  * row 1
- * @returns {Vector2}
+ * @type {Vector3}
  */
 Matrix3.prototype.__defineGetter__("row1", function() {
     return this.getRow(1);
@@ -498,7 +525,7 @@ Matrix3.prototype.__defineSetter__("row1", function(v) {
 /**
  * @property
  * row 2
- * @returns {Vector2}
+ * @type {Vector3}
  */
 Matrix3.prototype.__defineGetter__("row2", function() {
     return this.getRow(2);
@@ -518,7 +545,7 @@ Matrix3.prototype.setRow = function(row, arg) {
     var argStorage = arg.storage;
     this.storage[this.index(row, 0)] = argStorage[0];
     this.storage[this.index(row, 1)] = argStorage[1];
-    this.storage[this.index(row, 2)] = argStorage[3];
+    this.storage[this.index(row, 2)] = argStorage[2];
 };
 
 /**

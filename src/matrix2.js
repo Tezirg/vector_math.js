@@ -28,7 +28,30 @@ function Matrix2(m00, m01, m11, m12) {
     this.dimension = 2;
 }
 
+/**
+ * @static
+ * /// Constructs Matrix2 with a given [Float32Array] as [storage].
+ * @param array {Float32Array}
+ * @return {Matrix2}
+ */
+Matrix2.fromFloat32Array = function(array) {
+    var m = Matrix2.zero();
+    m.storage = array;
+    return m;
+};
 
+/**
+ * @static
+ * /// Constructs Matrix2 with a [storage] that views given [buffer] starting at
+ * [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
+ * @param buffer {buffer}
+ * @param offset {number}
+ */
+Matrix2.fromBuffer = function(buffer, offset) {
+    var m = Matrix2.zero();
+    m.storage = new Float32Array(buffer, offset, 4);
+    return m.clone();
+};
 
 /**
  * @static
@@ -885,7 +908,7 @@ Matrix2.prototype.copyIntoArray = function(array, offset) {
 };
 
 /**
- * /// Copies elements from [array]  o [this] starting at [offset].
+ * /// Copies elements from [array]  into [this] starting at [offset].
  * @param array {Array}
  * @param offset {number}
  */
