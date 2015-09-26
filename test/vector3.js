@@ -119,13 +119,13 @@ module.exports = {
 
     testVector3Postmultiplication: function(test) {
         test.expect(6);
-        inputMatrix = (new Matrix3.rotationX(0.4)).mul((new Matrix3.rotationZ(0.5)));
+        inputMatrix = (Matrix3.rotationX(0.4)).mult(Matrix3.rotationZ(0.5));
         inputVector = new Vector3(1.0, 2.0, 3.0);
-        inputInv = new Matrix3.copy(inputMatrix);
+        inputInv = Matrix3.copy(inputMatrix);
         inputInv.invert();
-        resultOld = inputMatrix.transposed() * inputVector;
-        resultOldvInv = inputInv * inputVector;
-        resultNew = inputVector.postmultiply(inputMatrix);
+        var resultOld = inputMatrix.transposed().mult(inputVector);
+        var resultOldvInv = inputInv.mult(inputVector);
+        var resultNew = inputVector.postmultiply(inputMatrix);
 
         test.equals(resultNew.x,resultOld.x);
         test.equals(resultNew.y,resultOld.y);

@@ -5,8 +5,15 @@ module.exports = Matrix2;
 
 var Vector2 = require('./vector2.js');
 
-/// 2D Matrix.
-/// Values are stored in column major order.
+/**
+ * @class Matrix2
+ * /// 2D Matrix. Values are stored in column major order.
+ * @param m00
+ * @param m01
+ * @param m11
+ * @param m12
+ * @constructor
+ */
 function Matrix2(m00, m01, m11, m12) {
     /**
      * @property storage
@@ -176,7 +183,7 @@ Matrix2.rotation = function(radians) {
  * @param arg3 {Number}
  * @returns {Matrix2}
  */
-Matrix2.setValues = function(arg0, arg1, arg2, arg3) {
+Matrix2.prototype.setValues = function(arg0, arg1, arg2, arg3) {
     this.storage[3] = arg3;
     this.storage[2] = arg2;
     this.storage[1] = arg1;
@@ -192,7 +199,7 @@ Matrix2.setValues = function(arg0, arg1, arg2, arg3) {
  * @param arg1 {Vector2}
  * @returns {Matrix2}
  */
-Matrix2.setColumns = function(arg0, arg1) {
+Matrix2.prototype.setColumns = function(arg0, arg1) {
     var arg0Storage = arg0.storage;
     var arg1Storage = arg1.storage;
     this.storage[0] = arg0Storage[0];
@@ -224,7 +231,7 @@ Matrix2.prototype.setFrom = function(arg) {
  * @param v {Vector2}
  * @returns {Matrix2}
  */
-Matrix2.setOuter = function(u, v) {
+Matrix2.prototype.setOuter = function(u, v) {
     var uStorage = u.storage;
     var vStorage = v.storage;
     this.storage[0] = uStorage[0] * vStorage[0];
@@ -241,7 +248,7 @@ Matrix2.setOuter = function(u, v) {
  * @param arg {Number}
  * @returns {Matrix2}
  */
-Matrix2.splatDiagonal = function(arg) {
+Matrix2.prototype.splatDiagonal = function(arg) {
     this.storage[0] = arg;
     this.storage[3] = arg;
     return this;
@@ -254,7 +261,7 @@ Matrix2.splatDiagonal = function(arg) {
  * @param arg {Vector2}
  * @returns {Matrix2}
  */
-Matrix2.setDiagonal = function(arg) {
+Matrix2.prototype.setDiagonal = function(arg) {
     var argStorage = arg.storage;
     this.storage[0] = argStorage[0];
     this.storage[3] = argStorage[1];
@@ -312,6 +319,7 @@ Matrix2.prototype.equals = function(other) {
  * @method
  * /// Check if two matrices are almost the same.
  * @param other {Matrix2}
+ * @param precision {number}
  * @returns {boolean}
  */
 Matrix2.prototype.almostEquals = function(other, precision) {
@@ -442,7 +450,7 @@ Matrix2.prototype.mult = function(arg) {
     if (typeof arg == "Number") {
         return this.scaled(arg);
     }
-    if (typeof arg == "Vector2") {
+    if (arg instanceof Vector2) {
         return this.transformed(arg);
     }
     if (arg.dimension == 2) {
@@ -543,10 +551,10 @@ Matrix2.prototype.transpose = function() {
 Matrix2.prototype.absolute = function() {
     var r = Matrix2.zero();
     var rStorage = r.storage;
-    rStorage[0] = this.storage[0].abs();
-    rStorage[1] = this.storage[1].abs();
-    rStorage[2] = this.storage[2].abs();
-    rStorage[3] = this.storage[3].abs();
+    rStorage[0] = Math.abs(this.storage[0]);
+    rStorage[1] = Math.abs(this.storage[1]);
+    rStorage[2] = Math.abs(this.storage[2]);
+    rStorage[3] = Math.abs(this.storage[3]);
     return r;
 };
 
@@ -574,16 +582,20 @@ Matrix2.prototype.dotRow = function(i, v) {
  * @method
  * /// Returns the dot product of column [j] and [v].
  * @param j {number}
- * @param v {number}
+ * @param v {Vector2}
  * @returns {number}
  */
 Matrix2.prototype.dotColumn = function(j, v) {
     vStorage = v.storage;
     return this.storage[j * 2] * vStorage[0] +
-           this.storage[(j * 2) + 1] * vStorage[1];
+        this.storage[(j * 2) + 1] * vStorage[1];
 };
 
-/// Trace of the matrix.
+/**
+ * @method
+ * /// Trace of the matrix.
+ * @returns {number}
+ */
 Matrix2.prototype.trace = function() {
     t = 0.0;
     t += this.storage[0];
@@ -591,7 +603,11 @@ Matrix2.prototype.trace = function() {
     return t;
 };
 
-/// Returns infinity norm of the matrix. Used for numerical analysis.
+/**
+ * @method
+ * /// Returns infinity norm of the matrix. Used for numerical analysis.
+ * @returns {number}
+ */
 Matrix2.prototype.infinityNorm = function() {
     norm = 0.0;
     {
@@ -602,8 +618,8 @@ Matrix2.prototype.infinityNorm = function() {
     }
     {
         row_norm = 0.0;
-        row_norm += this.storage[2].abs();
-        row_norm += this.storage[3].abs();
+        row_norm += Math.abs(this.storage[2]);
+        row_norm += Math.abs(this.storage[3]);
         norm = row_norm > norm ? row_norm : norm;
     }
     return norm;
@@ -625,7 +641,7 @@ Matrix2.prototype.relativeError = function(correct) {
 Matrix2.prototype.absoluteError = function(correct) {
     this_norm = this.infinityNorm();
     correct_norm = correct.infinityNorm();
-    diff_norm = (this_norm - correct_norm).abs();
+    diff_norm = Math.abs(this_norm - correct_norm);
     return diff_norm;
 };
 

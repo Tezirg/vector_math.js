@@ -4,6 +4,9 @@
 
 module.exports = Vector3;
 
+var Matrix3 = require('./matrix3.js');
+var Matrix4 = require('./matrix4.js');
+
 /**
  * @class Vector3
  * @param x
@@ -306,6 +309,141 @@ Vector3.prototype.absolute = function() {
     this.storage[0] = Math.abs(this.storage[0]);
     this.storage[1] = Math.abs(this.storage[1]);
     this.storage[2] = Math.abs(this.storage[2]);
+};
+
+/**
+ * @method
+ * Transforms [this] into the product of [this] as a row vector,
+ * postmultiplied by matrix, [arg].
+ * If [arg] is a rotation matrix, this is a computational shortcut for applying,
+ * the inverse of the transformation.
+ *
+ * @param arg {Matrix3}
+ * @returns {Vector3}
+ */
+Vector3.prototype.postmultiply = function(arg) {
+    var argStorage = arg.storage;
+    var v0 = this.storage[0];
+    var v1 = this.storage[1];
+    var v2 = this.storage[2];
+
+    this.storage[0] =
+        v0 * argStorage[0] + v1 * argStorage[1] + v2 * argStorage[2];
+    this.storage[1] =
+        v0 * argStorage[3] + v1 * argStorage[4] + v2 * argStorage[5];
+    this.storage[2] =
+        v0 * argStorage[6] + v1 * argStorage[7] + v2 * argStorage[8];
+    return this;
+};
+
+/**
+ * @method
+ * /// Projects [this] using the projection matrix [arg]
+ * @param arg {Matrix4}
+ * @returns {Vector3}
+ */
+Vector3.prototype.applyProjection = function(arg) {
+    var argStorage = arg.storage;
+    var x = this.storage[0];
+    var y = this.storage[1];
+    var z = this.storage[2];
+    var d = 1.0 /
+    (argStorage[3] * x +
+    argStorage[7] * y +
+    argStorage[11] * z +
+    argStorage[15]);
+    this.storage[0] = (argStorage[0] * x +
+    argStorage[4] * y +
+    argStorage[8] * z +
+    argStorage[12]) *
+    d;
+    this.storage[1] = (argStorage[1] * x +
+    argStorage[5] * y +
+    argStorage[9] * z +
+    argStorage[13]) *
+    d;
+    this.storage[2] = (argStorage[2] * x +
+    argStorage[6] * y +
+    argStorage[10] * z +
+    argStorage[14]) *
+    d;
+    return this;
+};
+
+/**
+ * /// Applies a rotation specified by [axis] and [angle].
+ * @param axis {Vector3}
+ * @param angle {number}
+ * @returns {Vector3}
+ */
+Vector3.prototype.applyAxisAngle = function(axis, angle) {
+    this.applyQuaternion(Quaternion.axisAngle(axis, angle));
+    return this;
+};
+
+/// Applies a quaternion transform.
+Vector3.prototype.applyQuaternion = function(arg) {
+    var argStorage = arg.storage;
+    var v0 = this.storage[0];
+    var v1 = this.storage[1];
+    var v2 = this.storage[2];
+    var qx = argStorage[0];
+    var qy = argStorage[1];
+    var qz = argStorage[2];
+    var qw = argStorage[3];
+    var ix = qw * v0 + qy * v2 - qz * v1;
+    var iy = qw * v1 + qz * v0 - qx * v2;
+    var iz = qw * v2 + qx * v1 - qy * v0;
+    var iw = -qx * v0 - qy * v1 - qz * v2;
+    this.storage[0] = ix * qw + iw * -qx + iy * -qz - iz * -qy;
+    this.storage[1] = iy * qw + iw * -qy + iz * -qx - ix * -qz;
+    this.storage[2] = iz * qw + iw * -qz + ix * -qy - iy * -qx;
+    return this;
+};
+
+/**
+ * /// Multiplies [this] by [arg]. 
+ * @param arg {Matrix3}
+ */
+Vector3.prototype.applyMatrix3 = function(arg) {
+    var argStorage = arg.storage;
+    var v0 = this.storage[0];
+    var v1 = this.storage[1];
+    var v2 = this.storage[2];
+    this.storage[0] =
+        argStorage[0] * v0 + argStorage[3] * v1 + argStorage[6] * v2;
+    this.storage[1] =
+        argStorage[1] * v0 + argStorage[4] * v1 + argStorage[7] * v2;
+    this.storage[2] =
+        argStorage[2] * v0 + argStorage[5] * v1 + argStorage[8] * v2;
+    return this;
+};
+
+/// Multiplies [this] by a 4x3 subset of [arg]. Expects [arg] to be an affine
+/// transformation matrix.
+/**
+ * 
+ * @param arg {Matrix4}
+ * @returns {Vector3}
+ */
+Vector3.prototype.applyMatrix4 = function(arg) {
+    var argStorage = arg.storage;
+    var v0 = this.storage[0];
+    var v1 = this.storage[1];
+    var v2 = this.storage[2];
+    this.storage[0] = argStorage[0] * v0 +
+    argStorage[4] * v1 +
+    argStorage[8] * v2 +
+    argStorage[12];
+    this.storage[1] = argStorage[1] * v0 +
+    argStorage[5] * v1 +
+    argStorage[9] * v2 +
+    argStorage[13];
+    this.storage[2] = argStorage[2] * v0 +
+    argStorage[6] * v1 +
+    argStorage[10] * v2 +
+    argStorage[14];
+    return this;
 };
 
 /// Clamp each entry n in [this] in the range [min[n]]-[max[n]].
