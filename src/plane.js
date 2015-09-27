@@ -10,8 +10,8 @@ var Vector3 = require('./vector3.js');
  * @constructor
  */
 function Plane() {
-    this.norm = Vector3.zero();
-    this.const = 0.0;
+    this.normal = Vector3.zero();
+    this.constant = 0.0;
 }
 
 /**
@@ -39,19 +39,6 @@ Plane.intersection = function(a, b, c, result) {
     result.z = (v1.z + v2.z + v3.z) / f;
 };
 
-Plane.prototype.__defineGetter__("normal", function() {
-    return this.norm;
-});
-
-
-Plane.prototype.__defineGetter__("constant", function() {
-    return this.const;
-});
-
-Plane.prototype.__defineSetter__("constant", function(value) {
-   this.const = value;
-});
-
 
 /**
  * @static
@@ -61,8 +48,8 @@ Plane.prototype.__defineSetter__("constant", function(value) {
  */
 Plane.copy = function(other) {
     var p = new Plane();
-    p.const = other.constant;
-    p.norm.setFrom(other.normal);
+    p.constant = other.constant;
+    p.normal.setFrom(other.normal);
     return p;
 };
 
@@ -90,8 +77,8 @@ Plane.components = function(x, y, z, w) {
  */
 Plane.normalconstant = function(normal, constant) {
     var p = new Plane();
-    p.norm.setFrom(normal);
-    p.const = constant;
+    p.normal.setFrom(normal);
+    p.constant = constant;
     return p;
 };
 
@@ -102,8 +89,8 @@ Plane.normalconstant = function(normal, constant) {
  * @param o {Plane}
  */
 Plane.prototype.copyFrom = function(o) {
-    this.norm.setFrom(o.normal);
-    this.const = o.const;
+    this.normal.setFrom(o.normal);
+    this.constant = o.constant;
 };
 
 /**
@@ -115,8 +102,8 @@ Plane.prototype.copyFrom = function(o) {
  * @param w {number}
  */
 Plane.prototype.setFromComponents = function(x, y, z, w) {
-    this.norm.setValues(x, y, z);
-    this.const = w;
+    this.normal.setValues(x, y, z);
+    this.constant = w;
 };
 
 /**
@@ -124,9 +111,9 @@ Plane.prototype.setFromComponents = function(x, y, z, w) {
  * Normalize this
  */
 Plane.prototype.normalize = function() {
-    var inverseLength = 1.0 / this.norm.length;
-    this.norm.scale(inverseLength);
-    this.const = this.const * inverseLength;
+    var inverseLength = 1.0 / this.normal.length;
+    this.normal.scale(inverseLength);
+    this.constant = this.constant * inverseLength;
 };
 
 /**
@@ -136,5 +123,5 @@ Plane.prototype.normalize = function() {
  * @returns {number}
  */
 Plane.prototype.distanceToVector3 = function(point) {
-    return this.norm.dot(point) + this.const;
+    return this.normal.dot(point) + this.constant;
 };
