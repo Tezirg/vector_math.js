@@ -6,6 +6,7 @@ var Ray = require('../src/ray.js');
 var Triangle = require('../src/triangle.js');
 var Sphere = require('../src/sphere.js');
 var Quad = require('../src/quad.js');
+var Plane = require('../src/plane.js');
 var TEST = require('./test_utils.js');
 
 module.exports = {
@@ -220,7 +221,7 @@ module.exports = {
     },
 
     testAabb3IntersectionSphere: function(test) {
-        test.expect(4);
+        test.expect(3);
         var parent = Aabb3.minMax(new Vector3(1.0, 1.0, 1.0), new Vector3(8.0, 8.0, 8.0));
         var child = Sphere.centerRadius(new Vector3(3.0, 3.0, 3.0), 1.5);
         var cutting = Sphere.centerRadius(new Vector3(0.0, 0.0, 0.0), 6.0);

@@ -171,8 +171,8 @@ Aabb3.prototype.setCenterAndHalfExtents = function(center, halfExtents) {
  * Set the AABB to enclose a [sphere].
  * @param sphere {Sphere}
  */
-Aabb3.setSphere = function(sphere) {
-    this.min.splat(-sphere.radius);
+Aabb3.prototype.setSphere = function(sphere) {
+    this.min.splat(- (sphere.radius) );
     this.min.add(sphere.center);
 
     this.max.splat(sphere.radius);
@@ -491,14 +491,14 @@ Aabb3.prototype.intersectsWithSphere = function(other) {
     var e = 0.0;
 
     for (var i = 0; i < 3; ++i) {
-        if ((e = center[i] - this.min[i]) < 0.0) {
+        if ((e = center.storage[i] - this.min.storage[i]) < 0.0) {
             if (e < -radius) {
                 return false;
             }
 
             d = d + e * e;
         } else {
-            if ((e = center[i] - this.max[i]) > 0.0) {
+            if ((e = center.storage[i] - this.max.storage[i]) > 0.0) {
                 if (e > radius) {
                     return false;
                 }
@@ -573,7 +573,7 @@ Aabb3.prototype.intersectsWithTriangle = function(other) {
         // Ignore tests on degenerate axes.
         p0 = _v0.z * _f0.y - _v0.y * _f0.z;
         p2 = _v2.z * _f0.y - _v2.y * _f0.z;
-        r = _aabbHalfExtents[1] * Math.abs(_f0.z) + _aabbHalfExtents[2] * Math.abs(_f0.y);
+        r = _aabbHalfExtents.storage[1] * Math.abs(_f0.z) + _aabbHalfExtents.storage[2] * Math.abs(_f0.y);
         if (Math.max(-Math.max(p0, p2), Math.min(p0, p2)) > r + epsilon) {
             return false; // Axis is a separating axis
         }
@@ -586,7 +586,7 @@ Aabb3.prototype.intersectsWithTriangle = function(other) {
         // Ignore tests on degenerate axes.
         p0 = _v0.z * _f1.y - _v0.y * _f1.z;
         p1 = _v1.z * _f1.y - _v1.y * _f1.z;
-        r = _aabbHalfExtents[1] * Math.abs(_f1.z) + _aabbHalfExtents[2] * Math.abs(_f1.y);
+        r = _aabbHalfExtents.storage[1] * Math.abs(_f1.z) + _aabbHalfExtents.storage[2] * Math.abs(_f1.y);
         if (Math.max(-Math.max(p0, p1), Math.min(p0, p1)) > r + epsilon) {
             return false; // Axis is a separating axis
         }
@@ -599,7 +599,7 @@ Aabb3.prototype.intersectsWithTriangle = function(other) {
         // Ignore tests on degenerate axes.
         p0 = _v0.z * _f2.y - _v0.y * _f2.z;
         p1 = _v1.z * _f2.y - _v1.y * _f2.z;
-        r = _aabbHalfExtents[1] * Math.abs(_f2.z) + _aabbHalfExtents[2] * Math.abs(_f2.y);
+        r = _aabbHalfExtents.storage[1] * Math.abs(_f2.z) + _aabbHalfExtents.storage[2] * Math.abs(_f2.y);
         if (Math.max(-Math.max(p0, p1), Math.min(p0, p1)) > r + epsilon) {
             return false; // Axis is a separating axis
         }
@@ -612,7 +612,7 @@ Aabb3.prototype.intersectsWithTriangle = function(other) {
         // Ignore tests on degenerate axes.
         p0 = _v0.x * _f0.z - _v0.z * _f0.x;
         p2 = _v2.x * _f0.z - _v2.z * _f0.x;
-        r = _aabbHalfExtents[0] * Math.abs(_f0.z) + _aabbHalfExtents[2] * Math.abs(_f0.x);
+        r = _aabbHalfExtents.storage[0] * Math.abs(_f0.z) + _aabbHalfExtents.storage[2] * Math.abs(_f0.x);
         if (Math.max(-Math.max(p0, p2), Math.min(p0, p2)) > r + epsilon) {
             return false; // Axis is a separating axis
         }
@@ -625,7 +625,7 @@ Aabb3.prototype.intersectsWithTriangle = function(other) {
         // Ignore tests on degenerate axes.
         p0 = _v0.x * _f1.z - _v0.z * _f1.x;
         p1 = _v1.x * _f1.z - _v1.z * _f1.x;
-        r = _aabbHalfExtents[0] * Math.abs(_f1.z) + _aabbHalfExtents[2] * Math.abs(_f1.x);
+        r = _aabbHalfExtents.storage[0] * Math.abs(_f1.z) + _aabbHalfExtents.storage[2] * Math.abs(_f1.x);
         if (Math.max(-Math.max(p0, p1), Math.min(p0, p1)) > r + epsilon) {
             return false; // Axis is a separating axis
         }
@@ -638,7 +638,7 @@ Aabb3.prototype.intersectsWithTriangle = function(other) {
         // Ignore tests on degenerate axes.
         p0 = _v0.x * _f2.z - _v0.z * _f2.x;
         p1 = _v1.x * _f2.z - _v1.z * _f2.x;
-        r = _aabbHalfExtents[0] * Math.abs(_f2.z) + _aabbHalfExtents[2] * Math.abs(_f2.x);
+        r = _aabbHalfExtents.storage[0] * Math.abs(_f2.z) + _aabbHalfExtents.storage[2] * Math.abs(_f2.x);
         if (Math.max(-Math.max(p0, p1), Math.min(p0, p1)) > r + epsilon) {
             return false; // Axis is a separating axis
         }
@@ -650,7 +650,7 @@ Aabb3.prototype.intersectsWithTriangle = function(other) {
         // Ignore tests on degenerate axes.
         p0 = _v0.y * _f0.x - _v0.x * _f0.y;
         p2 = _v2.y * _f0.x - _v2.x * _f0.y;
-        r = _aabbHalfExtents[0] * Math.abs(_f0.y) + _aabbHalfExtents[1] * Math.abs(_f0.x);
+        r = _aabbHalfExtents.storage[0] * Math.abs(_f0.y) + _aabbHalfExtents.storage[1] * Math.abs(_f0.x);
         if (Math.max(-Math.max(p0, p2), Math.min(p0, p2)) > r + epsilon) {
             return false; // Axis is a separating axis
         }
@@ -663,7 +663,7 @@ Aabb3.prototype.intersectsWithTriangle = function(other) {
         // Ignore tests on degenerate axes.
         p0 = _v0.y * _f1.x - _v0.x * _f1.y;
         p1 = _v1.y * _f1.x - _v1.x * _f1.y;
-        r = _aabbHalfExtents[0] * Math.abs(_f1.y) + _aabbHalfExtents[1] * Math.abs(_f1.x);
+        r = _aabbHalfExtents.storage[0] * Math.abs(_f1.y) + _aabbHalfExtents.storage[1] * Math.abs(_f1.x);
         if (Math.max(-Math.max(p0, p1), Math.min(p0, p1)) > r + epsilon) {
             return false; // Axis is a separating axis
         }
@@ -676,7 +676,7 @@ Aabb3.prototype.intersectsWithTriangle = function(other) {
         // Ignore tests on degenerate axes.
         p0 = _v0.y * _f2.x - _v0.x * _f2.y;
         p1 = _v1.y * _f2.x - _v1.x * _f2.y;
-        r = _aabbHalfExtents[0] * Math.abs(_f2.y) + _aabbHalfExtents[1] * Math.abs(_f2.x);
+        r = _aabbHalfExtents.storage[0] * Math.abs(_f2.y) + _aabbHalfExtents.storage[1] * Math.abs(_f2.x);
         if (Math.max(-Math.max(p0, p1), Math.min(p0, p1)) > r + epsilon) {
             return false; // Axis is a separating axis
         }
@@ -685,20 +685,20 @@ Aabb3.prototype.intersectsWithTriangle = function(other) {
 
     // Test the three axes corresponding to the face normals of AABB b (category 1). // Exit if...
     // ... [-e0, e0] and [min(v0.x,v1.x,v2.x), max(v0.x,v1.x,v2.x)] do not overlap
-    if (Math.max(_v0.x, Math.max(_v1.x, _v2.x)) < -_aabbHalfExtents[0] ||
-        Math.min(_v0.x, Math.min(_v1.x, _v2.x)) > _aabbHalfExtents[0]) {
+    if (Math.max(_v0.x, Math.max(_v1.x, _v2.x)) < -_aabbHalfExtents.storage[0] ||
+        Math.min(_v0.x, Math.min(_v1.x, _v2.x)) > _aabbHalfExtents.storage[0]) {
         return false;
     }
 
     // ... [-e1, e1] and [min(v0.y,v1.y,v2.y), max(v0.y,v1.y,v2.y)] do not overlap
-    if (Math.max(_v0.y, Math.max(_v1.y, _v2.y)) < -_aabbHalfExtents[1] ||
-        Math.min(_v0.y, Math.min(_v1.y, _v2.y)) > _aabbHalfExtents[1]) {
+    if (Math.max(_v0.y, Math.max(_v1.y, _v2.y)) < -_aabbHalfExtents.storage[1] ||
+        Math.min(_v0.y, Math.min(_v1.y, _v2.y)) > _aabbHalfExtents.storage[1]) {
         return false;
     }
 
     // ... [-e2, e2] and [min(v0.z,v1.z,v2.z), max(v0.z,v1.z,v2.z)] do not overlap
-    if (Math.max(_v0.z, Math.max(_v1.z, _v2.z)) < -_aabbHalfExtents[2] ||
-        Math.min(_v0.z, Math.min(_v1.z, _v2.z)) > _aabbHalfExtents[2]) {
+    if (Math.max(_v0.z, Math.max(_v1.z, _v2.z)) < -_aabbHalfExtents.storage[2] ||
+        Math.min(_v0.z, Math.min(_v1.z, _v2.z)) > _aabbHalfExtents.storage[2]) {
         return false;
     }
 
@@ -723,9 +723,9 @@ Aabb3.prototype.intersectsWithPlane = function(other) {
     this.copyCenterAndHalfExtents(_aabbCenter, _aabbHalfExtents);
 
     // Compute the projection interval radius of b onto L(t) = b.c + t * p.n
-    var r = _aabbHalfExtents[0] * Math.abs(other.normal[0]) +
-    _aabbHalfExtents[1] * Math.abs(other.normal[1]) +
-    _aabbHalfExtents[2] * Math.abs(other.normal[2]);
+    var r = _aabbHalfExtents.storage[0] * Math.abs(other.normal.storage[0]) +
+    _aabbHalfExtents.storage[1] * Math.abs(other.normal.storage[1]) +
+    _aabbHalfExtents.storage[2] * Math.abs(other.normal.storage[2]);
     // Compute distance of box center from plane
     var s = other.normal.dot(_aabbCenter) - other.constant;
     // Intersection occurs when distance s falls within [-r,+r] interval
