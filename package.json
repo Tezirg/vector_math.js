@@ -1,12 +1,12 @@
 {
   "name": "vector_math.js",
   "version": "0.0.1",
+  "description": "A Vector math library for 3D and 2D applications",
   "author": "jean Grizet <jean.grizet@gmail.com>",
   "keywords": [
-    "vector_math",
-    "vector_math.js",
-    "vector",
-    "simd"
+    "vector_math", "vector_math.js",
+    "vector", "matrix", "3d",
+    "math", "aabb", "quaternion"
   ],
   "main": "src/vector_math.js",
   "devDependencies": {
