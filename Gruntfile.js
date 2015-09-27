@@ -44,7 +44,8 @@ module.exports = function(grunt) {
                 'test/quaternion.js',
                 'test/plane.js',
                 'test/sphere.js',
-                'test/triangle.js'
+                'test/triangle.js',
+                'test/ray.js'
             ]
         }
     });

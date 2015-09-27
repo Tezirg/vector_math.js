@@ -29,7 +29,7 @@ TEST.relativeTest = function(test, output, expectedOutput) {
 
 TEST.absoluteTest = function(test, output, expectedOutput) {
     var errorThreshold = 0.0005;
-    var error = Math.abs(TEST.absoluteError(output, expectedOutput));
+    var error = Math.abs(output  - expectedOutput);
     test.ok(error < errorThreshold, "absoluteTest: difference is under " + errorThreshold);
 };
 
