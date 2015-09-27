@@ -42,7 +42,9 @@ module.exports = function(grunt) {
                 'test/matrix3.js',
                 'test/matrix4.js',
                 'test/quaternion.js',
-                'test/plane.js'
+                'test/plane.js',
+                'test/sphere.js',
+                'test/triangle.js'
             ]
         }
     });
