@@ -101,7 +101,7 @@ Vector3.prototype.setZero = function() {
 
 /**
  * @static
- * Constructs Vector2 with a given [Float32Array] as [storage].
+ * Constructs Vector3 with a given [Float32Array] as [storage].
  * @param array {Float32Array}
  * @returns {Vector3}
  */

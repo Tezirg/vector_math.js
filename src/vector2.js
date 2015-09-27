@@ -78,16 +78,30 @@ Vector2.prototype.setZero = function() {
     return this;
 };
 
-/// Constructs Vector2 with a given [Float32List] as [storage].
-Vector2.prototype.fromFloat32Array = function(array) {
-    this.storage = array;
+/**
+ * @static
+ * Constructs Vector2 with a given [Float32Array] as [storage].
+ * @param array {Float32Array}
+ * @returns {Vector2}
+ */
+Vector2.fromFloat32Array = function(array) {
+    var vec = Vector2.zero();
+    vec.storage = array;
+    return vec;
 };
 
-/// Constructs Vector2 with a [storage] that views given [buffer] starting at
-/// [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
-Vector2.prototype.fromBuffer = function(buffer, offset) {
+
+/**
+ * @static
+ * Constructs Vector2 with a [storage] that views given [buffer] starting at
+ * [offset]. [offset] has to be multiple of [Float32Array.BYTES_PER_ELEMENT].
+ * @param buffer {buffer}
+ * @param offset {number}
+ * @returns {Vector2}
+ */
+Vector2.fromBuffer = function(buffer, offset) {
     var vec = Vector2.zero();
-    vec.storage = new Float32Array(buffer, offset, 2);
+    vec.storage = new Float32Array(buffer, offset, 3);
     return vec.clone();
 };
 
