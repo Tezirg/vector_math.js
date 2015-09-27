@@ -313,6 +313,18 @@ Vector2.prototype.scale = function(arg) {
     return this;
 };
 
+/**
+ * @method
+ * Returns Scaled copy of this
+ * @param arg {number}
+ * @returns {Vector2}
+ */
+Vector2.prototype.scaled = function(arg) {
+    var v = this.clone();
+    v.scale(arg);
+    return v;
+};
+
 
 /**
  * @method

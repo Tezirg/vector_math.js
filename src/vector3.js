@@ -365,6 +365,19 @@ Vector3.prototype.scale = function(arg) {
 
 /**
  * @method
+ * Returns Scaled copy this
+ * @param arg
+ * @returns {Vector3}
+ */
+Vector3.prototype.scaled = function(arg) {
+    var v = this.clone();
+    v.scale(arg);
+    return v;
+};
+
+
+/**
+ * @method
  * Reflect [this].
  * @param normal
  * @returns {Vector3}

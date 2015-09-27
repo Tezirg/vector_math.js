@@ -420,6 +420,19 @@ Vector4.prototype.scale = function(arg) {
 
 /**
  * @method
+ * Returns Scaled copy of this
+ * @param arg {number}
+ * @returns {Vector4}
+ */
+Vector4.prototype.scaled = function(arg) {
+    var v = this.clone();
+    v.scale(arg);
+    return this;
+};
+
+
+/**
+ * @method
  * Reflect [this].
  * @param normal
  * @returns {Vector4}
