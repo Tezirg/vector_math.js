@@ -3,6 +3,7 @@
  */
 var Vector3 = require('../src/vector3.js');
 var Matrix3 = require('../src/matrix3.js');
+var Matrix4 = require('../src/matrix4.js');
 var Quaternion = require('../src/quaternion.js');
 var TEST = require('./test_utils.js');
 
