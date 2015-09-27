@@ -604,7 +604,7 @@ module.exports = {
                     
                     m2 = Matrix4.compose(t2, r2, s2);
 
-                    test.ok(m2.almostEquals(m, 0.05));
+                    test.ok(m2.almostEquals(m, 0.00005));
                     // relativeTest(m2, m);
                 }
             }

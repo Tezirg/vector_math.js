@@ -40,7 +40,8 @@ module.exports = function(grunt) {
                 'test/vector4.js',
                 'test/matrix2.js',
                 'test/matrix3.js',
-                'test/matrix4.js'
+                'test/matrix4.js',
+                'test/quaternion.js'
             ]
         }
     });

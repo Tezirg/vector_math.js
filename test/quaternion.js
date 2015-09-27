@@ -141,9 +141,8 @@ quat_test = {
         test.expect(expectedOutput.length);
         // assert(input.length == expectedOutput.length);
         for (var i = 0; i < input.length; i++) {
-            test.expect(0);
             var output = input[i].conjugate();
-            test.ok(output.almostEquals(expectedOutput[i]));
+            test.ok(output.almostEquals(expectedOutput[i], 0.00005));
             //relativeTest(output, expectedOutput[i]);
         }
         test.done();
@@ -155,7 +154,7 @@ quat_test = {
         for (var i = 0; i < input.length; i++) {
             var R = input[i].asRotationMatrix();
             var output = Quaternion.fromRotation(R);
-            test.ok(output.almostEquals(input[i]));
+            test.ok(output.almostEquals(input[i], 0.00005));
             //relativeTest(output, input[i]);
         }
         test.done();
@@ -166,7 +165,7 @@ quat_test = {
         test.expect(inputA.length);
         for (var i = 0; i < inputA.length; i++) {
             var output = inputA[i].mult(inputB[i]);
-            test.ok(output.almostEquals(expectedOutput[i]));
+            test.ok(output.almostEquals(expectedOutput[i], 0.0005));
             //relativeTest(output, expectedOutput[i]);
         }
         test.done();
@@ -179,7 +178,7 @@ quat_test = {
         //(inputB.length == expectedOutput.length));
         for (var i = 0; i < inputA.length; i++) {
             var output = inputA[i].rotate(inputB[i]);
-            test.ok(output.almostEquals(expectedOutput[i]));
+            test.ok(output.almostEquals(expectedOutput[i], 0.0005));
             //relativeTest(output, expectedOutput[i]);
         }
         test.done();
