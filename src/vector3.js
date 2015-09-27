@@ -87,7 +87,11 @@ Vector3.zero = function() {
     return v;
 };
 
-/// Zero the vector.
+/**
+ * @method
+ * Zero the vector.
+ * @returns {Vector3}
+ */
 Vector3.prototype.setZero = function() {
     this.storage[0] = 0.0;
     this.storage[1] = 0.0;
@@ -95,7 +99,12 @@ Vector3.prototype.setZero = function() {
     return this;
 };
 
-/// Constructs Vector2 with a given [Float32List] as [storage].
+/**
+ * @static
+ * Constructs Vector2 with a given [Float32Array] as [storage].
+ * @param array {Float32Array}
+ * @returns {Vector3}
+ */
 Vector3.fromFloat32Array = function(array) {
     var vec = Vector3.zero();
     vec.storage = array;
@@ -103,15 +112,27 @@ Vector3.fromFloat32Array = function(array) {
 };
 
 
-/// Constructs Vector3 with a [storage] that views given [buffer] starting at
-/// [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
+/**
+ * @static
+ * Constructs Vector3 with a [storage] that views given [buffer] starting at
+ * [offset]. [offset] has to be multiple of [Float32Array.BYTES_PER_ELEMENT].
+ * @param buffer {buffer}
+ * @param offset {number}
+ * @returns {Vector3}
+ */
 Vector3.fromBuffer = function(buffer, offset) {
     var vec = Vector3.zero();
     vec.storage = new Float32Array(buffer, offset, 3);
     return vec.clone();
 };
 
-/// Set the values of the vector.
+/**
+ *  Set the values of the vector.
+ * @param x {number}
+ * @param y {number}
+ * @param z {number}
+ * @returns {Vector3}
+ */
 Vector3.prototype.setValues = function(x, y, z) {
     this.storage[0] = x;
     this.storage[1] = y;
@@ -123,7 +144,7 @@ Vector3.prototype.setValues = function(x, y, z) {
 /**
  * @static
  * @property copy
- * @param v
+ * @param v {vector3}
  * @returns {Vector3}
  */
 Vector3.copy = function(v) {
@@ -181,10 +202,21 @@ Vector3.mix = function(min, max, a, result) {
     result.z = min.z + a * (max.z - min.z);
 };
 
+/**
+ * @method
+ * Returns a copy of this
+ * @returns {Vector3}
+ */
 Vector3.prototype.clone = function() {
     return Vector3.copy(this);
 };
 
+/**
+ * @method
+ * Set this from another vector3
+ * @param v {Vector3}
+ * @returns {Vector3}
+ */
 Vector3.prototype.setFrom = function(v) {
     this.storage[0] = v.storage[0];
     this.storage[1] = v.storage[1];
@@ -204,6 +236,13 @@ Vector3.prototype.splat = function(value) {
     return this;
 };
 
+/**
+ * @method
+ * Return if this is almost equal to other
+ * @param v {Vector3}
+ * @param precision {number}
+ * @returns {boolean}
+ */
 Vector3.prototype.almostEquals = function(v, precision) {
     if (precision === undefined) {
         precision = Number.EPSILON;
@@ -216,6 +255,12 @@ Vector3.prototype.almostEquals = function(v, precision) {
     return true;
 };
 
+/**
+ * @method
+ * Return if this is equal to other
+ * @param v {other}
+ * @returns {boolean}
+ */
 Vector3.prototype.equals = function(v) {
     return (this.x == v.x && this.y == v.y && this.z == v.z);
 };
@@ -232,10 +277,20 @@ Vector3.prototype.almostZero = function(precision) {
     return true;
 };
 
+/**
+ * @method
+ * Returns if this is a zero vector
+ * @returns {boolean}
+ */
 Vector3.prototype.isZero = function() {
   return (this.x == 0 && this.y == 0 && this.z == 0);
 };
 
+/**
+ * @method
+ * negate this
+ * @returns {Vector3}
+ */
 Vector3.prototype.negate = function() {
     this.storage[0] = - this.storage[0];
     this.storage[1] = - this.storage[1];
@@ -243,6 +298,12 @@ Vector3.prototype.negate = function() {
     return this;
 };
 
+/**
+ * @method
+ * Subtract other from this
+ * @param other
+ * @returns {Vector3}
+ */
 Vector3.prototype.sub = function(other) {
     this.storage[0] = this.storage[0] - other.storage[0];
     this.storage[1] = this.storage[1] - other.storage[1];
@@ -250,6 +311,12 @@ Vector3.prototype.sub = function(other) {
     return this;
 };
 
+/**
+ * @method
+ * Add other to this
+ * @param other
+ * @returns {Vector3}
+ */
 Vector3.prototype.add = function(other) {
     this.storage[0] = this.storage[0] + other.storage[0];
     this.storage[1] = this.storage[1] + other.storage[1];
@@ -257,6 +324,12 @@ Vector3.prototype.add = function(other) {
     return this;
 };
 
+/**
+ * @method
+ * Multiply other to this
+ * @param other
+ * @returns {Vector3}
+ */
 Vector3.prototype.mul = function(other) {
     this.storage[0] = this.storage[0] * other.storage[0];
     this.storage[1] = this.storage[1] * other.storage[1];
@@ -264,6 +337,12 @@ Vector3.prototype.mul = function(other) {
     return this;
 };
 
+/**
+ * @method
+ * Divide this by other
+ * @param other
+ * @returns {Vector3}
+ */
 Vector3.prototype.div = function(other) {
     this.storage[0] = this.storage[1] / other.storage[1];
     this.storage[1] = this.storage[1] / other.storage[1];
@@ -271,6 +350,12 @@ Vector3.prototype.div = function(other) {
     return this;
 };
 
+/**
+ * @method
+ * Scale this
+ * @param arg
+ * @returns {Vector3}
+ */
 Vector3.prototype.scale = function(arg) {
     this.storage[0] = this.storage[0] * arg;
     this.storage[1] = this.storage[1] * arg;
@@ -278,7 +363,12 @@ Vector3.prototype.scale = function(arg) {
     return this;
 };
 
-/// Reflect [this].
+/**
+ * @method
+ * Reflect [this].
+ * @param normal
+ * @returns {Vector3}
+ */
 Vector3.prototype.reflect = function(normal) {
     var n_copy = normal.clone();
     n_copy.scale(2.0 * normal.dot(this));
@@ -288,7 +378,8 @@ Vector3.prototype.reflect = function(normal) {
 
 /**
  * @method dot
- * @param v
+ * Compute dot product
+ * @param v {Vector3}
  * @returns {Number}
  */
 Vector3.prototype.dot = function(v) {
@@ -297,6 +388,12 @@ Vector3.prototype.dot = function(v) {
            this.storage[2] * v.z;
 };
 
+/**
+ * @method
+ * Compute cross product
+ * @param v {Vector3}
+ * @returns {Vector3}
+ */
 Vector3.prototype.cross = function(v) {
     var x = this.storage[1] * v.storage[2] - this.storage[2] * v.storage[1];
     var y = this.storage[2] * v.storage[0] - this.storage[0] * v.storage[2];
@@ -305,6 +402,10 @@ Vector3.prototype.cross = function(v) {
     return new Vector3(x, y, z);
 };
 
+/**
+ * @method
+ * Set this to absolute value
+ */
 Vector3.prototype.absolute = function() {
     this.storage[0] = Math.abs(this.storage[0]);
     this.storage[1] = Math.abs(this.storage[1]);
@@ -381,7 +482,12 @@ Vector3.prototype.applyAxisAngle = function(axis, angle) {
     return this;
 };
 
-/// Applies a quaternion transform.
+/**
+ * @method
+ * Applies a quaternion transform.
+ * @param arg {Quaternion}
+ * @returns {Vector3}
+ */
 Vector3.prototype.applyQuaternion = function(arg) {
     var argStorage = arg.storage;
     var v0 = this.storage[0];
@@ -419,10 +525,9 @@ Vector3.prototype.applyMatrix3 = function(arg) {
     return this;
 };
 
-/// Multiplies [this] by a 4x3 subset of [arg]. Expects [arg] to be an affine
-/// transformation matrix.
 /**
- * 
+ * @method
+ * /// Multiplies [this] by a 4x3 subset of [arg]. Expects [arg] to be an affine transformation matrix.
  * @param arg {Matrix4}
  * @returns {Vector3}
  */
@@ -446,7 +551,13 @@ Vector3.prototype.applyMatrix4 = function(arg) {
     return this;
 };
 
-/// Clamp each entry n in [this] in the range [min[n]]-[max[n]].
+/**
+ * @method
+ * Clamp each entry n in [this] in the range [min[n]]-[max[n]].
+ * @param min {Vector3}
+ * @param max {Vector3}
+ * @returns {Vector3}
+ */
 Vector3.prototype.clamp = function(min, max) {
     var minStorage = min.storage;
     var maxStorage = max.storage;
@@ -456,7 +567,13 @@ Vector3.prototype.clamp = function(min, max) {
     return this;
 };
 
-/// Clamp entries in [this] in the range [min]-[max].
+/**
+ * @method
+ *  Clamp entries in [this] in the range [min]-[max].
+ * @param min {number}
+ * @param max {number}
+ * @returns {Vector3}
+ */
 Vector3.prototype.clampScalar = function(min, max) {
     this.storage[0] = Math.min(Math.max(this.storage[0], min), max);
     this.storage[1] = Math.min(Math.max(this.storage[1], min), max);
@@ -464,6 +581,11 @@ Vector3.prototype.clampScalar = function(min, max) {
     return this;
 };
 
+/**
+ * @method
+ * Check is vector contains NaN values
+ * @returns {boolean}
+ */
 Vector3.prototype.isNaN = function() {
     var is_nan = false;
     is_nan = is_nan || this.storage[0].isNaN;
@@ -472,24 +594,44 @@ Vector3.prototype.isNaN = function() {
     return is_nan;
 };
 
+/**
+ * @method
+ * Check if vector contains Infinte values
+ * @returns {boolean}
+ */
 Vector3.prototype.isInfinite = function() {
     var is_inf = false;
     is_inf = is_inf || this.storage[0].isInfinite();
     is_inf = is_inf || this.storage[1].isInfinite();
     is_inf = is_inf || this.storage[2].isInfinite();
-    return is_nan;
+    return is_inf;
 };
 
+/**
+ * @method
+ * Printable string
+ * @returns {string}
+ */
 Vector3.prototype.toString = function() {
     return '[x=' + this.storage[0] + ', y=' + this.storage[1] + ', z=' + this.storage[2] + ']';
 };
 
+/**
+ * @method
+ * Squared length
+ * @returns {number}
+ */
 Vector3.prototype.length2 = function() {
     return this.storage[0] * this.storage[0] +
            this.storage[1] * this.storage[1] +
            this.storage[2] * this.storage[2];
 };
 
+/**
+ * @method
+ * Normalize this
+ * @returns {Vector3}
+ */
 Vector3.prototype.normalize = function() {
     var l = this.length;
     if (l != 0.0) {
@@ -501,11 +643,22 @@ Vector3.prototype.normalize = function() {
     return this;
 };
 
+/**
+ * @method
+ * Returns a normalized copy of this
+ * @returns {Vector3}
+ */
 Vector3.prototype.normalized = function() {
     var v = this.clone();
     return v.normalize();
 };
 
+/**
+ * @method
+ * Compute squared distance to other
+ * @param v {Vector3}
+ * @returns {number}
+ */
 Vector3.prototype.distanceToSquared = function(v) {
     var dx = this.x - v.x;
     var dy = this.y - v.y;
@@ -513,26 +666,42 @@ Vector3.prototype.distanceToSquared = function(v) {
     return dx * dx + dy * dy + dz * dz;
 };
 
+/**
+ * @method
+ * Compute distance to other
+ * @param v {Vector3}
+ * @returns {number}
+ */
 Vector3.prototype.distanceTo = function(v) {
    return Math.sqrt(this.distanceToSquared(v));
 };
 
-/// Returns the angle between [this] vector and [other] in radians.
+/**
+ * @method
+ * Returns the angle between [this] vector and [other] in radians.
+ * @param other {Vector3}
+ * @returns {number}
+ */
 Vector3.prototype.angleTo = function(other) {
-    otherStorage = other.storage;
+    var otherStorage = other.storage;
     if (this.storage[0] == otherStorage[0] &&
         this.storage[1] == otherStorage[1] &&
         this.storage[2] == otherStorage[2]) {
         return 0.0;
     }
 
-    d = this.dot(other);
+    var d = this.dot(other);
 
     return Math.acos(Math.min(Math.max(d, -1.0), 1.0));
 };
 
-/// Returns the signed angle between [this] and [other] around [normal]
-/// in radians.
+/**
+ * @method
+ * Returns the signed angle between [this] and [other] around [normal] in radians.
+ * @param other {Vector3}
+ * @param normal {Vector3}
+ * @returns {number}
+ */
 Vector3.prototype.angleToSigned = function(other, normal) {
     var angle = this.angleTo(other);
     var c = this.cross(other);
@@ -541,7 +710,11 @@ Vector3.prototype.angleToSigned = function(other, normal) {
     return d < 0.0 ? -angle : angle;
 };
 
-/// Floor entries in [this].
+/**
+ * @method
+ * Floor entries in [this].
+ * @returns {Vector3}
+ */
 Vector3.prototype.floor = function() {
     this.storage[0] = Math.floor(this.x);
     this.storage[1] = Math.floor(this.y);
@@ -549,7 +722,11 @@ Vector3.prototype.floor = function() {
     return this;
 };
 
-/// Ceil entries in [this].
+/**
+ * @method
+ * Ceil entries in [this].
+ * @returns {Vector3}
+ */
 Vector3.prototype.ceil = function() {
     this.storage[0] = Math.ceil(this.x);
     this.storage[1] = Math.ceil(this.y);
@@ -557,7 +734,11 @@ Vector3.prototype.ceil = function() {
     return this;
 };
 
-/// Round entries in [this].
+/**
+ * @method
+ * Round entries in [this].
+ * @returns {Vector3}
+ */
 Vector3.prototype.round = function() {
     this.storage[0] = Math.round(this.x);
     this.storage[1] = Math.round(this.y);
@@ -565,7 +746,11 @@ Vector3.prototype.round = function() {
     return this;
 };
 
-/// Round entries in [this] towards zero.
+/**
+ * @method
+ * Round entries in [this] towards zero.
+ * @returns {Vector3}
+ */
 Vector3.prototype.roundToZero = function() {
     this.storage[0] = this.storage[0] < 0.0
         ? Math.ceil(this.storage[0])

@@ -96,7 +96,11 @@ Vector4.zero = function() {
     return vec;
 };
 
-/// Zero the vector.
+/**
+ * @method
+ * Zero the vector.
+ * @returns {Vector4}
+ */
 Vector4.prototype.setZero = function() {
     this.storage[0] = 0.0;
     this.storage[1] = 0.0;
@@ -105,7 +109,12 @@ Vector4.prototype.setZero = function() {
     return this;
 };
 
-/// Constructs Vector2 with a given [Float32List] as [storage].
+/**
+ * @static
+ * Constructs Vector2 with a given [Float32List] as [storage].
+ * @param array {Float32Array}
+ * @returns {Vector4}
+ */
 Vector4.fromFloat32Array = function(array) {
     var vec = Vector4.zero();
     vec.storage = array;
@@ -113,15 +122,28 @@ Vector4.fromFloat32Array = function(array) {
 };
 
 
-/// Constructs Vector4 with a [storage] that views given [buffer] starting at
-/// [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
+/**
+ * @static
+ * Constructs Vector4 with a [storage] that views given [buffer] starting at
+ * [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
+ * @param buffer {Buffer}
+ * @param offset {number}
+ * @returns {Vector4}
+ */
 Vector4.fromBuffer = function(buffer, offset) {
     var vec = Vector4.zero();
     vec.storage = new Float32Array(buffer, offset, 4);
     return vec.clone();
 };
 
-/// Set the values of the vector.
+/**
+ * @method
+ * Set the values of the vector.
+ * @param x {number}
+ * @param y {number}
+ * @param z {number}
+ * @returns {Vector4}
+ */
 Vector4.prototype.setValues = function(x, y, z) {
     this.storage[0] = x;
     this.storage[1] = y;
@@ -133,8 +155,8 @@ Vector4.prototype.setValues = function(x, y, z) {
 
 /**
  * @static
- * @property copy
- * @param v
+ * Returns a copy of v
+ * @param v {Vector4}
  * @returns {Vector4}
  */
 Vector4.copy = function(v) {
@@ -151,12 +173,22 @@ Vector4.all = function(value) {
     return v;
 };
 
+/**
+ * @static
+ * Returns identity vector
+ * @returns {Vector4}
+ */
 Vector4.identity = function() {
     var v = Vector4.zero();
     v.setIdentity();
     return v;
 };
 
+/**
+ * @method
+ * Set the vector to identity
+ * @returns {Vector4}
+ */
 Vector4.prototype.setIdentity = function() {
     this.storage[0] = 0.0;
     this.storage[1] = 0.0;
@@ -209,10 +241,21 @@ Vector4.mix = function(min, max, a, result) {
     result.w = min.w + a * (max.w - min.w);
 };
 
+/**
+ * @method
+ * Returns a copy of this
+ * @returns {Vector4}
+ */
 Vector4.prototype.clone = function() {
     return Vector4.copy(this);
 };
 
+/**
+ * @method
+ * Sets the values from other
+ * @param v {Vector4}
+ * @returns {Vector4}
+ */
 Vector4.prototype.setFrom = function(v) {
     this.storage[0] = v.storage[0];
     this.storage[1] = v.storage[1];
@@ -234,6 +277,13 @@ Vector4.prototype.splat = function(value) {
     return this;
 };
 
+/**
+ * @method
+ * Check if this is almost equal to other
+ * @param v {Vector4}
+ * @param precision {number}
+ * @returns {boolean}
+ */
 Vector4.prototype.almostEquals = function(v, precision) {
     if (precision === undefined) {
         precision = Number.EPSILON;
@@ -247,10 +297,22 @@ Vector4.prototype.almostEquals = function(v, precision) {
     return true;
 };
 
+/**
+ * @method
+ * Check if this equals other
+ * @param v {Vector4}
+ * @returns {boolean}
+ */
 Vector4.prototype.equals = function(v) {
     return (this.x == v.x && this.y == v.y && this.z == v.z && this.w == v.w);
 };
 
+/**
+ * @method
+ * Check if this is almost the zero vector
+ * @param precision {number}
+ * @returns {boolean}
+ */
 Vector4.prototype.almostZero = function(precision) {
     if (precision === undefined) {
         precision = Number.EPSILON;
@@ -264,10 +326,20 @@ Vector4.prototype.almostZero = function(precision) {
     return true;
 };
 
+/**
+ * @method
+ * Check if this is the zero vector
+ * @returns {boolean}
+ */
 Vector4.prototype.isZero = function() {
     return (this.x == 0 && this.y == 0 && this.z == 0 && this.w == 0);
 };
 
+/**
+ * @method
+ * Negate this
+ * @returns {Vector4}
+ */
 Vector4.prototype.negate = function() {
     this.storage[0] = - this.storage[0];
     this.storage[1] = - this.storage[1];
@@ -276,6 +348,12 @@ Vector4.prototype.negate = function() {
     return this;
 };
 
+/**
+ * @method
+ * Subtract other from this
+ * @param other {Vector4}
+ * @returns {Vector4}
+ */
 Vector4.prototype.sub = function(other) {
     this.storage[0] = this.storage[0] - other.storage[0];
     this.storage[1] = this.storage[1] - other.storage[1];
@@ -284,6 +362,12 @@ Vector4.prototype.sub = function(other) {
     return this;
 };
 
+/**
+ * @method
+ * Add other into this
+ * @param other {Vector4}
+ * @returns {Vector4}
+ */
 Vector4.prototype.add = function(other) {
     this.storage[0] = this.storage[0] + other.storage[0];
     this.storage[1] = this.storage[1] + other.storage[1];
@@ -292,6 +376,12 @@ Vector4.prototype.add = function(other) {
     return this;
 };
 
+/**
+ * @method
+ * Multiply this by other
+ * @param other {Vector4}
+ * @returns {Vector4}
+ */
 Vector4.prototype.mul = function(other) {
     this.storage[0] = this.storage[0] * other.storage[0];
     this.storage[1] = this.storage[1] * other.storage[1];
@@ -300,6 +390,12 @@ Vector4.prototype.mul = function(other) {
     return this;
 };
 
+/**
+ * @method
+ * Divide this by other
+ * @param other {Vector4}
+ * @returns {Vector4}
+ */
 Vector4.prototype.div = function(other) {
     this.storage[0] = this.storage[1] / other.storage[1];
     this.storage[1] = this.storage[1] / other.storage[1];
@@ -308,6 +404,12 @@ Vector4.prototype.div = function(other) {
     return this;
 };
 
+/**
+ * @method
+ * Scale this
+ * @param arg {number}
+ * @returns {Vector4}
+ */
 Vector4.prototype.scale = function(arg) {
     this.storage[0] = this.storage[0] * arg;
     this.storage[1] = this.storage[1] * arg;
@@ -316,7 +418,12 @@ Vector4.prototype.scale = function(arg) {
     return this;
 };
 
-/// Reflect [this].
+/**
+ * @method
+ * Reflect [this].
+ * @param normal
+ * @returns {Vector4}
+ */
 Vector4.prototype.reflect = function(normal) {
     var n_copy = normal.clone();
     n_copy.scale(2.0 * normal.dot(this));
@@ -326,7 +433,7 @@ Vector4.prototype.reflect = function(normal) {
 
 /**
  * @method dot
- * @param v
+ * @param v {Vector4}
  * @returns {Number}
  */
 Vector4.prototype.dot = function(v) {
@@ -337,6 +444,10 @@ Vector4.prototype.dot = function(v) {
 };
 
 
+/**
+ * @method
+ * Set this values to absolute
+ */
 Vector4.prototype.absolute = function() {
     this.storage[0] = Math.abs(this.storage[0]);
     this.storage[1] = Math.abs(this.storage[1]);
@@ -344,7 +455,13 @@ Vector4.prototype.absolute = function() {
     this.storage[3] = Math.abs(this.storage[3]);
 };
 
-/// Clamp each entry n in [this] in the range [min[n]]-[max[n]].
+/**
+ * @method
+ * Clamp each entry n in [this] in the range [min[n]]-[max[n]].
+ * @param min {Vector4}
+ * @param max {Vector4}
+ * @returns {Vector4}
+ */
 Vector4.prototype.clamp = function(min, max) {
     var minStorage = min.storage;
     var maxStorage = max.storage;
@@ -355,7 +472,13 @@ Vector4.prototype.clamp = function(min, max) {
     return this;
 };
 
-/// Clamp entries in [this] in the range [min]-[max].
+/**
+ * @method
+ * Clamp entries in [this] in the range [min]-[max].
+ * @param min {Number}
+ * @param max {Number}
+ * @returns {Vector4}
+ */
 Vector4.prototype.clampScalar = function(min, max) {
     this.storage[0] = Math.min(Math.max(this.storage[0], min), max);
     this.storage[1] = Math.min(Math.max(this.storage[1], min), max);
@@ -364,6 +487,11 @@ Vector4.prototype.clampScalar = function(min, max) {
     return this;
 };
 
+/**
+ * @method
+ * Check if this contains NaN values
+ * @returns {boolean}
+ */
 Vector4.prototype.isNaN = function() {
     var is_nan = false;
     is_nan = is_nan || this.storage[0].isNaN;
@@ -373,19 +501,34 @@ Vector4.prototype.isNaN = function() {
     return is_nan;
 };
 
+/**
+ * @method
+ * Check if this contains infinite values
+ * @returns {boolean}
+ */
 Vector4.prototype.isInfinite = function() {
     var is_inf = false;
     is_inf = is_inf || this.storage[0].isInfinite();
     is_inf = is_inf || this.storage[1].isInfinite();
     is_inf = is_inf || this.storage[2].isInfinite();
     is_inf = is_inf || this.storage[3].isInfinite();
-    return is_nan;
+    return is_inf;
 };
 
+/**
+ * @metod
+ * Printable string
+ * @returns {string}
+ */
 Vector4.prototype.toString = function() {
     return '[x=' + this.storage[0] + ', y=' + this.storage[1] + ', z=' + this.storage[2] + ', w= ' + this.storage[3] + ']';
 };
 
+/**
+ * @method
+ * Compute squared length
+ * @returns {number}
+ */
 Vector4.prototype.length2 = function() {
     return this.storage[0] * this.storage[0] +
         this.storage[1] * this.storage[1] +
@@ -393,6 +536,11 @@ Vector4.prototype.length2 = function() {
         this.storage[3] * this.storage[3];
 };
 
+/**
+ * @method
+ * Normalize this
+ * @returns {Vector4}
+ */
 Vector4.prototype.normalize = function() {
     var l = this.length;
     if (l != 0.0) {
@@ -405,11 +553,22 @@ Vector4.prototype.normalize = function() {
     return this;
 };
 
+/**
+ * @method
+ * Returns a normalized copy of this
+ * @returns {Vector4}
+ */
 Vector4.prototype.normalized = function() {
     var v = this.clone();
     return v.normalize();
 };
 
+/**
+ * @method
+ * Compute squared distance to other
+ * @param v {Vector4}
+ * @returns {number}
+ */
 Vector4.prototype.distanceToSquared = function(v) {
     var dx = this.x - v.x;
     var dy = this.y - v.y;
@@ -418,13 +577,24 @@ Vector4.prototype.distanceToSquared = function(v) {
     return dx * dx + dy * dy + dz * dz + dw * dw;
 };
 
+/**
+ * @method
+ * Compute distance to other
+ * @param v {Vector4}
+ * @returns {number}
+ */
 Vector4.prototype.distanceTo = function(v) {
     return Math.sqrt(this.distanceToSquared(v));
 };
 
-/// Returns the angle between [this] vector and [other] in radians.
+/**
+ * @method
+ * Returns the angle between [this] vector and [other] in radians.
+ * @param other
+ * @returns {number}
+ */
 Vector4.prototype.angleTo = function(other) {
-    otherStorage = other.storage;
+    var otherStorage = other.storage;
     if (this.storage[0] == otherStorage[0] &&
         this.storage[1] == otherStorage[1] &&
         this.storage[2] == otherStorage[2] &&
@@ -432,13 +602,18 @@ Vector4.prototype.angleTo = function(other) {
         return 0.0;
     }
 
-    d = this.dot(other);
+    var d = this.dot(other);
 
     return Math.acos(Math.min(Math.max(d, -1.0), 1.0));
 };
 
-/// Returns the signed angle between [this] and [other] around [normal]
-/// in radians.
+/**
+ * @method
+ * Returns the signed angle between [this] and [other] around [normal] in radians.
+ * @param other {Vector4}
+ * @param normal {Vector4}
+ * @returns {number}
+ */
 Vector4.prototype.angleToSigned = function(other, normal) {
     var angle = this.angleTo(other);
     var c = this.cross(other);
@@ -447,7 +622,11 @@ Vector4.prototype.angleToSigned = function(other, normal) {
     return d < 0.0 ? -angle : angle;
 };
 
-/// Floor entries in [this].
+/**
+ * @method
+ * Floor entries in [this].
+ * @returns {Vector4}
+ */
 Vector4.prototype.floor = function() {
     this.storage[0] = Math.floor(this.x);
     this.storage[1] = Math.floor(this.y);
@@ -456,7 +635,11 @@ Vector4.prototype.floor = function() {
     return this;
 };
 
-/// Ceil entries in [this].
+/**
+ * @method
+ * Ceil entries in [this].
+ * @returns {Vector4}
+ */
 Vector4.prototype.ceil = function() {
     this.storage[0] = Math.ceil(this.x);
     this.storage[1] = Math.ceil(this.y);
@@ -465,7 +648,11 @@ Vector4.prototype.ceil = function() {
     return this;
 };
 
-/// Round entries in [this].
+/**
+ * @method
+ * Round entries in [this].
+ * @returns {Vector4}
+ */
 Vector4.prototype.round = function() {
     this.storage[0] = Math.round(this.x);
     this.storage[1] = Math.round(this.y);
@@ -474,7 +661,11 @@ Vector4.prototype.round = function() {
     return this;
 };
 
-/// Round entries in [this] towards zero.
+/**
+ * @method
+ * Round entries in [this] towards zero.
+ * @returns {Vector4}
+ */
 Vector4.prototype.roundToZero = function() {
     this.storage[0] = this.storage[0] < 0.0
         ? Math.ceil(this.storage[0])
