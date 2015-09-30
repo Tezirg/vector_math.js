@@ -389,11 +389,24 @@ Vector4.prototype.setFrom = function(v) {
  * @param value {Number}
  */
 Vector4.prototype.splat = function(value) {
-    this.storage[0] = value;
-    this.storage[1] = value;
-    this.storage[2] = value;
-    this.storage[3] = value;
+    if (vector_math.USE_SIMD()) {
+        Vector4.simd.splat(this, value);
+    }
+    else {
+        Vector4.scalar.splat(this, value);
+    }
     return this;
+};
+Vector4.scalar.splat = function(that, value) {
+    that.storage[0] = value;
+    that.storage[1] = value;
+    that.storage[2] = value;
+    that.storage[3] = value;
+};
+Vector4.simd.splat = function(that, value) {
+    Vector4.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.splat(value);
+    Vector4.simd.store(that);
 };
 
 /**
@@ -407,10 +420,33 @@ Vector4.prototype.almostEquals = function(v, precision) {
     if (precision === undefined) {
         precision = vector_math.EPSILON;
     }
+
+    if (vector_math.USE_SIMD()) {
+        return Vector4.simd.almostEquals(this, v, precision);
+    }
+    else {
+        return Vector4.scalar.almostEquals(this, v, precision);
+    }
+};
+Vector4.scalar.almostEquals = function(that, v, precision) {
     if (Math.abs(this.x - v.x) > precision ||
         Math.abs(this.y - v.y) > precision ||
         Math.abs(this.z - v.z) > precision ||
         Math.abs(this.w - v.w) > precision) {
+        return false;
+    }
+    return true;
+};
+Vector4.simd.almostEquals = function(that, v, p) {
+    Vector4.simd.load(that);
+    Vector4.simd.load(v);
+    that.simd_storage = SIMD.Float32x4.sub(that.simd_storage, v.simd_storage);
+    that.simd_storage = SIMD.Float32x4.abs(that.simd_storage);
+    that.simd_storage = SIMD.Float32x4.greaterThan(that.simd_storage, SIMD.Float32x4(p, p, p, p));
+    if (SIMD.Bool32x4.extractLane(that.simd_storage, 0) ||
+        SIMD.Bool32x4.extractLane(that.simd_storage, 1) ||
+        SIMD.Bool32x4.extractLane(that.simd_storage, 2) ||
+        SIMD.Bool32x4.extractLane(that.simd_storage, 3)) {
         return false;
     }
     return true;
