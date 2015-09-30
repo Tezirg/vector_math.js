@@ -20,23 +20,38 @@ function Vector4(x, y, z, w){
      * @type {Float32Array}
      */
     this.storage = new Float32Array([x, y, z, w]);
+    /**
+     * @property simd_storage
+     * @type {null|Float32x4}
+     */
     this.simd_storage = null;
-
-    //console.log("Vector4 simd: " + vector_math.USE_SIMD().toString());
-    if (vector_math.USE_SIMD()) {
-        //console.log("SIMD: " + SIMD);
-        //console.log("SIMD Float32x4" + SIMD.Float32x4(0,0,0,0).toString());
-        Vector4.simd.load(this);
-    }
 }
 
+/**
+ * @static
+ * SIMD specialization
+ */
 Vector4.simd = {};
+/**
+ * @static
+ * Scalar specialization
+ */
 Vector4.scalar = {};
 
+/**
+ * @static
+ * Load SIMD.Float32x4 into vector.simd_storage
+ * @param vector {Vector4}
+ */
 Vector4.simd.load = function(vector) {
     vector.simd_storage = SIMD.Float32x4.load(vector.storage, 0);
 };
 
+/**
+ * @static
+ * Store SIMD.Float32x4 at vector.simd_storage into vector.storage
+ * @param vector {Vector4}
+ */
 Vector4.simd.store = function(vector) {
     SIMD.Float32x4.store(vector.storage, 0, vector.simd_storage);
 };
