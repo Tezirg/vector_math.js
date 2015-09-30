@@ -4,6 +4,9 @@
 
 module.exports = Vector3;
 
+var vector_math = require('./common.js');
+var SIMD = require("simd");
+
 var Matrix3 = require('./matrix3.js');
 var Matrix4 = require('./matrix4.js');
 

@@ -4,6 +4,9 @@
 
 module.exports = Vector2;
 
+var vector_math = require('./common.js');
+var SIMD = require("simd");
+
 /**
  * @class Vector2
  * @param x

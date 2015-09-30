@@ -3,6 +3,9 @@
  */
 module.exports = Vector4;
 
+var vector_math = require('./common.js');
+var SIMD = require("simd");
+
 /**
  * @class Vector4
  * @param x {Number}
@@ -17,7 +20,26 @@ function Vector4(x, y, z, w){
      * @type {Float32Array}
      */
     this.storage = new Float32Array([x, y, z, w]);
+    this.simd_storage = null;
+
+    //console.log("Vector4 simd: " + vector_math.USE_SIMD().toString());
+    if (vector_math.USE_SIMD()) {
+        //console.log("SIMD: " + SIMD);
+        //console.log("SIMD Float32x4" + SIMD.Float32x4(0,0,0,0).toString());
+        Vector4.simd.load(this);
+    }
 }
+
+Vector4.simd = {};
+Vector4.scalar = {};
+
+Vector4.simd.load = function(vector) {
+    vector.simd_storage = SIMD.Float32x4.load(vector.storage, 0);
+};
+
+Vector4.simd.store = function(vector) {
+    SIMD.Float32x4.store(vector.storage, 0, vector.simd_storage);
+};
 
 /**
  * @property x
@@ -71,21 +93,53 @@ Vector4.prototype.__defineGetter__("length", function() {
     return Math.sqrt(this.length2());
 });
 Vector4.prototype.__defineSetter__("length", function(value) {
-    if (value == 0.0) {
-        this.setZero();
+    if (vector_math.USE_SIMD()) {
+        Vector4.simd._setter_length(this, value);
     }
     else {
-        l = this.length;
+        Vector4.scalar._setter_length(this, value);
+    }
+});
+
+/**
+ * @static
+ * Scalar version of set length
+ * @param vector {Vector3}
+ * @param value {Number}
+ * @private
+ */
+Vector4.scalar._setter_length = function(vector, value) {
+    if (value == 0.0) {
+        vector.setZero();
+    }
+    else {
+        var l = this.length;
         if (l == 0.0) {
             return;
         }
         l = value / l;
-        this.storage[0] *= l;
-        this.storage[1] *= l;
-        this.storage[2] *= l;
-        this.storage[3] *= l;
+        vector.storage[0] *= l;
+        vector.storage[1] *= l;
+        vector.storage[2] *= l;
+        vector.storage[3] *= l;
     }
-});
+};
+
+Vector4.simd._setter_length = function(vector, value) {
+    if (value == 0.0) {
+        vector.setZero();
+    }
+    else {
+        var l = vector.length;
+        if (l == 0.0) {
+            return;
+        }
+        l = value / l;
+        Vector4.simd.load(vector);
+        vector.simd_storage = SIMD.Float32x4.mul(vector.simd_storage, SIMD.Float32x4(l, l, l, l));
+        Vector4.simd.store(vector);
+    }
+};
 
 /**
  * @static
@@ -205,10 +259,26 @@ Vector4.prototype.setIdentity = function() {
  * @param result {Vector4}
  */
 Vector4.min = function(a, b, result) {
+    if (vector_math.USE_SIMD()) {
+        Vector4.simd.min(a, b, result);
+    }
+    else {
+        Vector4.scalar.min(a, b, result);
+    }
+};
+
+Vector4.scalar.min = function(a, b, result) {
     result.x = Math.min(a.x, b.x);
     result.y = Math.min(a.y, b.y);
     result.z = Math.min(a.z, b.z);
     result.w = Math.min(a.w, b.w);
+};
+
+Vector4.simd.min = function(a, b, result) {
+    Vector4.simd.load(a);
+    Vector4.simd.load(b);
+    result.simd_storage = SIMD.Float32x4.min(a.simd_storage, b.simd_storage);
+    Vector4.simd.store(result);
 };
 
 /**
@@ -219,11 +289,28 @@ Vector4.min = function(a, b, result) {
  * @param result {Vector4}
  */
 Vector4.max = function(a, b, result) {
+    if (vector_math.USE_SIMD()) {
+        Vector4.simd.max(a, b, result);
+    }
+    else {
+        Vector4.scalar.max(a, b, result);
+    }
+};
+
+Vector4.scalar.max = function(a, b, result) {
     result.x = Math.max(a.x, b.x);
     result.y = Math.max(a.y, b.y);
     result.z = Math.max(a.z, b.z);
     result.w = Math.max(a.w, b.w);
 };
+
+Vector4.simd.max = function(a, b, result) {
+    Vector4.simd.load(a);
+    Vector4.simd.load(b);
+    result.simd_storage = SIMD.Float32x4.max(a.simd_storage, b.simd_storage);
+    Vector4.simd.store(result);
+};
+
 
 /**
  * @description Interpolate between [min] and [max] with the amount of [a] using a linear
@@ -286,7 +373,7 @@ Vector4.prototype.splat = function(value) {
  */
 Vector4.prototype.almostEquals = function(v, precision) {
     if (precision === undefined) {
-        precision = Number.EPSILON;
+        precision = vector_math.EPSILON;
     }
     if (Math.abs(this.x - v.x) > precision ||
         Math.abs(this.y - v.y) > precision ||
@@ -315,7 +402,7 @@ Vector4.prototype.equals = function(v) {
  */
 Vector4.prototype.almostZero = function(precision) {
     if (precision === undefined) {
-        precision = Number.EPSILON;
+        precision = vector_math.EPSILON;
     }
     if (Math.abs(this.x) > precision ||
         Math.abs(this.y) > precision ||
