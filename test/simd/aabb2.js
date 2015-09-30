@@ -1,9 +1,11 @@
 
-var Aabb2 = require('../src/aabb2.js');
-var Matrix2 = require('../src/matrix2.js');
-var Matrix3 = require('../src/matrix3.js');
-var Vector2 = require('../src/vector2.js');
+var Aabb2 = require('../../src/aabb2.js');
+var Matrix2 = require('../../src/matrix2.js');
+var Matrix3 = require('../../src/matrix3.js');
+var Vector2 = require('../../src/vector2.js');
 var TEST = require('./test_utils.js');
+
+var SIMD = require("simd");
 
 module.exports = {
 

@@ -1,12 +1,12 @@
 
-var Aabb3 = require('../src/aabb3.js');
-var Vector3 = require('../src/vector3.js');
-var Matrix3 = require('../src/matrix3.js');
-var Ray = require('../src/ray.js');
-var Triangle = require('../src/triangle.js');
-var Sphere = require('../src/sphere.js');
-var Quad = require('../src/quad.js');
-var Plane = require('../src/plane.js');
+var Aabb3 = require('../../src/aabb3.js');
+var Vector3 = require('../../src/vector3.js');
+var Matrix3 = require('../../src/matrix3.js');
+var Ray = require('../../src/ray.js');
+var Triangle = require('../../src/triangle.js');
+var Sphere = require('../../src/sphere.js');
+var Quad = require('../../src/quad.js');
+var Plane = require('../../src/plane.js');
 var TEST = require('./test_utils.js');
 
 module.exports = {

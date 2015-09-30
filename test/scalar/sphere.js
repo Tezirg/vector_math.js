@@ -2,8 +2,8 @@
  * Created by grizet_j on 9/21/2015.
  */
 
-var Sphere = require('../src/sphere.js');
-var Vector3 = require('../src/vector3.js');
+var Sphere = require('../../src/sphere.js');
+var Vector3 = require('../../src/vector3.js');
 
 module.exports = {
 

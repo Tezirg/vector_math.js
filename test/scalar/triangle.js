@@ -2,8 +2,8 @@
  * Created by grizet_j on 9/21/2015.
  */
 
-var Triangle = require('../src/triangle.js');
-var Vector3 = require('../src/vector3.js');
+var Triangle = require('../../src/triangle.js');
+var Vector3 = require('../../src/vector3.js');
 
 module.exports = {
 

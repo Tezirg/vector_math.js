@@ -2,8 +2,10 @@
  * Created by grizet_j on 9/20/2015.
  */
 
-var Vector2 = require('../src/vector2.js');
+var Vector2 = require('../../src/vector2.js');
 var TEST = require('./test_utils.js');
+
+var SIMD = require("simd");
 
 module.exports = {
 

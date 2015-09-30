@@ -1,7 +1,9 @@
 
-var Quad = require('../src/quad.js');
-var Triangle = require('../src/triangle.js');
-var Vector3 = require('../src/vector3.js');
+var Quad = require('../../src/quad.js');
+var Triangle = require('../../src/triangle.js');
+var Vector3 = require('../../src/vector3.js');
+
+var SIMD = require("simd");
 
 module.exports  = {
 

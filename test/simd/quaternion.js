@@ -2,8 +2,10 @@
  * Created by grizet_j on 9/21/2015.
  */
 
-var Quaternion = require('../src/quaternion.js');
-var Vector3 = require('../src/vector3.js');
+var Quaternion = require('../../src/quaternion.js');
+var Vector3 = require('../../src/vector3.js');
+
+var SIMD = require("simd");
 
 module.exports = {
 

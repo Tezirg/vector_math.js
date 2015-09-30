@@ -1,8 +1,10 @@
 /**
  * Created by grizet_j on 9/21/2015.
  */
-var Plane = require('../src/plane.js');
-var Vector3 = require('../src/vector3.js');
+var Plane = require('../../src/plane.js');
+var Vector3 = require('../../src/vector3.js');
+
+var SIMD = require("simd");
 
 module.exports = {
 

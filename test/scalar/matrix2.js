@@ -2,8 +2,8 @@
  * Created by grizet_j on 9/21/2015.
  */
 
-var Matrix2 = require('../src/matrix2.js');
-var Vector2 = require('../src/vector2.js');
+var Matrix2 = require('../../src/matrix2.js');
+var Vector2 = require('../../src/vector2.js');
 var TEST = require('./test_utils.js');
 
 module.exports = {

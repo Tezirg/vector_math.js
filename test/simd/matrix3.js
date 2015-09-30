@@ -2,10 +2,12 @@
  * Created by grizet_j on 9/21/2015.
  */
 
-var Vector2 = require('../src/vector2.js');
-var Matrix3 = require('../src/matrix3.js');
-var Vector3 = require('../src/vector3.js');
+var Vector2 = require('../../src/vector2.js');
+var Matrix3 = require('../../src/matrix3.js');
+var Vector3 = require('../../src/vector3.js');
 var TEST = require('./test_utils.js');
+
+var SIMD = require("simd");
 
 module.exports = {
 

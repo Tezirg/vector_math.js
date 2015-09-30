@@ -2,12 +2,14 @@
  * Created by grizet_j on 9/21/2015.
  */
 
-var Ray = require('../src/ray.js');
-var Vector3 = require('../src/vector3.js');
-var Sphere = require('../src/sphere.js');
-var Triangle = require('../src/triangle.js');
-var Aabb3 = require('../src/aabb3.js');
+var Ray = require('../../src/ray.js');
+var Vector3 = require('../../src/vector3.js');
+var Sphere = require('../../src/sphere.js');
+var Triangle = require('../../src/triangle.js');
+var Aabb3 = require('../../src/aabb3.js');
 var TEST = require('./test_utils.js');
+
+var SIMD = require("simd");
 
 module.exports = {
     testRayAt: function(test) {

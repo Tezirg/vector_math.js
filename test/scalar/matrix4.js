@@ -2,12 +2,12 @@
  * Created by grizet_j on 9/21/2015.
  */
 
-var Matrix4 = require('../src/matrix4.js');
-var Vector2 = require('../src/vector2.js');
-var Matrix3 = require('../src/matrix3.js');
-var Vector3 = require('../src/vector3.js');
-var Vector4 = require('../src/vector4.js');
-var Quaternion = require('../src/quaternion.js');
+var Matrix4 = require('../../src/matrix4.js');
+var Vector2 = require('../../src/vector2.js');
+var Matrix3 = require('../../src/matrix3.js');
+var Vector3 = require('../../src/vector3.js');
+var Vector4 = require('../../src/vector4.js');
+var Quaternion = require('../../src/quaternion.js');
 var TEST = require('./test_utils.js');
 
 module.exports = {
