@@ -61,7 +61,7 @@ module.exports = {
         a = new Vector3(5.0, 7.0, -3.0);
         b = new Vector3(3.0, 8.0, 2.0);
 
-        result = Vector3.zero;
+        result = Vector3.zero();
 
         Vector3.min(a, b, result);
         test.equals(result.x, 3.0);
@@ -80,7 +80,7 @@ module.exports = {
         a = new Vector3(5.0, 7.0, 3.0);
         b = new Vector3(3.0, 8.0, 2.0);
 
-        result = Vector3.zero;
+        result = Vector3.zero();
 
         Vector3.mix(a, b, 0.5, result);
         test.equals(result.x, 4.0);
