@@ -2082,7 +2082,7 @@ Matrix4.scalar.scaleAdjoint = function(that, scale) {
 };
 
 Matrix4.simd.scaleAdjoint = function(that, scale) {
-/*
+ /*
     var s = SMID.Float32x4(scale, -scale, scale, -scale);
     var col0 =
         SIMD.Float32x4.add(
@@ -2137,50 +2137,51 @@ Matrix4.simd.scaleAdjoint = function(that, scale) {
     var col1 =
         SIMD.Float32x4.add(
             SIMD.Float32x4.sub(
-                SIMD.Float32x4mul(//[, , , ]
+                SIMD.Float32x4mul(//[m01, m00, m00, m00]
                     ,
                     SIMD.Float32x4.sub(
-                        SIMD.Float32x4.mul( //[, , , ]
+                        SIMD.Float32x4.mul( //[m22, m22, m21, m21]
                             ,
-                            //[, , , ]
+                            //[m33, m33, m33, m32]
                         )
                         ,
-                        SIMD.Float32x4.mul( //[, , , ]
+                        SIMD.Float32x4.mul( //[m32, m32, m31, m31]
                             ,
-                            //[, , , ]
+                            //[m23, m23, m23, m22]
                         )
                     )
                 ),
-                SIMD.Float32x4mul(//[, , , ]
+                SIMD.Float32x4mul(//[m02, m02, m01, m01]
                     ,
                     SIMD.Float32x4.sub(
-                        SIMD.Float32x4.mul( //[, , , ]
+                        SIMD.Float32x4.mul( //[m21, m20, m20, m20]
                             ,
-                            //[, , , ]
+                            //[m33, m33, m32, m32]
                         )
                         ,
-                        SIMD.Float32x4.mul( //[, , , ]
+                        SIMD.Float32x4.mul( //[m31, m30, m30, m30]
                             ,
-                            //[, , , ]
+                            //[m23, m23, m23, m22]
                         )
                     )
                 )),
-            SIMD.Float32x4mul(//[, , , ]
+            SIMD.Float32x4mul(//[m03, m03, m02, m02]
                 ,
                 SIMD.Float32x4.sub(
-                    SIMD.Float32x4.mul( ///[, , , ]
+                    SIMD.Float32x4.mul( ///[m21, m20, m20, m20]
                         ,
-                        //[, , , ]
+                        //[m32, m32, m31, m31]
                     )
                     ,
-                    SIMD.Float32x4.mul( //[, , , ]
+                    SIMD.Float32x4.mul( //[m31, m30, m30, m30]
                         ,
-                        //[, , , ]
+                        //[m22, m22, m21, m21]
                     )
                 )
             )
         );
     var out1 = SMID.Float32x4.mul(s, col1);
+
 
     s = SMID.Float32x4(scale, -scale, scale, -scale);
     var col2 =
@@ -2287,7 +2288,7 @@ Matrix4.simd.scaleAdjoint = function(that, scale) {
     that.simd.simd_c2 = out2;
     that.simd.simd_c3 = out3;
     Matrix4.simd.store(that);
-    */
+//    */
 };
 
 /**
