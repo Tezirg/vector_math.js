@@ -7,8 +7,6 @@ Javascript version of [vector_math.dart](https://github.com/google/vector_math.d
 * 2D, 3D, and 4D vector and matrix types.
 * Quaternion type for animating rotations.
 * Collision detection: AABB, rays, spheres, ...
-* Utilities like color and common rendering related operations
-* Flexible getters and setters, for example, ```position.xwz = color.grb;```.
 * Fully documented.
 * Well tested.
 * Heavily optimized.
