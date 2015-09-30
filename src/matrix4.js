@@ -86,7 +86,7 @@ Matrix4.scalar = {};
 /**
  * @static
  * Load SIMD.Float32x4 into vector.simd_storage
- * @param vector {Matrix4}
+ * @param matrix {Matrix4}
  */
 Matrix4.simd.load = function(matrix) {
     matrix.simd_c0 = SIMD.Float32x4.load(matrix.storage, 0);
@@ -98,7 +98,7 @@ Matrix4.simd.load = function(matrix) {
 /**
  * @static
  * Store SIMD.Float32x4 at vector.simd_storage into vector.storage
- * @param vector {Matrix4}
+ * @param matrix {Matrix4}
  */
 Matrix4.simd.store = function(matrix) {
     SIMD.Float32x4.store(matrix.storage, 0, matrix.simd_c0);

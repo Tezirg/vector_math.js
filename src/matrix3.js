@@ -31,6 +31,24 @@ function Matrix3(m00, m10, m20, m01, m11, m21, m02, m12, m22) {
     this.storage = new Float32Array([m00, m10, m20, m01, m11, m21, m02, m12, m22]);
 
     /**
+     * @property simd_c0
+     * @type {null | Float32x4}
+     */
+    this.simd_c0 = null;
+
+    /**
+     * @property simd_c1
+     * @type {null | Float32x4}
+     */
+
+    this.simd_c1 = null;
+    /**
+     * @property simd_c2
+     * @type {null | Float32x4}
+     */
+    this.simd_c2 = null;
+
+    /**
      * @property dimension
      * @type {number}
      */
@@ -38,10 +56,43 @@ function Matrix3(m00, m10, m20, m01, m11, m21, m02, m12, m22) {
 }
 
 /**
+* @static
+* SIMD specialization
+*/
+Matrix3.simd = {};
+/**
+ * @static
+ * Scalar specialization
+ */
+Matrix3.scalar = {};
+
+/**
+ * @static
+ * Load SIMD.Float32x4 into vector.simd_storage
+ * @param matrix {Matrix3}.
+ */
+Matrix3.simd.load = function(matrix) {
+    matrix.simd_c0 = SIMD.Float32x4.load3(matrix.storage, 0);
+    matrix.simd_c1 = SIMD.Float32x4.load3(matrix.storage, 3);
+    matrix.simd_c2 = SIMD.Float32x4.load3(matrix.storage, 6);
+};
+
+/**
+ * @static
+ * Store SIMD.Float32x4 at vector.simd_storage into vector.storage
+ * @param matrix {Matrix3}
+ */
+Matrix3.simd.store = function(matrix) {
+    SIMD.Float32x4.store3(matrix.storage, 0, matrix.simd_c0);
+    SIMD.Float32x4.store3(matrix.storage, 3, matrix.simd_c1);
+    SIMD.Float32x4.store3(matrix.storage, 6, matrix.simd_c2);
+};
+
+/**
  * @static
  * /// Constructs Matrix3 with a given [Float32Array] as [storage].
  * @param array {Float32Array}
- * @return {Matrix4}
+ * @return {Matrix3.
  */
 Matrix3.fromFloat32Array = function(array) {
     var m = Matrix3.zero();
@@ -735,20 +786,35 @@ Matrix3.prototype.transpose = function() {
  * @returns {Matrix3}
  */
 Matrix3.prototype.absolute = function() {
+    if (vector_math.USE_SIMD()) {
+        return Matrix3.simd.absolute(this);
+    }
+    else {
+        return Matrix3.scalar.absolute(this);
+    }
+};
+Matrix3.scalar.absolute = function(that) {
     var r = Matrix3.zero();
     var rStorage = r.storage;
-    rStorage[0] = Math.abs(this.storage[0]);
-    rStorage[1] = Math.abs(this.storage[1]);
-    rStorage[2] = Math.abs(this.storage[2]);
-    rStorage[3] = Math.abs(this.storage[3]);
-    rStorage[4] = Math.abs(this.storage[4]);
-    rStorage[5] = Math.abs(this.storage[5]);
-    rStorage[6] = Math.abs(this.storage[6]);
-    rStorage[7] = Math.abs(this.storage[7]);
-    rStorage[8] = Math.abs(this.storage[8]);
+    rStorage[0] = Math.abs(that.storage[0]);
+    rStorage[1] = Math.abs(that.storage[1]);
+    rStorage[2] = Math.abs(that.storage[2]);
+    rStorage[3] = Math.abs(that.storage[3]);
+    rStorage[4] = Math.abs(that.storage[4]);
+    rStorage[5] = Math.abs(that.storage[5]);
+    rStorage[6] = Math.abs(that.storage[6]);
+    rStorage[7] = Math.abs(that.storage[7]);
+    rStorage[8] = Math.abs(that.storage[8]);
+    rStorage[9] = Math.abs(that.storage[9]);
     return r;
 };
-
+Matrix3.simd.absolute = function(that) {
+    Matrix3.simd.load(that);
+    that.simd_c0 = SIMD.Float32x4.abs(that.simd_c0);
+    that.simd_c1 = SIMD.Float32x4.abs(that.simd_c1);
+    that.simd_c2 = SIMD.Float32x4.abs(that.simd_c2);
+    Matrix3.simd.store(that);
+};
 /**
  * /// Returns the determinant of this matrix.
  * @returns {number}
@@ -1107,17 +1173,33 @@ Matrix3.prototype.scaled = function(scale) {
  * @returns {Matrix3}
  */
 Matrix3.prototype.add = function(o) {
-    var oStorage = o.storage;
-    this.storage[0] = this.storage[0] + oStorage[0];
-    this.storage[1] = this.storage[1] + oStorage[1];
-    this.storage[2] = this.storage[2] + oStorage[2];
-    this.storage[3] = this.storage[3] + oStorage[3];
-    this.storage[4] = this.storage[4] + oStorage[4];
-    this.storage[5] = this.storage[5] + oStorage[5];
-    this.storage[6] = this.storage[6] + oStorage[6];
-    this.storage[7] = this.storage[7] + oStorage[7];
-    this.storage[8] = this.storage[8] + oStorage[8];
+    if (vector_math.USE_SIMD()) {
+        Matrix3.simd.add(this, o);
+    }
+    else {
+        Matrix3.scalar.add(this, o);
+    }
     return this;
+};
+Matrix3.scalar.add = function(that, o) {
+    var oStorage = o.storage;
+    that.storage[0] = that.storage[0] + oStorage[0];
+    that.storage[1] = that.storage[1] + oStorage[1];
+    that.storage[2] = that.storage[2] + oStorage[2];
+    that.storage[3] = that.storage[3] + oStorage[3];
+    that.storage[4] = that.storage[4] + oStorage[4];
+    that.storage[5] = that.storage[5] + oStorage[5];
+    that.storage[6] = that.storage[6] + oStorage[6];
+    that.storage[7] = that.storage[7] + oStorage[7];
+    that.storage[8] = that.storage[8] + oStorage[8];
+};
+Matrix3.simd.add = function(that, o) {
+    Matrix3.simd.load(that);
+    Matrix3.simd.load(o);
+    that.simd_c0 = SIMD.Float32x4.add(that.simd_c0, o.simd_c0);
+    that.simd_c1 = SIMD.Float32x4.add(that.simd_c1, o.simd_c1);
+    that.simd_c2 = SIMD.Float32x4.add(that.simd_c2, o.simd_c2);
+    Matrix3.simd.store(that);
 };
 
 /**
@@ -1127,17 +1209,33 @@ Matrix3.prototype.add = function(o) {
  * @returns {Matrix3}
  */
 Matrix3.prototype.sub = function(o) {
-    var oStorage = o.storage;
-    this.storage[0] = this.storage[0] - oStorage[0];
-    this.storage[1] = this.storage[1] - oStorage[1];
-    this.storage[2] = this.storage[2] - oStorage[2];
-    this.storage[3] = this.storage[3] - oStorage[3];
-    this.storage[4] = this.storage[4] - oStorage[4];
-    this.storage[5] = this.storage[5] - oStorage[5];
-    this.storage[6] = this.storage[6] - oStorage[6];
-    this.storage[7] = this.storage[7] - oStorage[7];
-    this.storage[8] = this.storage[8] - oStorage[8];
+    if (vector_math.USE_SIMD()) {
+        Matrix3.simd.sub(this, o);
+    }
+    else {
+        Matrix3.scalar.sub(this, o);
+    }
     return this;
+};
+Matrix3.scalar.sub = function(that, o) {
+    var oStorage = o.storage;
+    that.storage[0] = that.storage[0] - oStorage[0];
+    that.storage[1] = that.storage[1] - oStorage[1];
+    that.storage[2] = that.storage[2] - oStorage[2];
+    that.storage[3] = that.storage[3] - oStorage[3];
+    that.storage[4] = that.storage[4] - oStorage[4];
+    that.storage[5] = that.storage[5] - oStorage[5];
+    that.storage[6] = that.storage[6] - oStorage[6];
+    that.storage[7] = that.storage[7] - oStorage[7];
+    that.storage[8] = that.storage[8] - oStorage[8];
+};
+Matrix3.simd.sub = function(that, o) {
+    Matrix3.simd.load(that);
+    Matrix3.simd.load(o);
+    that.simd_c0 = SIMD.Float32x4.sub(that.simd_c0, o.simd_c0);
+    that.simd_c1 = SIMD.Float32x4.sub(that.simd_c1, o.simd_c1);
+    that.simd_c2 = SIMD.Float32x4.sub(that.simd_c2, o.simd_c2);
+    Matrix3.simd.store(that);
 };
 
 /**
@@ -1146,17 +1244,33 @@ Matrix3.prototype.sub = function(o) {
  * @returns {Matrix3}
  */
 Matrix3.prototype.negate = function() {
-    this.storage[0] = -this.storage[0];
-    this.storage[1] = -this.storage[1];
-    this.storage[2] = -this.storage[2];
-    this.storage[3] = -this.storage[3];
-    this.storage[4] = -this.storage[4];
-    this.storage[5] = -this.storage[5];
-    this.storage[6] = -this.storage[6];
-    this.storage[7] = -this.storage[7];
-    this.storage[8] = -this.storage[8];
+    if (vector_math.USE_SIMD()) {
+        Matrix3.simd.neg(this);
+    }
+    else {
+        Matrix3.scalar.neg(this);
+    }
     return this;
 };
+Matrix3.scalar.neg = function(that) {
+    that.storage[0] = -that.storage[0];
+    that.storage[1] = -that.storage[1];
+    that.storage[2] = -that.storage[2];
+    that.storage[3] = -that.storage[3];
+    that.storage[4] = -that.storage[4];
+    that.storage[5] = -that.storage[5];
+    that.storage[6] = -that.storage[6];
+    that.storage[7] = -that.storage[7];
+    that.storage[8] = -that.storage[8];
+};
+Matrix3.simd.neg = function(that) {
+    Matrix3.simd.load(that);
+    that.simd_c0 = SIMD.Float32x4.neg(that.simd_c0);
+    that.simd_c1 = SIMD.Float32x4.neg(that.simd_c1);
+    that.simd_c2 = SIMD.Float32x4.neg(that.simd_c2);
+    Matrix3.simd.store(that);
+};
+
 
 /**
  * @method
