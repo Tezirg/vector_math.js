@@ -72,6 +72,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
     grunt.loadNpmTasks('grunt-browserify');
+    //@todo: Add code inling for SIMD .load and .store functions
     grunt.registerTask('default', ['test', 'concat', 'browserify', 'uglify', 'addLicense', 'addDate', 'requireJsFix']);
     grunt.registerTask('test', ['nodeunit']);
 
