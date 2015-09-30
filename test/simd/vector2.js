@@ -66,8 +66,8 @@ module.exports = {
         var inputA = new Vector2(0.417267069084370, 0.049654430325742);
         var inputB = new Vector2(0.944787189721646, 0.490864092468080);
         var expectedOutput = 0.4186021514853384;
-        test.equals(inputA.dot(inputB), expectedOutput, "Dot product a.b");
-        test.equals(inputB.dot(inputA), expectedOutput, "Dot product b.a");
+        TEST.relativeTest(test, inputA.dot(inputB), expectedOutput, "Dot product a.b");
+        TEST.relativeTest(test, inputB.dot(inputA), expectedOutput, "Dot product b.a");
         test.done();
     },
         /*

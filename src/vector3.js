@@ -23,13 +23,7 @@ function Vector3(x, y, z){
      * @type {Float32Array}
      */
     this.storage = new Float32Array([x, y, z]);
-    //this.storage = null;
-    /*if (vector_math.USE_SIMD()) {
-        this.storage = new Float32Array([x, y, z, 0.0]);
-    }
-    else {
-    */
-    // }
+
     /**
      * @property simd_storage
      * @type {null|Float32x4}

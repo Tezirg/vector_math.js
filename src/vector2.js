@@ -19,7 +19,42 @@ function Vector2(x, y){
      * @type {Float32Array}
      */
     this.storage = new Float32Array([x, y]);
+
+    /**
+     * @property simd_storage
+     * @type {null|Float32x4}
+     */
+    this.simd_storage = null;
 }
+
+/**
+ * @static
+ * SIMD specialization
+ */
+Vector2.simd = {};
+/**
+ * @static
+ * Scalar specialization
+ */
+Vector2.scalar = {};
+
+/**
+ * @static
+ * Load SIMD.Float32x4 into vector.simd_storage
+ * @param vector {Vector2}
+ */
+Vector2.simd.load = function(vector) {
+    vector.simd_storage = SIMD.Float32x4.load2(vector.storage, 0);
+};
+
+/**
+ * @static
+ * Store SIMD.Float32x4 at vector.simd_storage into vector.storage
+ * @param vector {Vector2}
+ */
+Vector2.simd.store = function(vector) {
+    SIMD.Float32x4.store2(vector.storage, 0, vector.simd_storage);
+};
 
 /**
  * @property x
@@ -51,19 +86,51 @@ Vector2.prototype.__defineGetter__("length", function() {
     return Math.sqrt(this.length2());
 });
 Vector2.prototype.__defineSetter__("length", function(value) {
-    if (value == 0.0) {
-        this.setZero();
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd._setter_length(this, value);
     }
     else {
-        l = this.length;
+        Vector2.scalar._setter_length(this, value);
+    }
+});
+
+/**
+ * @static
+ * Scalar version of set length
+ * @param vector {Vector2}
+ * @param value {Number}
+ * @private
+ */
+Vector2.scalar._setter_length = function(vector, value) {
+    if (value == 0.0) {
+        vector.setZero();
+    }
+    else {
+        var l = this.length;
         if (l == 0.0) {
             return;
         }
         l = value / l;
-        this.storage[0] *= l;
-        this.storage[1] *= l;
+        vector.storage[0] *= l;
+        vector.storage[1] *= l;
     }
-});
+};
+
+Vector2.simd._setter_length = function(vector, value) {
+    if (value == 0.0) {
+        vector.setZero();
+    }
+    else {
+        var l = vector.length;
+        if (l == 0.0) {
+            return;
+        }
+        l = value / l;
+        Vector2.simd.load(vector);
+        vector.simd_storage = SIMD.Float32x4.mul(vector.simd_storage, SIMD.Float32x4(l, l, 0, 0));
+        Vector2.simd.store(vector);
+    }
+};
 
 /**
  * @static
@@ -143,10 +210,24 @@ Vector2.all = function(value) {
  * @param result {Vector2}
  */
 Vector2.min = function(a, b, result) {
-    result.x = Math.min(a.x, b.x);
-    result.y = Math.min(a.y, b.y);
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.min(a, b, result);
+    }
+    else {
+        Vector2.scalar.min(a, b, result);
+    }
 };
+Vector2.scalar.min = function(a, b, result) {
+    result.storage[0] = Math.min(a.x, b.x);
+    result.storage[1] = Math.min(a.y, b.y);
+};
+Vector2.simd.min = function(a, b, result) {
+    Vector2.simd.load(a);
+    Vector2.simd.load(b);
+    result.simd_storage = SIMD.Float32x4.min(a.simd_storage, b.simd_storage);
 
+    Vector2.simd.store(result);
+};
 /**
  * @description Set the values of [result] to the maximum of [a] and [b] for each line.
  * @static
@@ -155,10 +236,26 @@ Vector2.min = function(a, b, result) {
  * @param result {Vector2}
  */
 Vector2.max = function(a, b, result) {
-    result.x = Math.max(a.x, b.x);
-    result.y = Math.max(a.y, b.y);
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.max(a, b, result);
+    }
+    else {
+        Vector2.scalar.max(a, b, result);
+    }
 };
 
+Vector2.scalar.max = function(a, b, result) {
+    result.x = Math.max(a.x, b.x);
+    result.y = Math.max(a.y, b.y);
+    result.z = Math.max(a.z, b.z);
+};
+
+Vector2.simd.max = function(a, b, result) {
+    Vector2.simd.load(a);
+    Vector2.simd.load(b);
+    result.simd_storage = SIMD.Float32x4.max(a.simd_storage, b.simd_storage);
+    Vector2.simd.store(result);
+};
 /**
  * @description Interpolate between [min] and [max] with the amount of [a] using a linear
  * interpolation and store the values in [result].
@@ -169,8 +266,24 @@ Vector2.max = function(a, b, result) {
  * @param result {Vector2}
  */
 Vector2.mix = function(min, max, a, result) {
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.mix(min, max, a, result);
+    }
+    else {
+        Vector2.scalar.mix(min, max, a, result);
+    }
+};
+Vector2.scalar.mix = function(min, max, a, result) {
     result.x = min.x + a * (max.x - min.x);
     result.y = min.y + a * (max.y - min.y);
+};
+Vector2.simd.mix = function(min, max, a, result) {
+    Vector2.simd.load(min);
+    Vector2.simd.load(max);
+    var sub = SIMD.Float32x4.sub(max.simd_storage, min.simd_storage);
+    var interp = SIMD.Float32x4.mul(sub, SIMD.Float32x4(a, a, a, a));
+    result.simd_storage = SIMD.Float32x4.add(min.simd_storage, interp);
+    Vector2.simd.store(result);
 };
 
 /**
@@ -200,24 +313,58 @@ Vector2.prototype.setFrom = function(v) {
  * @param value {Number}
  */
 Vector2.prototype.splat = function(value) {
-    this.storage[0] = value;
-    this.storage[1] = value;
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.splat(this, value);
+    }
+    else {
+        Vector2.scalar.splat(this, value);
+    }
     return this;
+};
+Vector2.scalar.splat = function(that, value) {
+    that.storage[0] = value;
+    that.storage[1] = value;
+};
+Vector2.simd.splat = function(that, value) {
+    Vector2.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.splat(value);
+    Vector2.simd.store(that);
 };
 
 /**
  * @method
  * Returns if this is almost equal to other
- * @param v {Vector3}
+ * @param v {Vector2}
  * @param precision {number}
  * @returns {boolean}
  */
 Vector2.prototype.almostEquals = function(v, precision) {
     if (precision === undefined) {
-        precision = Number.EPSILON;
+        precision = vector_math.EPSILON;
     }
-    if (Math.abs(this.x-v.x) > precision ||
-        Math.abs(this.y-v.y) > precision) {
+
+    if (vector_math.USE_SIMD()) {
+        return Vector2.simd.almostEquals(this, v, precision);
+    }
+    else {
+        return Vector2.scalar.almostEquals(this, v, precision);
+    }
+};
+Vector2.scalar.almostEquals = function(that, v, precision) {
+    if (Math.abs(this.x - v.x) > precision ||
+        Math.abs(this.y - v.y) > precision) {
+        return false;
+    }
+    return true;
+};
+Vector2.simd.almostEquals = function(that, v, p) {
+    Vector2.simd.load(that);
+    Vector2.simd.load(v);
+    that.simd_storage = SIMD.Float32x4.sub(that.simd_storage, v.simd_storage);
+    that.simd_storage = SIMD.Float32x4.abs(that.simd_storage);
+    that.simd_storage = SIMD.Float32x4.greaterThan(that.simd_storage, SIMD.Float32x4(p, p, p, p));
+    if (SIMD.Bool32x4.extractLane(that.simd_storage, 0) ||
+        SIMD.Bool32x4.extractLane(that.simd_storage, 1)) {
         return false;
     }
     return true;
@@ -265,9 +412,23 @@ Vector2.prototype.isZero = function() {
  * @returns {Vector2}
  */
 Vector2.prototype.negate = function() {
-    this.storage[0] = - this.storage[0];
-    this.storage[1] = - this.storage[1];
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.negate(this);
+    }
+    else {
+        Vector2.scalar.negate(this);
+    }
     return this;
+};
+
+Vector2.scalar.negate = function(that) {
+    that.storage[0] = - that.storage[0];
+    that.storage[1] = - that.storage[1];
+};
+Vector2.simd.negate = function(that) {
+    Vector2.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.neg(that.simd_storage);
+    Vector2.simd.store(that);
 };
 
 /**
@@ -277,9 +438,24 @@ Vector2.prototype.negate = function() {
  * @returns {Vector2}
  */
 Vector2.prototype.sub = function(other) {
-    this.storage[0] = this.storage[0] - other.storage[0];
-    this.storage[1] = this.storage[1] - other.storage[1];
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.sub(this, other);
+    }
+    else {
+        Vector2.scalar.sub(this, other);
+    }
     return this;
+};
+
+Vector2.scalar.sub = function(that, other) {
+    that.storage[0] = that.storage[0] - other.storage[0];
+    that.storage[1] = that.storage[1] - other.storage[1];
+};
+Vector2.simd.sub = function(that, other) {
+    Vector2.simd.load(that);
+    Vector2.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.sub(that.simd_storage, other.simd_storage);
+    Vector2.simd.store(that);
 };
 
 /**
@@ -289,9 +465,24 @@ Vector2.prototype.sub = function(other) {
  * @returns {Vector2}
  */
 Vector2.prototype.add = function(other) {
-    this.storage[0] = this.storage[0] + other.storage[0];
-    this.storage[1] = this.storage[1] + other.storage[1];
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.add(this, other);
+    }
+    else {
+        Vector2.scalar.add(this, other);
+    }
     return this;
+};
+
+Vector2.scalar.add = function(that, other) {
+    that.storage[0] = that.storage[0] + other.storage[0];
+    that.storage[1] = that.storage[1] + other.storage[1];
+};
+Vector2.simd.add = function(that, other) {
+    Vector2.simd.load(that);
+    Vector2.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.add(that.simd_storage, other.simd_storage);
+    Vector2.simd.store(that);
 };
 
 /**
@@ -301,9 +492,24 @@ Vector2.prototype.add = function(other) {
  * @returns {Vector2}
  */
 Vector2.prototype.mul = function(other) {
-    this.storage[0] = this.storage[0] * other.storage[0];
-    this.storage[1] = this.storage[1] * other.storage[1];
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.mul(this, other);
+    }
+    else {
+        Vector2.scalar.mul(this, other);
+    }
     return this;
+};
+
+Vector2.scalar.mul = function(that, other) {
+    that.storage[0] = that.storage[0] + other.storage[0];
+    that.storage[1] = that.storage[1] + other.storage[1];
+};
+Vector2.simd.mul = function(that, other) {
+    Vector2.simd.load(that);
+    Vector2.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, other.simd_storage);
+    Vector2.simd.store(that);
 };
 
 /**
@@ -313,10 +519,26 @@ Vector2.prototype.mul = function(other) {
  * @returns {Vector2}
  */
 Vector2.prototype.div = function(other) {
-    this.storage[0] = this.storage[1] / other.storage[1];
-    this.storage[1] = this.storage[1] / other.storage[1];
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.div(this, other);
+    }
+    else {
+        Vector2.scalar.div(this, other);
+    }
     return this;
 };
+
+Vector2.scalar.div = function(that, other) {
+    that.storage[0] = that.storage[0] / other.storage[0];
+    that.storage[1] = that.storage[1] / other.storage[1];
+};
+Vector2.simd.div = function(that, other) {
+    Vector2.simd.load(that);
+    Vector2.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.div(that.simd_storage, other.simd_storage);
+    Vector2.simd.store(that);
+};
+
 
 /**
  * @method
@@ -325,11 +547,24 @@ Vector2.prototype.div = function(other) {
  * @returns {Vector2}
  */
 Vector2.prototype.scale = function(arg) {
-    this.storage[0] = this.storage[0] * arg;
-    this.storage[1] = this.storage[1] * arg;
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.scale(this, arg);
+    }
+    else {
+        Vector2.scalar.scale(this, arg);
+    }
     return this;
 };
 
+Vector2.scalar.scale = function(that, scale) {
+    that.storage[0] = that.storage[0] * scale;
+    that.storage[1] = that.storage[1] * scale;
+};
+Vector2.simd.scale = function(that, s) {
+    Vector2.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, SIMD.Float32x4(s, s, s, s));
+    Vector2.simd.store(that);
+};
 /**
  * @method
  * Returns Scaled copy of this
@@ -362,8 +597,25 @@ Vector2.prototype.reflect = function(normal) {
  * @returns {Number}
  */
 Vector2.prototype.dot = function(v) {
-    return this.storage[0] * v.storage[0] +
-           this.storage[1] * v.storage[1];
+    if (vector_math.USE_SIMD()) {
+        return Vector2.simd.dot(this, v);
+    }
+    else {
+        return Vector2.scalar.dot(this, v);
+    }
+};
+
+Vector2.scalar.dot = function(that, v) {
+    return that.storage[0] * v.storage[0] +
+           that.storage[1] * v.storage[1];
+};
+Vector2.simd.dot = function(that, v) {
+    Vector2.simd.load(that);
+    Vector2.simd.load(v);
+
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, v.simd_storage);
+    return SIMD.Float32x4.extractLane(that.simd_storage, 0) +
+        SIMD.Float32x4.extractLane(that.simd_storage, 1);
 };
 
 /**
@@ -382,10 +634,22 @@ Vector2.prototype.cross = function(v) {
  * Sets this to absolute values
  */
 Vector2.prototype.absolute = function() {
-    this.storage[0] = Math.abs(this.storage[0]);
-    this.storage[1] = Math.abs(this.storage[1]);
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.absolute(this);
+    }
+    else {
+        Vector2.scalar.absolute(this);
+    }
 };
-
+Vector2.scalar.absolute = function(that) {
+    that.storage[0] = Math.abs(that.storage[0]);
+    that.storage[1] = Math.abs(that.storage[1]);
+};
+Vector2.simd.absolute = function(that) {
+    Vector2.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.abs(that.simd_storage);
+    Vector2.store(that);
+};
 /**
  * @method
  * Clamp each entry n in [this] in the range [min[n]]-[max[n]].
@@ -394,13 +658,29 @@ Vector2.prototype.absolute = function() {
  * @returns {Vector2}
  */
 Vector2.prototype.clamp = function(min, max) {
-    var minStorage = min.storage;
-    var maxStorage = max.storage;
-    this.storage[0] = Math.min(Math.max(this.storage[0], minStorage[0]), maxStorage[0]);
-    this.storage[1] = Math.min(Math.max(this.storage[1], minStorage[1]), maxStorage[1]);
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.clamp(this, min, max);
+    }
+    else {
+        Vector2.scalar.clamp(this, min, max);
+    }
     return this;
 };
 
+Vector2.scalar.clamp = function(that, min, max) {
+    var minStorage = min.storage;
+    var maxStorage = max.storage;
+    that.storage[0] = Math.min(Math.max(that.storage[0], minStorage[0]), maxStorage[0]);
+    that.storage[1] = Math.min(Math.max(that.storage[1], minStorage[1]), maxStorage[1]);
+};
+Vector2.simd.clamp = function(that, min, max) {
+    Vector2.simd.load(that);
+    Vector2.simd.load(min);
+    Vector2.simd.load(max);
+    var clamp_min = SIMD.Float32x4.max(that.simd_storage, min.simd_storage);
+    that.simd_storage = SIMD.Float32x4.min(clamp_min, max.simd_storage);
+    Vector2.simd.store(that);
+};
 /**
  * @method
  * Clamp entries in [this] in the range [min]-[max].
@@ -409,9 +689,26 @@ Vector2.prototype.clamp = function(min, max) {
  * @returns {Vector2}
  */
 Vector2.prototype.clampScalar = function(min, max) {
-    this.storage[0] = Math.min(Math.max(this.storage[0], min), max);
-    this.storage[1] = Math.min(Math.max(this.storage[1], min), max);
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.clampScalar(this, min, max);
+    }
+    else {
+        Vector2.scalar.clampScalar(this, min, max);
+    }
     return this;
+};
+
+Vector2.scalar.clampScalar = function(that, min, max) {
+    that.storage[0] = Math.min(Math.max(that.storage[0], min), max);
+    that.storage[1] = Math.min(Math.max(that.storage[1], min), max);
+    that.storage[2] = Math.min(Math.max(that.storage[2], min), max);
+};
+Vector2.simd.clampScalar = function(that, min, max) {
+    Vector2.simd.load(that);
+    var clamp_min = SIMD.Float32x4.max(that.simd_storage, SIMD.Float32x4(min, min, min, min));
+    that.simd_storage = SIMD.Float32x4.min(clamp_min, SIMD.Float32x4(max, max, max, max));
+    Vector2.simd.store(that);
+
 };
 
 /**
@@ -463,15 +760,32 @@ Vector2.prototype.length2 = function() {
  * @returns {Vector2}
  */
 Vector2.prototype.normalize = function() {
-    var l = this.length;
-    if (l != 0.0) {
-        l = 1.0 / l;
-        this.storage[0] = this.x * l;
-        this.storage[1] = this.y * l;
+    if (vector_math.USE_SIMD()) {
+        Vector2.simd.normalize(this);
+    }
+    else {
+        Vector2.scalar.normalize(this);
     }
     return this;
 };
 
+Vector2.scalar.normalize = function(that) {
+    var l = that.length;
+    if (l != 0.0) {
+        l = 1.0 / l;
+        that.storage[0] *= l;
+        that.storage[1] *= l;
+    }
+};
+Vector2.simd.normalize = function(that) {
+    var l = that.length;
+    if (l != 0.0) {
+        l = 1.0 / l;
+        Vector2.simd.load(that);
+        that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, SIMD.Float32x4(l, l, l, l));
+        Vector2.simd.store(that);
+    }
+};
 /**
  * @method
  * Returns a normalized copy of this
