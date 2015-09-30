@@ -7,6 +7,9 @@ var Vector3 = require('./vector3.js');
 var Vector4 = require('./vector4.js');
 var Quaternion = require('./quaternion.js');
 
+var vector_math = require('./common.js');
+var SIMD = require("simd");
+
 /**
  * @class Matrix4
  * /// 4D Matrix. Values are stored in column major order.
@@ -41,11 +44,69 @@ function Matrix4(m00, m01, m02, m03,
                                      m20, m21, m22, m23,
                                      m30, m31, m32, m33]);
     /**
+     * @property simd_c0
+     * @type {null | Float32x4}
+     */
+    this.simd_c0 = null;
+
+    /**
+     * @property simd_c1
+     * @type {null | Float32x4}
+     */
+
+    this.simd_c1 = null;
+    /**
+     * @property simd_c2
+     * @type {null | Float32x4}
+     */
+    this.simd_c2 = null;
+    /**
+     * @property simd_c3
+     * @type {null | Float32x4}
+     */
+    this.simd_c3 = null;
+    /**
      * @property dimension
      * @type {number}
      */
     this.dimension = 4;
 }
+
+/**
+ * @static
+ * SIMD specialization
+ */
+Matrix4.simd = {};
+/**
+ * @static
+ * Scalar specialization
+ */
+Matrix4.scalar = {};
+
+/**
+ * @static
+ * Load SIMD.Float32x4 into vector.simd_storage
+ * @param vector {Matrix4}
+ */
+Matrix4.simd.load = function(matrix) {
+    matrix.simd_c0 = SIMD.Float32x4.load(matrix.storage, 0);
+    matrix.simd_c1 = SIMD.Float32x4.load(matrix.storage, 4);
+    matrix.simd_c2 = SIMD.Float32x4.load(matrix.storage, 8);
+    matrix.simd_c3 = SIMD.Float32x4.load(matrix.storage, 12);
+};
+
+/**
+ * @static
+ * Store SIMD.Float32x4 at vector.simd_storage into vector.storage
+ * @param vector {Matrix4}
+ */
+Matrix4.simd.store = function(matrix) {
+    SIMD.Float32x4.store(matrix.storage, 0, matrix.simd_c0);
+    SIMD.Float32x4.store(matrix.storage, 4, matrix.simd_c1);
+    SIMD.Float32x4.store(matrix.storage, 8, matrix.simd_c2);
+    SIMD.Float32x4.store(matrix.storage, 12, matrix.simd_c3);
+};
+
 
 /**
  * @static
@@ -80,20 +141,20 @@ Matrix4.fromBuffer = function(buffer, offset) {
  * @param b {Vector2}
  */
 Matrix4.solve2 = function(A, x, b) {
-    var a11 = A.entry(0, 0);
-    var a12 = A.entry(0, 1);
-    var a21 = A.entry(1, 0);
-    var a22 = A.entry(1, 1);
+    var m001 = A.entry(0, 0);
+    var m002 = A.entry(0, 1);
+    var m101 = A.entry(1, 0);
+    var m102 = A.entry(1, 1);
     var bx = b.x - A.storage[8];
     var by = b.y - A.storage[9];
-    var det = a11 * a22 - a12 * a21;
+    var det = m001 * m102 - m002 * m101;
 
     if (det != 0.0) {
         det = 1.0 / det;
     }
 
-    x.x = det * (a22 * bx - a12 * by);
-    x.y = det * (a11 * by - a21 * bx);
+    x.x = det * (m102 * bx - m002 * by);
+    x.y = det * (m001 * by - m101 * bx);
 };
 
 /**
@@ -107,21 +168,21 @@ Matrix4.solve3 = function(A, x, b) {
     var A0x = A.entry(0, 0);
     var A0y = A.entry(1, 0);
     var A0z = A.entry(2, 0);
-    var A1x = A.entry(0, 1);
-    var A1y = A.entry(1, 1);
-    var A1z = A.entry(2, 1);
-    var A2x = A.entry(0, 2);
-    var A2y = A.entry(1, 2);
-    var A2z = A.entry(2, 2);
+    var m00x = A.entry(0, 1);
+    var m00y = A.entry(1, 1);
+    var m00z = A.entry(2, 1);
+    var m10x = A.entry(0, 2);
+    var m10y = A.entry(1, 2);
+    var m10z = A.entry(2, 2);
     var bx = b.x - A.storage[12];
     var by = b.y - A.storage[13];
     var bz = b.z - A.storage[14];
     var rx, ry, rz;
 
     // Column1 cross Column 2
-    rx = A1y * A2z - A1z * A2y;
-    ry = A1z * A2x - A1x * A2z;
-    rz = A1x * A2y - A1y * A2x;
+    rx = m00y * m10z - m00z * m10y;
+    ry = m00z * m10x - m00x * m10z;
+    rz = m00x * m10y - m00y * m10x;
 
     // A.getColumn(0).dot(x)
     var det = A0x * rx + A0y * ry + A0z * rz;
@@ -133,16 +194,16 @@ Matrix4.solve3 = function(A, x, b) {
      var x_ = det * (bx * rx + by * ry + bz * rz);
 
     // Column2 cross b
-    rx = -(A2y * bz - A2z * by);
-    ry = -(A2z * bx - A2x * bz);
-    rz = -(A2x * by - A2y * bx);
+    rx = -(m10y * bz - m10z * by);
+    ry = -(m10z * bx - m10x * bz);
+    rz = -(m10x * by - m10y * bx);
     // Column0 dot -[Column2 cross b (Column3)]
      var y_ = det * (A0x * rx + A0y * ry + A0z * rz);
 
     // b cross Column 1
-    rx = -(by * A1z - bz * A1y);
-    ry = -(bz * A1x - bx * A1z);
-    rz = -(bx * A1y - by * A1x);
+    rx = -(by * m00z - bz * m00y);
+    ry = -(bz * m00x - bx * m00z);
+    rz = -(bx * m00y - by * m00x);
     // Column0 dot -[b cross Column 1]
      var z_ = det * (A0x * rx + A0y * ry + A0z * rz);
 
@@ -163,30 +224,30 @@ Matrix4.solve = function(A, x, b) {
      var a01 = A.storage[1];
      var a02 = A.storage[2];
      var a03 = A.storage[3];
-     var a10 = A.storage[4];
-     var a11 = A.storage[5];
-     var a12 = A.storage[6];
-     var a13 = A.storage[7];
-     var a20 = A.storage[8];
-     var a21 = A.storage[9];
-     var a22 = A.storage[10];
-     var a23 = A.storage[11];
-     var a30 = A.storage[12];
-     var a31 = A.storage[13];
-     var a32 = A.storage[14];
-     var a33 = A.storage[15];
-     var b00 = a00 * a11 - a01 * a10;
-     var b01 = a00 * a12 - a02 * a10;
-     var b02 = a00 * a13 - a03 * a10;
-     var b03 = a01 * a12 - a02 * a11;
-     var b04 = a01 * a13 - a03 * a11;
-     var b05 = a02 * a13 - a03 * a12;
-     var b06 = a20 * a31 - a21 * a30;
-     var b07 = a20 * a32 - a22 * a30;
-     var b08 = a20 * a33 - a23 * a30;
-     var b09 = a21 * a32 - a22 * a31;
-     var b10 = a21 * a33 - a23 * a31;
-     var b11 = a22 * a33 - a23 * a32;
+     var m000 = A.storage[4];
+     var m001 = A.storage[5];
+     var m002 = A.storage[6];
+     var m003 = A.storage[7];
+     var m100 = A.storage[8];
+     var m101 = A.storage[9];
+     var m102 = A.storage[10];
+     var m103 = A.storage[11];
+     var m200 = A.storage[12];
+     var m201 = A.storage[13];
+     var m202 = A.storage[14];
+     var m203 = A.storage[15];
+     var b00 = a00 * m001 - a01 * m000;
+     var b01 = a00 * m002 - a02 * m000;
+     var b02 = a00 * m003 - a03 * m000;
+     var b03 = a01 * m002 - a02 * m001;
+     var b04 = a01 * m003 - a03 * m001;
+     var b05 = a02 * m003 - a03 * m002;
+     var b06 = m100 * m201 - m101 * m200;
+     var b07 = m100 * m202 - m102 * m200;
+     var b08 = m100 * m203 - m103 * m200;
+     var b09 = m101 * m202 - m102 * m201;
+     var m010 = m101 * m203 - m103 * m201;
+     var m011 = m102 * m203 - m103 * m202;
 
      var bX = b.storage[0];
      var bY = b.storage[1];
@@ -194,35 +255,35 @@ Matrix4.solve = function(A, x, b) {
      var bW = b.storage[3];
 
     var det =
-        b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+        b00 * m011 - b01 * m010 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 
     if (det != 0.0) {
         det = 1.0 / det;
     }
 
     x.x = det *
-    ((a11 * b11 - a12 * b10 + a13 * b09) * bX -
-    (a10 * b11 - a12 * b08 + a13 * b07) * bY +
-    (a10 * b10 - a11 * b08 + a13 * b06) * bZ -
-    (a10 * b09 - a11 * b07 + a12 * b06) * bW);
+    ((m001 * m011 - m002 * m010 + m003 * b09) * bX -
+    (m000 * m011 - m002 * b08 + m003 * b07) * bY +
+    (m000 * m010 - m001 * b08 + m003 * b06) * bZ -
+    (m000 * b09 - m001 * b07 + m002 * b06) * bW);
 
     x.y = det *
-    -((a01 * b11 - a02 * b10 + a03 * b09) * bX -
-    (a00 * b11 - a02 * b08 + a03 * b07) * bY +
-    (a00 * b10 - a01 * b08 + a03 * b06) * bZ -
+    -((a01 * m011 - a02 * m010 + a03 * b09) * bX -
+    (a00 * m011 - a02 * b08 + a03 * b07) * bY +
+    (a00 * m010 - a01 * b08 + a03 * b06) * bZ -
     (a00 * b09 - a01 * b07 + a02 * b06) * bW);
 
     x.z = det *
-    ((a31 * b05 - a32 * b04 + a33 * b03) * bX -
-    (a30 * b05 - a32 * b02 + a33 * b01) * bY +
-    (a30 * b04 - a31 * b02 + a33 * b00) * bZ -
-    (a30 * b03 - a31 * b01 + a32 * b00) * bW);
+    ((m201 * b05 - m202 * b04 + m203 * b03) * bX -
+    (m200 * b05 - m202 * b02 + m203 * b01) * bY +
+    (m200 * b04 - m201 * b02 + m203 * b00) * bZ -
+    (m200 * b03 - m201 * b01 + m202 * b00) * bW);
 
     x.w = det *
-    -((a21 * b05 - a22 * b04 + a23 * b03) * bX -
-    (a20 * b05 - a22 * b02 + a23 * b01) * bY +
-    (a20 * b04 - a21 * b02 + a23 * b00) * bZ -
-    (a20 * b03 - a21 * b01 + a22 * b00) * bW);
+    -((m101 * b05 - m102 * b04 + m103 * b03) * bX -
+    (m100 * b05 - m102 * b02 + m103 * b01) * bY +
+    (m100 * b04 - m101 * b02 + m103 * b00) * bZ -
+    (m100 * b03 - m101 * b01 + m102 * b00) * bW);
 };
 
 /**
@@ -668,6 +729,15 @@ Matrix4.prototype.setDiagonal = function(arg) {
  * @param v {Vector4}
  */
 Matrix4.prototype.setOuter = function(u, v) {
+    if (vector_math.USE_SIMD()) {
+        Matrix4.simd.setOuter(this, u, v);
+    }
+    else {
+        Matrix4.scalar.setOuter(this, u, v);
+    }
+};
+
+Matrix4.scalar.setOuter = function(that, u, v) {
     var uStorage = u.storage;
     var vStorage = v.storage;
     this.storage[0] = uStorage[0] * vStorage[0];
@@ -686,6 +756,15 @@ Matrix4.prototype.setOuter = function(u, v) {
     this.storage[13] = uStorage[3] * vStorage[1];
     this.storage[14] = uStorage[3] * vStorage[2];
     this.storage[15] = uStorage[3] * vStorage[3];
+};
+Matrix4.simd.setOuter = function(that, u, v) {
+    Vector4.simd.load(u);
+    Vector4.simd.load(v);
+    that.simd_c0 = SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(u.simd_storage, 0, 0, 0, 0), v.simd_storage);
+    that.simd_c1 = SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(u.simd_storage, 1, 1, 1, 1), v.simd_storage);
+    that.simd_c2 = SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(u.simd_storage, 2, 2, 2, 2), v.simd_storage);
+    that.simd_c3 = SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(u.simd_storage, 3, 3, 3, 3), v.simd_storage);
+    Matrix4.simd.store(that);
 };
 
 /**
@@ -756,32 +835,79 @@ Matrix4.prototype.equals = function(other) {
  * @returns {boolean}
  */
 Matrix4.prototype.almostEquals = function(other, precision) {
+    if (precision === undefined) {
+        precision = vector_math.EPSILON;
+    }
+
+    if (vector_math.USE_SIMD()) {
+        return Matrix4.simd.almostEquals(this, other, precision);
+    }
+    else {
+        return Matrix4.scalar.almostEquals(this, other, precision);
+    }
+};
+Matrix4.scalar.almostEquals = function(that, other, precision) {
     if (other.dimension == null || other.dimension != 4) {
         return false;
     }
-    if (precision === undefined) {
-        precision = Number.EPSILON;
-    }
-    if ((Math.abs(this.storage[0] - other.storage[0]) > precision) ||
-        (Math.abs(this.storage[1] - other.storage[1]) > precision) ||
-        (Math.abs(this.storage[2] - other.storage[2]) > precision) ||
-        (Math.abs(this.storage[3] - other.storage[3]) > precision) ||
-        (Math.abs(this.storage[4] - other.storage[4]) > precision) ||
-        (Math.abs(this.storage[5] - other.storage[5]) > precision) ||
-        (Math.abs(this.storage[6] - other.storage[6]) > precision) ||
-        (Math.abs(this.storage[7] - other.storage[7]) > precision) ||
-        (Math.abs(this.storage[8] - other.storage[8]) > precision) ||
-        (Math.abs(this.storage[9] - other.storage[9]) > precision) ||
-        (Math.abs(this.storage[10] - other.storage[10]) > precision) ||
-        (Math.abs(this.storage[11] - other.storage[11]) > precision) ||
-        (Math.abs(this.storage[12] - other.storage[12]) > precision) ||
-        (Math.abs(this.storage[13] - other.storage[13]) > precision) ||
-        (Math.abs(this.storage[14] - other.storage[14]) > precision) ||
-        (Math.abs(this.storage[15] - other.storage[15]) > precision)) {
+    if ((Math.abs(that.storage[0] - other.storage[0]) > precision) ||
+        (Math.abs(that.storage[1] - other.storage[1]) > precision) ||
+        (Math.abs(that.storage[2] - other.storage[2]) > precision) ||
+        (Math.abs(that.storage[3] - other.storage[3]) > precision) ||
+        (Math.abs(that.storage[4] - other.storage[4]) > precision) ||
+        (Math.abs(that.storage[5] - other.storage[5]) > precision) ||
+        (Math.abs(that.storage[6] - other.storage[6]) > precision) ||
+        (Math.abs(that.storage[7] - other.storage[7]) > precision) ||
+        (Math.abs(that.storage[8] - other.storage[8]) > precision) ||
+        (Math.abs(that.storage[9] - other.storage[9]) > precision) ||
+        (Math.abs(that.storage[10] - other.storage[10]) > precision) ||
+        (Math.abs(that.storage[11] - other.storage[11]) > precision) ||
+        (Math.abs(that.storage[12] - other.storage[12]) > precision) ||
+        (Math.abs(that.storage[13] - other.storage[13]) > precision) ||
+        (Math.abs(that.storage[14] - other.storage[14]) > precision) ||
+        (Math.abs(that.storage[15] - other.storage[15]) > precision)) {
         return false;
     }
     return true;
 };
+
+Matrix4.simd.almostEquals = function(that, other, p) {
+    Matrix4.simd.load(that);
+    Matrix4.simd.load(other);
+    var eps = SIMD.Float32x4(p, p, p, p);
+    that.simd_c0 = SIMD.Float32x4.sub(that.simd_c0, other.simd_c0);
+    that.simd_c0 = SIMD.Float32x4.abs(that.simd_c0);
+    that.simd_c0 = SIMD.Float32x4.greaterThan(that.simd_c0, eps);
+    that.simd_c1 = SIMD.Float32x4.sub(that.simd_c1, other.simd_c1);
+    that.simd_c1 = SIMD.Float32x4.abs(that.simd_c1);
+    that.simd_c1 = SIMD.Float32x4.greaterThan(that.simd_c1, eps);
+    that.simd_c2 = SIMD.Float32x4.sub(that.simd_c2, other.simd_c2);
+    that.simd_c2 = SIMD.Float32x4.abs(that.simd_c2);
+    that.simd_c2 = SIMD.Float32x4.greaterThan(that.simd_c2, eps);
+    that.simd_c3 = SIMD.Float32x4.sub(that.simd_c3, other.simd_c3);
+    that.simd_c3 = SIMD.Float32x4.abs(that.simd_c3);
+    that.simd_c3 = SIMD.Float32x4.greaterThan(that.simd_c3, eps);
+    if (SIMD.Bool32x4.extractLane(that.simd_c0, 0) ||
+        SIMD.Bool32x4.extractLane(that.simd_c0, 1) ||
+        SIMD.Bool32x4.extractLane(that.simd_c0, 2) ||
+        SIMD.Bool32x4.extractLane(that.simd_c0, 3) ||
+        SIMD.Bool32x4.extractLane(that.simd_c1, 0) ||
+        SIMD.Bool32x4.extractLane(that.simd_c1, 1) ||
+        SIMD.Bool32x4.extractLane(that.simd_c1, 2) ||
+        SIMD.Bool32x4.extractLane(that.simd_c1, 3) ||
+        SIMD.Bool32x4.extractLane(that.simd_c2, 0) ||
+        SIMD.Bool32x4.extractLane(that.simd_c2, 1) ||
+        SIMD.Bool32x4.extractLane(that.simd_c2, 2) ||
+        SIMD.Bool32x4.extractLane(that.simd_c2, 3) ||
+        SIMD.Bool32x4.extractLane(that.simd_c3, 0) ||
+        SIMD.Bool32x4.extractLane(that.simd_c3, 1) ||
+        SIMD.Bool32x4.extractLane(that.simd_c3, 2) ||
+        SIMD.Bool32x4.extractLane(that.simd_c3, 3)) {
+        return false;
+    }
+    return true;
+};
+
 
 /**
 * @property
@@ -990,27 +1116,47 @@ Matrix4.prototype.translate = function(x, y, z) {
         ty = y;
         tz = z;
     }
-    var t1 = this.storage[0] * tx +
-        this.storage[4] * ty +
-        this.storage[8] * tz +
-        this.storage[12] * tw;
-    var t2 = this.storage[1] * tx +
-        this.storage[5] * ty +
-        this.storage[9] * tz +
-        this.storage[13] * tw;
-    var t3 = this.storage[2] * tx +
-        this.storage[6] * ty +
-        this.storage[10] * tz +
-        this.storage[14] * tw;
-    var t4 = this.storage[3] * tx +
-        this.storage[7] * ty +
-        this.storage[11] * tz +
-        this.storage[15] * tw;
-    this.storage[12] = t1;
-    this.storage[13] = t2;
-    this.storage[14] = t3;
-    this.storage[15] = t4;
+    if (vector_math.USE_SIMD()) {
+        Matrix4.simd.translate(this, tx, ty, tz, tw);
+    }
+    else {
+        Matrix4.scalar.translate(this, tx, ty, tz, tw);
+    }
     return this;
+};
+
+Matrix4.scalar.translate = function(that, tx, ty, tz, tw) {
+    var t1 = that.storage[0] * tx +
+        that.storage[4] * ty +
+        that.storage[8] * tz +
+        that.storage[12] * tw;
+    var t2 = that.storage[1] * tx +
+        that.storage[5] * ty +
+        that.storage[9] * tz +
+        that.storage[13] * tw;
+    var t3 = that.storage[2] * tx +
+        that.storage[6] * ty +
+        that.storage[10] * tz +
+        that.storage[14] * tw;
+    var t4 = that.storage[3] * tx +
+        that.storage[7] * ty +
+        that.storage[11] * tz +
+        that.storage[15] * tw;
+    that.storage[12] = t1;
+    that.storage[13] = t2;
+    that.storage[14] = t3;
+    that.storage[15] = t4;
+};
+Matrix4.simd.translate = function(that, tx, ty, tz, tw) {
+    Matrix4.simd.load(that);
+    var vec = SIMD.Float32x4(tx, ty, tz, tw);
+
+    t1 = SIMD.Float32x4.mul(that.simd_c0, SIMD.Float32x4.swizzle(vec, 0, 0, 0, 0));
+    t2 = SIMD.Float32x4.mul(that.simd_c1, SIMD.Float32x4.swizzle(vec, 1, 1, 1, 1));
+    t3 = SIMD.Float32x4.mul(that.simd_c2, SIMD.Float32x4.swizzle(vec, 2, 2, 2, 2));
+    t4 = SIMD.Float32x4.mul(that.simd_c3, SIMD.Float32x4.swizzle(vec, 3, 3, 3, 3));
+    that.simd_c3 = SIMD.Float32x4.add(t1, SIMD.Float32x4.add(t2, SIMD.Float32x4.add(t3, t4)));
+    Matrix4.simd.store(that);
 };
 
 /**
@@ -1064,6 +1210,7 @@ Matrix4.prototype.rotate = function(axis, angle) {
     this.storage[11] = t12;
     return this;
 };
+
 
 /**
  * @method
@@ -1172,23 +1319,40 @@ Matrix4.prototype.scale = function(x, y, z) {
         sy = y;
         sz = z;
     }
-    this.storage[0] *= sx;
-    this.storage[1] *= sx;
-    this.storage[2] *= sx;
-    this.storage[3] *= sx;
-    this.storage[4] *= sy;
-    this.storage[5] *= sy;
-    this.storage[6] *= sy;
-    this.storage[7] *= sy;
-    this.storage[8] *= sz;
-    this.storage[9] *= sz;
-    this.storage[10] *= sz;
-    this.storage[11] *= sz;
-    this.storage[12] *= sw;
-    this.storage[13] *= sw;
-    this.storage[14] *= sw;
-    this.storage[15] *= sw;
+    if (vector_math.USE_SIMD()) {
+        Matrix4.simd.scale(this, sx, sy, sz, sw);
+    }
+    else {
+        Matrix4.scalar.scale(this, sx, sy, sz, sw);
+    }
     return this;
+};
+
+Matrix4.scalar.scale = function(that, sx, sy, sz, sw) {
+    that.storage[0] *= sx;
+    that.storage[1] *= sx;
+    that.storage[2] *= sx;
+    that.storage[3] *= sx;
+    that.storage[4] *= sy;
+    that.storage[5] *= sy;
+    that.storage[6] *= sy;
+    that.storage[7] *= sy;
+    that.storage[8] *= sz;
+    that.storage[9] *= sz;
+    that.storage[10] *= sz;
+    that.storage[11] *= sz;
+    that.storage[12] *= sw;
+    that.storage[13] *= sw;
+    that.storage[14] *= sw;
+    that.storage[15] *= sw;
+};
+Matrix4.simd.scale = function(that, sx, sy, sz, sw) {
+    Matrix4.simd.load(that);
+    that.simd_c0 = SIMD.Float32x4.mul(that.simd_c0, SIMD.Float32x4(sx, sx, sx, sx));
+    that.simd_c1 = SIMD.Float32x4.mul(that.simd_c1, SIMD.Float32x4(sy, sy, sy, sy));
+    that.simd_c2 = SIMD.Float32x4.mul(that.simd_c2, SIMD.Float32x4(sz, sz, sz, sz));
+    that.simd_c3 = SIMD.Float32x4.mul(that.simd_c3, SIMD.Float32x4(sw, sw, sw, sw));
+    Matrix4.simd.store(that);
 };
 
 /**
@@ -1272,53 +1436,93 @@ Matrix4.prototype.transposed = function() {
  * @returns {Matrix4}
  */
 Matrix4.prototype.transpose = function() {
-    var temp;
-    temp = this.storage[4];
-    this.storage[4] = this.storage[1];
-    this.storage[1] = temp;
-    temp = this.storage[8];
-    this.storage[8] = this.storage[2];
-    this.storage[2] = temp;
-    temp = this.storage[12];
-    this.storage[12] = this.storage[3];
-    this.storage[3] = temp;
-    temp = this.storage[9];
-    this.storage[9] = this.storage[6];
-    this.storage[6] = temp;
-    temp = this.storage[13];
-    this.storage[13] = this.storage[7];
-    this.storage[7] = temp;
-    temp = this.storage[14];
-    this.storage[14] = this.storage[11];
-    this.storage[11] = temp;
+    if (vector_math.USE_SIMD()) {
+        Matrix4.simd.transpose(this);
+    }
+    else {
+        Matrix4.scalar.transpose(this);
+    }
     return this;
+};
+Matrix4.scalar.transpose = function(that) {
+    var temp;
+    temp = that.storage[4];
+    that.storage[4] = that.storage[1];
+    that.storage[1] = temp;
+    temp = that.storage[8];
+    that.storage[8] = that.storage[2];
+    that.storage[2] = temp;
+    temp = that.storage[12];
+    that.storage[12] = that.storage[3];
+    that.storage[3] = temp;
+    temp = that.storage[9];
+    that.storage[9] = that.storage[6];
+    that.storage[6] = temp;
+    temp = that.storage[13];
+    that.storage[13] = that.storage[7];
+    that.storage[7] = temp;
+    temp = that.storage[14];
+    that.storage[14] = that.storage[11];
+    that.storage[11] = temp;
+};
+Matrix4.simd.transpose = function(that) {
+    Matrix4.simd.load(that);
+    var tmp01 = SIMD.Float32x4.shuffle(that.simd_c0, that.simd_c1, 0, 1, 4, 5);
+    var tmp23 = SIMD.Float32x4.shuffle(that.simd_c2, that.simd_c3, 0, 1, 4, 5);
+    var out0  = SIMD.Float32x4.shuffle(tmp01, tmp23, 0, 2, 4, 6);
+    var out1  = SIMD.Float32x4.shuffle(tmp01, tmp23, 1, 3, 5, 7);
+    tmp01 = SIMD.Float32x4.shuffle(that.simd_c0, that.simd_c1, 2, 3, 6, 7);
+    tmp23 = SIMD.Float32x4.shuffle(that.simd_c2, that.simd_c3, 2, 3, 6, 7);
+    var out2  = SIMD.Float32x4.shuffle(tmp01, tmp23, 0, 2, 4, 6);
+    var out3  = SIMD.Float32x4.shuffle(tmp01, tmp23, 1, 3, 5, 7);
+    that.simd_c0 = out0;
+    that.simd_c1 = out1;
+    that.simd_c2 = out2;
+    that.simd_c3 = out3;
+    Matrix4.simd.store(that);
 };
 
 /**
  * @method
- * Returns the component wise absolute value copy of this.
+ * Returns the component wise absolute value copy of that.
  * @returns {Matrix4}
  */
 Matrix4.prototype.absolute = function() {
+    if (vector_math.USE_SIMD()) {
+        return Matrix4.simd.absolute(this);
+    }
+    else {
+        return Matrix4.scalar.absolute(this);
+    }
+};
+Matrix4.scalar.absolute = function(that) {
     var r = Matrix4.zero();
     var rStorage = r.storage;
-    rStorage[0] = Math.abs(this.storage[0]);
-    rStorage[1] = Math.abs(this.storage[1]);
-    rStorage[2] = Math.abs(this.storage[2]);
-    rStorage[3] = Math.abs(this.storage[3]);
-    rStorage[4] = Math.abs(this.storage[4]);
-    rStorage[5] = Math.abs(this.storage[5]);
-    rStorage[6] = Math.abs(this.storage[6]);
-    rStorage[7] = Math.abs(this.storage[7]);
-    rStorage[8] = Math.abs(this.storage[8]);
-    rStorage[9] = Math.abs(this.storage[9]);
-    rStorage[10] = Math.abs(this.storage[10]);
-    rStorage[11] = Math.abs(this.storage[11]);
-    rStorage[12] = Math.abs(this.storage[12]);
-    rStorage[13] = Math.abs(this.storage[13]);
-    rStorage[14] = Math.abs(this.storage[14]);
-    rStorage[15] = Math.abs(this.storage[15]);
+    rStorage[0] = Math.abs(that.storage[0]);
+    rStorage[1] = Math.abs(that.storage[1]);
+    rStorage[2] = Math.abs(that.storage[2]);
+    rStorage[3] = Math.abs(that.storage[3]);
+    rStorage[4] = Math.abs(that.storage[4]);
+    rStorage[5] = Math.abs(that.storage[5]);
+    rStorage[6] = Math.abs(that.storage[6]);
+    rStorage[7] = Math.abs(that.storage[7]);
+    rStorage[8] = Math.abs(that.storage[8]);
+    rStorage[9] = Math.abs(that.storage[9]);
+    rStorage[10] = Math.abs(that.storage[10]);
+    rStorage[11] = Math.abs(that.storage[11]);
+    rStorage[12] = Math.abs(that.storage[12]);
+    rStorage[13] = Math.abs(that.storage[13]);
+    rStorage[14] = Math.abs(that.storage[14]);
+    rStorage[15] = Math.abs(that.storage[15]);
     return r;
+};
+Matrix4.simd.absolute = function(that) {
+    Matrix4.simd.load(that);
+    that.simd_c0 = SIMD.Float32x4.abs(that.simd_c0);
+    that.simd_c1 = SIMD.Float32x4.abs(that.simd_c1);
+    that.simd_c2 = SIMD.Float32x4.abs(that.simd_c2);
+    that.simd_c3 = SIMD.Float32x4.abs(that.simd_c3);
+    Matrix4.simd.store(that);
 };
 
 /**
@@ -1622,53 +1826,53 @@ Matrix4.prototype.copyInverse = function(arg) {
     var a01 = argStorage[1];
     var a02 = argStorage[2];
     var a03 = argStorage[3];
-    var a10 = argStorage[4];
-    var a11 = argStorage[5];
-    var a12 = argStorage[6];
-    var a13 = argStorage[7];
-    var a20 = argStorage[8];
-    var a21 = argStorage[9];
-    var a22 = argStorage[10];
-    var a23 = argStorage[11];
-    var a30 = argStorage[12];
-    var a31 = argStorage[13];
-    var a32 = argStorage[14];
-    var a33 = argStorage[15];
-    var b00 = a00 * a11 - a01 * a10;
-    var b01 = a00 * a12 - a02 * a10;
-    var b02 = a00 * a13 - a03 * a10;
-    var b03 = a01 * a12 - a02 * a11;
-    var b04 = a01 * a13 - a03 * a11;
-    var b05 = a02 * a13 - a03 * a12;
-    var b06 = a20 * a31 - a21 * a30;
-    var b07 = a20 * a32 - a22 * a30;
-    var b08 = a20 * a33 - a23 * a30;
-    var b09 = a21 * a32 - a22 * a31;
-    var b10 = a21 * a33 - a23 * a31;
-    var b11 = a22 * a33 - a23 * a32;
+    var m000 = argStorage[4];
+    var m001 = argStorage[5];
+    var m002 = argStorage[6];
+    var m003 = argStorage[7];
+    var m100 = argStorage[8];
+    var m101 = argStorage[9];
+    var m102 = argStorage[10];
+    var m103 = argStorage[11];
+    var m200 = argStorage[12];
+    var m201 = argStorage[13];
+    var m202 = argStorage[14];
+    var m203 = argStorage[15];
+    var b00 = a00 * m001 - a01 * m000;
+    var b01 = a00 * m002 - a02 * m000;
+    var b02 = a00 * m003 - a03 * m000;
+    var b03 = a01 * m002 - a02 * m001;
+    var b04 = a01 * m003 - a03 * m001;
+    var b05 = a02 * m003 - a03 * m002;
+    var b06 = m100 * m201 - m101 * m200;
+    var b07 = m100 * m202 - m102 * m200;
+    var b08 = m100 * m203 - m103 * m200;
+    var b09 = m101 * m202 - m102 * m201;
+    var m010 = m101 * m203 - m103 * m201;
+    var m011 = m102 * m203 - m103 * m202;
     var det =
-        (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06);
+        (b00 * m011 - b01 * m010 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06);
     if (det == 0.0) {
         this.setFrom(arg);
         return 0.0;
     }
     var invDet = 1.0 / det;
-    this.storage[0] = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
-    this.storage[1] = (-a01 * b11 + a02 * b10 - a03 * b09) * invDet;
-    this.storage[2] = (a31 * b05 - a32 * b04 + a33 * b03) * invDet;
-    this.storage[3] = (-a21 * b05 + a22 * b04 - a23 * b03) * invDet;
-    this.storage[4] = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
-    this.storage[5] = (a00 * b11 - a02 * b08 + a03 * b07) * invDet;
-    this.storage[6] = (-a30 * b05 + a32 * b02 - a33 * b01) * invDet;
-    this.storage[7] = (a20 * b05 - a22 * b02 + a23 * b01) * invDet;
-    this.storage[8] = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
-    this.storage[9] = (-a00 * b10 + a01 * b08 - a03 * b06) * invDet;
-    this.storage[10] = (a30 * b04 - a31 * b02 + a33 * b00) * invDet;
-    this.storage[11] = (-a20 * b04 + a21 * b02 - a23 * b00) * invDet;
-    this.storage[12] = (-a10 * b09 + a11 * b07 - a12 * b06) * invDet;
+    this.storage[0] = (m001 * m011 - m002 * m010 + m003 * b09) * invDet;
+    this.storage[1] = (-a01 * m011 + a02 * m010 - a03 * b09) * invDet;
+    this.storage[2] = (m201 * b05 - m202 * b04 + m203 * b03) * invDet;
+    this.storage[3] = (-m101 * b05 + m102 * b04 - m103 * b03) * invDet;
+    this.storage[4] = (-m000 * m011 + m002 * b08 - m003 * b07) * invDet;
+    this.storage[5] = (a00 * m011 - a02 * b08 + a03 * b07) * invDet;
+    this.storage[6] = (-m200 * b05 + m202 * b02 - m203 * b01) * invDet;
+    this.storage[7] = (m100 * b05 - m102 * b02 + m103 * b01) * invDet;
+    this.storage[8] = (m000 * m010 - m001 * b08 + m003 * b06) * invDet;
+    this.storage[9] = (-a00 * m010 + a01 * b08 - a03 * b06) * invDet;
+    this.storage[10] = (m200 * b04 - m201 * b02 + m203 * b00) * invDet;
+    this.storage[11] = (-m100 * b04 + m101 * b02 - m103 * b00) * invDet;
+    this.storage[12] = (-m000 * b09 + m001 * b07 - m002 * b06) * invDet;
     this.storage[13] = (a00 * b09 - a01 * b07 + a02 * b06) * invDet;
-    this.storage[14] = (-a30 * b03 + a31 * b01 - a32 * b00) * invDet;
-    this.storage[15] = (a20 * b03 - a21 * b01 + a22 * b00) * invDet;
+    this.storage[14] = (-m200 * b03 + m201 * b01 - m202 * b00) * invDet;
+    this.storage[15] = (m100 * b03 - m101 * b01 + m102 * b00) * invDet;
     return det;
 };
 
@@ -1794,93 +1998,301 @@ Matrix4.prototype.setRotationZ = function(radians) {
  * @returns {Matrix4}
  */
 Matrix4.prototype.scaleAdjoint = function(scale) {
-    // Adapted from code by Richard Carling.
-    var a1 = this.storage[0];
-    var b1 = this.storage[4];
-    var c1 = this.storage[8];
-    var d1 = this.storage[12];
-    var a2 = this.storage[1];
-    var b2 = this.storage[5];
-    var c2 = this.storage[9];
-    var d2 = this.storage[13];
-    var a3 = this.storage[2];
-    var b3 = this.storage[6];
-    var c3 = this.storage[10];
-    var d3 = this.storage[14];
-    var a4 = this.storage[3];
-    var b4 = this.storage[7];
-    var c4 = this.storage[11];
-    var d4 = this.storage[15];
-    this.storage[0] = (b2 * (c3 * d4 - c4 * d3) -
-    c2 * (b3 * d4 - b4 * d3) +
-    d2 * (b3 * c4 - b4 * c3)) *
-    scale;
-    this.storage[1] = -(a2 * (c3 * d4 - c4 * d3) -
-    c2 * (a3 * d4 - a4 * d3) +
-    d2 * (a3 * c4 - a4 * c3)) *
-    scale;
-    this.storage[2] = (a2 * (b3 * d4 - b4 * d3) -
-    b2 * (a3 * d4 - a4 * d3) +
-    d2 * (a3 * b4 - a4 * b3)) *
-    scale;
-    this.storage[3] = -(a2 * (b3 * c4 - b4 * c3) -
-    b2 * (a3 * c4 - a4 * c3) +
-    c2 * (a3 * b4 - a4 * b3)) *
-    scale;
-    this.storage[4] = -(b1 * (c3 * d4 - c4 * d3) -
-    c1 * (b3 * d4 - b4 * d3) +
-    d1 * (b3 * c4 - b4 * c3)) *
-    scale;
-    this.storage[5] = (a1 * (c3 * d4 - c4 * d3) -
-    c1 * (a3 * d4 - a4 * d3) +
-    d1 * (a3 * c4 - a4 * c3)) *
-    scale;
-    this.storage[6] = -(a1 * (b3 * d4 - b4 * d3) -
-    b1 * (a3 * d4 - a4 * d3) +
-    d1 * (a3 * b4 - a4 * b3)) *
-    scale;
-    this.storage[7] = (a1 * (b3 * c4 - b4 * c3) -
-    b1 * (a3 * c4 - a4 * c3) +
-    c1 * (a3 * b4 - a4 * b3)) *
-    scale;
-    this.storage[8] = (b1 * (c2 * d4 - c4 * d2) -
-    c1 * (b2 * d4 - b4 * d2) +
-    d1 * (b2 * c4 - b4 * c2)) *
-    scale;
-    this.storage[9] = -(a1 * (c2 * d4 - c4 * d2) -
-    c1 * (a2 * d4 - a4 * d2) +
-    d1 * (a2 * c4 - a4 * c2)) *
-    scale;
-    this.storage[10] = (a1 * (b2 * d4 - b4 * d2) -
-    b1 * (a2 * d4 - a4 * d2) +
-    d1 * (a2 * b4 - a4 * b2)) *
-    scale;
-    this.storage[11] = -(a1 * (b2 * c4 - b4 * c2) -
-    b1 * (a2 * c4 - a4 * c2) +
-    c1 * (a2 * b4 - a4 * b2)) *
-    scale;
-    this.storage[12] = -(b1 * (c2 * d3 - c3 * d2) -
-    c1 * (b2 * d3 - b3 * d2) +
-    d1 * (b2 * c3 - b3 * c2)) *
-    scale;
-    this.storage[13] = (a1 * (c2 * d3 - c3 * d2) -
-    c1 * (a2 * d3 - a3 * d2) +
-    d1 * (a2 * c3 - a3 * c2)) *
-    scale;
-    this.storage[14] = -(a1 * (b2 * d3 - b3 * d2) -
-    b1 * (a2 * d3 - a3 * d2) +
-    d1 * (a2 * b3 - a3 * b2)) *
-    scale;
-    this.storage[15] = (a1 * (b2 * c3 - b3 * c2) -
-    b1 * (a2 * c3 - a3 * c2) +
-    c1 * (a2 * b3 - a3 * b2)) *
-    scale;
+    if (vector_math.USE_SIMD()) {
+        Matrix4.scalar.scaleAdjoint(this, scale);
+    }
+    else {
+       Matrix4.scalar.scaleAdjoint(this, scale);
+    }
     return this;
+};
+
+Matrix4.scalar.scaleAdjoint = function(that, scale) {
+    // Adapted from code by Richard Carling.
+    var m00 = that.storage[0];
+    var m01 = that.storage[4];
+    var m02 = that.storage[8];
+    var m03 = that.storage[12];
+    var m10 = that.storage[1];
+    var m11 = that.storage[5];
+    var m12 = that.storage[9];
+    var m13 = that.storage[13];
+    var m20 = that.storage[2];
+    var m21 = that.storage[6];
+    var m22 = that.storage[10];
+    var m23 = that.storage[14];
+    var m30 = that.storage[3];
+    var m31 = that.storage[7];
+    var m32 = that.storage[11];
+    var m33 = that.storage[15];
+    that.storage[0] = scale * (m11 * (m22 * m33 - m32 * m23) -
+                               m12 * (m21 * m33 - m31 * m23) +
+                               m13 * (m21 * m32 - m31 * m22));
+    that.storage[1] = -scale * (m10 * (m22 * m33 - m32 * m23) -
+                                m12 * (m20 * m33 - m30 * m23) +
+                                m13 * (m20 * m32 - m30 * m22));
+    that.storage[2] = scale * (m10 * (m21 * m33 - m31 * m23) -
+                               m11 * (m20 * m33 - m30 * m23) +
+                               m13 * (m20 * m31 - m30 * m21));
+    that.storage[3] = -scale * (m10 * (m21 * m32 - m31 * m22) -
+                                m11 * (m20 * m32 - m30 * m22) +
+                                m12 * (m20 * m31 - m30 * m21));
+
+
+    that.storage[4] = -scale * (m01 * (m22 * m33 - m32 * m23) -
+                                m02 * (m21 * m33 - m31 * m23) +
+                                m03 * (m21 * m32 - m31 * m22));
+    that.storage[5] = scale * (m00 * (m22 * m33 - m32 * m23) -
+                               m02 * (m20 * m33 - m30 * m23) +
+                               m03 * (m20 * m32 - m30 * m22));
+    that.storage[6] = -scale * (m00 * (m21 * m33 - m31 * m23) -
+                                m01 * (m20 * m33 - m30 * m23) +
+                                m03 * (m20 * m31 - m30 * m21));
+    that.storage[7] = scale * (m00 * (m21 * m32 - m31 * m22) -
+                               m01 * (m20 * m32 - m30 * m22) +
+                               m02 * (m20 * m31 - m30 * m21));
+
+
+    that.storage[8] = scale * (m01 * (m12 * m33 - m32 * m13) -
+                               m02 * (m11 * m33 - m31 * m13) +
+                               m03 * (m11 * m32 - m31 * m12));
+    that.storage[9] = -scale * (m00 * (m12 * m33 - m32 * m13) -
+                                m02 * (m10 * m33 - m30 * m13) +
+                                m03 * (m10 * m32 - m30 * m12));
+    that.storage[10] = scale * (m00 * (m11 * m33 - m31 * m13) -
+                                m01 * (m10 * m33 - m30 * m13) +
+                                m03 * (m10 * m31 - m30 * m11));
+    that.storage[11] = -scale * (m00 * (m11 * m32 - m31 * m12) -
+                                 m01 * (m10 * m32 - m30 * m12) +
+                                 m02 * (m10 * m31 - m30 * m11));
+
+
+    that.storage[12] = -scale * (m01 * (m12 * m23 - m22 * m13) -
+                                 m02 * (m11 * m23 - m21 * m13) +
+                                 m03 * (m11 * m22 - m21 * m12));
+    that.storage[13] = scale * (m00 * (m12 * m23 - m22 * m13) -
+                                m02 * (m10 * m23 - m20 * m13) +
+                                m03 * (m10 * m22 - m20 * m12));
+    that.storage[14] = -scale * (m00 * (m11 * m23 - m21 * m13) -
+                                 m01 * (m10 * m23 - m20 * m13) +
+                                 m03 * (m10 * m21 - m20 * m11));
+    that.storage[15] = scale * (m00 * (m11 * m22 - m21 * m12) -
+                                m01 * (m10 * m22 - m20 * m12) +
+                                m02 * (m10 * m21 - m20 * m11));
+};
+
+Matrix4.simd.scaleAdjoint = function(that, scale) {
+/*
+    var s = SMID.Float32x4(scale, -scale, scale, -scale);
+    var col0 =
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.sub(
+                SIMD.Float32x4mul(//[m11, m10, m10, m10]
+                    ,
+                    SIMD.Float32x4.sub(
+                        SIMD.Float32x4.mul( //[m22, m22, m21, m21]
+                            ,
+                            //[m33, m33, m33, m32]
+                        )
+                        ,
+                        SIMD.Float32x4.mul( //[m32, m32, m31, m31]
+                            ,
+                            //[m23, m23, m23, m22]
+                        )
+                    )
+                ),
+                SIMD.Float32x4mul(//[m12, m12, m11, m11]
+                    ,
+                    SIMD.Float32x4.sub(
+                        SIMD.Float32x4.mul( //[m21, m20, m20, m20]
+                            ,
+                            //[m33, m33, m33, m32]
+                        )
+                        ,
+                        SIMD.Float32x4.mul( //[m31, m30, m30, m30]
+                            ,
+                            //[m23, m23, m23, m22]
+                        )
+                    )
+                )),
+            SIMD.Float32x4mul(//[m13, m13, m13, m12]
+                ,
+                SIMD.Float32x4.sub(
+                    SIMD.Float32x4.mul( //[m21, m20, m20, m20]
+                        ,
+                        //[m32, m32, m31, m31]
+                    )
+                    ,
+                    SIMD.Float32x4.mul( //[m31, m30, m30, m30]
+                        ,
+                        //[m22, m22, m21, m21]
+                    )
+                )
+            )
+        );
+    var out0 = SMID.Float32x4.mul(s, col0);
+
+
+    s = SMID.Float32x4(-scale, scale, -scale, scale);
+    var col1 =
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.sub(
+                SIMD.Float32x4mul(//[, , , ]
+                    ,
+                    SIMD.Float32x4.sub(
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                        ,
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                    )
+                ),
+                SIMD.Float32x4mul(//[, , , ]
+                    ,
+                    SIMD.Float32x4.sub(
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                        ,
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                    )
+                )),
+            SIMD.Float32x4mul(//[, , , ]
+                ,
+                SIMD.Float32x4.sub(
+                    SIMD.Float32x4.mul( ///[, , , ]
+                        ,
+                        //[, , , ]
+                    )
+                    ,
+                    SIMD.Float32x4.mul( //[, , , ]
+                        ,
+                        //[, , , ]
+                    )
+                )
+            )
+        );
+    var out1 = SMID.Float32x4.mul(s, col1);
+
+    s = SMID.Float32x4(scale, -scale, scale, -scale);
+    var col2 =
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.sub(
+                SIMD.Float32x4mul(//[, , , ]
+                    ,
+                    SIMD.Float32x4.sub(
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                        ,
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                    )
+                ),
+                SIMD.Float32x4mul(//[, , , ]
+                    ,
+                    SIMD.Float32x4.sub(
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                        ,
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                    )
+                )),
+            SIMD.Float32x4mul(//[, , , ]
+                ,
+                SIMD.Float32x4.sub(
+                    SIMD.Float32x4.mul( ///[, , , ]
+                        ,
+                        //[, , , ]
+                    )
+                    ,
+                    SIMD.Float32x4.mul( //[, , , ]
+                        ,
+                        //[, , , ]
+                    )
+                )
+            )
+        );
+    var out2 = SMID.Float32x4.mul(s, col2);
+
+
+    s = SMID.Float32x4(-scale, scale, -scale, scale);
+    var col3 =
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.sub(
+                SIMD.Float32x4mul(//[, , , ]
+                    ,
+                    SIMD.Float32x4.sub(
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                        ,
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                    )
+                ),
+                SIMD.Float32x4mul(//[, , , ]
+                    ,
+                    SIMD.Float32x4.sub(
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                        ,
+                        SIMD.Float32x4.mul( //[, , , ]
+                            ,
+                            //[, , , ]
+                        )
+                    )
+                )),
+            SIMD.Float32x4mul(//[, , , ]
+                ,
+                SIMD.Float32x4.sub(
+                    SIMD.Float32x4.mul( ///[, , , ]
+                        ,
+                        //[, , , ]
+                    )
+                    ,
+                    SIMD.Float32x4.mul( //[, , , ]
+                        ,
+                        //[, , , ]
+                    )
+                )
+            )
+        );
+    var out3 = SMID.Float32x4.mul(s, col3);
+
+    Matrix4.simd.load(that);
+    that.simd.simd_c0 = out0;
+    that.simd.simd_c1 = out1;
+    that.simd.simd_c2 = out2;
+    that.simd.simd_c3 = out3;
+    Matrix4.simd.store(that);
+    */
 };
 
 /**
  * @method
- * /// Rotates [arg] by the absolute rotation of [this]
+ * /// Rotates [arg] by the absolute rotation of [that]
  * /// Returns [arg].
  * /// Primarily used by AABB transformation code.
  * @param arg {Vector3}
@@ -1913,24 +2325,41 @@ Matrix4.prototype.absoluteRotate = function(arg) {
  * @returns {Matrix4}
  */
 Matrix4.prototype.add = function(o) {
-    var oStorage = o.storage;
-    this.storage[0] = this.storage[0] + oStorage[0];
-    this.storage[1] = this.storage[1] + oStorage[1];
-    this.storage[2] = this.storage[2] + oStorage[2];
-    this.storage[3] = this.storage[3] + oStorage[3];
-    this.storage[4] = this.storage[4] + oStorage[4];
-    this.storage[5] = this.storage[5] + oStorage[5];
-    this.storage[6] = this.storage[6] + oStorage[6];
-    this.storage[7] = this.storage[7] + oStorage[7];
-    this.storage[8] = this.storage[8] + oStorage[8];
-    this.storage[9] = this.storage[9] + oStorage[9];
-    this.storage[10] = this.storage[10] + oStorage[10];
-    this.storage[11] = this.storage[11] + oStorage[11];
-    this.storage[12] = this.storage[12] + oStorage[12];
-    this.storage[13] = this.storage[13] + oStorage[13];
-    this.storage[14] = this.storage[14] + oStorage[14];
-    this.storage[15] = this.storage[15] + oStorage[15];
+    if (vector_math.USE_SIMD()) {
+        Matrix4.simd.add(this, o);
+    }
+    else {
+        Matrix4.scalar.add(this, o);
+    }
     return this;
+};
+Matrix4.scalar.add = function(that, o) {
+    var oStorage = o.storage;
+    that.storage[0] = that.storage[0] + oStorage[0];
+    that.storage[1] = that.storage[1] + oStorage[1];
+    that.storage[2] = that.storage[2] + oStorage[2];
+    that.storage[3] = that.storage[3] + oStorage[3];
+    that.storage[4] = that.storage[4] + oStorage[4];
+    that.storage[5] = that.storage[5] + oStorage[5];
+    that.storage[6] = that.storage[6] + oStorage[6];
+    that.storage[7] = that.storage[7] + oStorage[7];
+    that.storage[8] = that.storage[8] + oStorage[8];
+    that.storage[9] = that.storage[9] + oStorage[9];
+    that.storage[10] = that.storage[10] + oStorage[10];
+    that.storage[11] = that.storage[11] + oStorage[11];
+    that.storage[12] = that.storage[12] + oStorage[12];
+    that.storage[13] = that.storage[13] + oStorage[13];
+    that.storage[14] = that.storage[14] + oStorage[14];
+    that.storage[15] = that.storage[15] + oStorage[15];
+};
+Matrix4.simd.add = function(that, o) {
+    Matrix4.simd.load(that);
+    Matrix4.simd.load(o);
+    that.simd_c0 = SIMD.Float32x4.add(that.simd_c0, o.simd_c0);
+    that.simd_c1 = SIMD.Float32x4.add(that.simd_c1, o.simd_c1);
+    that.simd_c2 = SIMD.Float32x4.add(that.simd_c2, o.simd_c2);
+    that.simd_c3 = SIMD.Float32x4.add(that.simd_c3, o.simd_c3);
+    Matrix4.simd.store(that);
 };
 
 /**
@@ -1940,25 +2369,43 @@ Matrix4.prototype.add = function(o) {
  * @returns {Matrix4}
  */
 Matrix4.prototype.sub = function(o) {
-    var oStorage = o.storage;
-    this.storage[0] = this.storage[0] - oStorage[0];
-    this.storage[1] = this.storage[1] - oStorage[1];
-    this.storage[2] = this.storage[2] - oStorage[2];
-    this.storage[3] = this.storage[3] - oStorage[3];
-    this.storage[4] = this.storage[4] - oStorage[4];
-    this.storage[5] = this.storage[5] - oStorage[5];
-    this.storage[6] = this.storage[6] - oStorage[6];
-    this.storage[7] = this.storage[7] - oStorage[7];
-    this.storage[8] = this.storage[8] - oStorage[8];
-    this.storage[9] = this.storage[9] - oStorage[9];
-    this.storage[10] = this.storage[10] - oStorage[10];
-    this.storage[11] = this.storage[11] - oStorage[11];
-    this.storage[12] = this.storage[12] - oStorage[12];
-    this.storage[13] = this.storage[13] - oStorage[13];
-    this.storage[14] = this.storage[14] - oStorage[14];
-    this.storage[15] = this.storage[15] - oStorage[15];
+    if (vector_math.USE_SIMD()) {
+        Matrix4.simd.sub(this, o);
+    }
+    else {
+        Matrix4.scalar.sub(this, o);
+    }
     return this;
 };
+Matrix4.scalar.sub = function(that, o) {
+    var oStorage = o.storage;
+    that.storage[0] = that.storage[0] - oStorage[0];
+    that.storage[1] = that.storage[1] - oStorage[1];
+    that.storage[2] = that.storage[2] - oStorage[2];
+    that.storage[3] = that.storage[3] - oStorage[3];
+    that.storage[4] = that.storage[4] - oStorage[4];
+    that.storage[5] = that.storage[5] - oStorage[5];
+    that.storage[6] = that.storage[6] - oStorage[6];
+    that.storage[7] = that.storage[7] - oStorage[7];
+    that.storage[8] = that.storage[8] - oStorage[8];
+    that.storage[9] = that.storage[9] - oStorage[9];
+    that.storage[10] = that.storage[10] - oStorage[10];
+    that.storage[11] = that.storage[11] - oStorage[11];
+    that.storage[12] = that.storage[12] - oStorage[12];
+    that.storage[13] = that.storage[13] - oStorage[13];
+    that.storage[14] = that.storage[14] - oStorage[14];
+    that.storage[15] = that.storage[15] - oStorage[15];
+};
+Matrix4.simd.sub = function(that, o) {
+    Matrix4.simd.load(that);
+    Matrix4.simd.load(o);
+    that.simd_c0 = SIMD.Float32x4.sub(that.simd_c0, o.simd_c0);
+    that.simd_c1 = SIMD.Float32x4.sub(that.simd_c1, o.simd_c1);
+    that.simd_c2 = SIMD.Float32x4.sub(that.simd_c2, o.simd_c2);
+    that.simd_c3 = SIMD.Float32x4.sub(that.simd_c3, o.simd_c3);
+    Matrix4.simd.store(that);
+};
+
 
 /**
  * @method
@@ -1966,24 +2413,41 @@ Matrix4.prototype.sub = function(o) {
  * @returns {Matrix4}
  */
 Matrix4.prototype.negate = function() {
-    this.storage[0] = -this.storage[0];
-    this.storage[1] = -this.storage[1];
-    this.storage[2] = -this.storage[2];
-    this.storage[3] = -this.storage[3];
-    this.storage[4] = -this.storage[4];
-    this.storage[5] = -this.storage[5];
-    this.storage[6] = -this.storage[6];
-    this.storage[7] = -this.storage[7];
-    this.storage[8] = -this.storage[8];
-    this.storage[9] = -this.storage[9];
-    this.storage[10] = -this.storage[10];
-    this.storage[11] = -this.storage[11];
-    this.storage[12] = -this.storage[12];
-    this.storage[13] = -this.storage[13];
-    this.storage[14] = -this.storage[14];
-    this.storage[15] = -this.storage[15];
+    if (vector_math.USE_SIMD()) {
+        Matrix4.simd.neg(this);
+    }
+    else {
+        Matrix4.scalar.neg(this);
+    }
     return this;
 };
+Matrix4.scalar.neg = function(that) {
+    that.storage[0] = -that.storage[0];
+    that.storage[1] = -that.storage[1];
+    that.storage[2] = -that.storage[2];
+    that.storage[3] = -that.storage[3];
+    that.storage[4] = -that.storage[4];
+    that.storage[5] = -that.storage[5];
+    that.storage[6] = -that.storage[6];
+    that.storage[7] = -that.storage[7];
+    that.storage[8] = -that.storage[8];
+    that.storage[9] = -that.storage[9];
+    that.storage[10] = -that.storage[10];
+    that.storage[11] = -that.storage[11];
+    that.storage[12] = -that.storage[12];
+    that.storage[13] = -that.storage[13];
+    that.storage[14] = -that.storage[14];
+    that.storage[15] = -that.storage[15];
+};
+Matrix4.simd.neg = function(that) {
+    Matrix4.simd.load(that);
+    that.simd_c0 = SIMD.Float32x4.neg(that.simd_c0);
+    that.simd_c1 = SIMD.Float32x4.neg(that.simd_c1);
+    that.simd_c2 = SIMD.Float32x4.neg(that.simd_c2);
+    that.simd_c3 = SIMD.Float32x4.neg(that.simd_c3);
+    Matrix4.simd.store(that);
+};
+
 
 
 /**
@@ -1993,22 +2457,31 @@ Matrix4.prototype.negate = function() {
  * @returns {Matrix4}
  */
 Matrix4.prototype.multiply = function(arg) {
-    var m00 = this.storage[0];
-    var m01 = this.storage[4];
-    var m02 = this.storage[8];
-    var m03 = this.storage[12];
-    var m10 = this.storage[1];
-    var m11 = this.storage[5];
-    var m12 = this.storage[9];
-    var m13 = this.storage[13];
-    var m20 = this.storage[2];
-    var m21 = this.storage[6];
-    var m22 = this.storage[10];
-    var m23 = this.storage[14];
-    var m30 = this.storage[3];
-    var m31 = this.storage[7];
-    var m32 = this.storage[11];
-    var m33 = this.storage[15];
+    if (vector_math.USE_SIMD()) {
+        Matrix4.simd.multiply(this, arg);
+    }
+    else {
+        Matrix4.scalar.multiply(this, arg);
+    }
+    return this;
+};
+Matrix4.scalar.multiply = function(that, arg) {
+    var m00 = that.storage[0];
+    var m01 = that.storage[4];
+    var m02 = that.storage[8];
+    var m03 = that.storage[12];
+    var m10 = that.storage[1];
+    var m11 = that.storage[5];
+    var m12 = that.storage[9];
+    var m13 = that.storage[13];
+    var m20 = that.storage[2];
+    var m21 = that.storage[6];
+    var m22 = that.storage[10];
+    var m23 = that.storage[14];
+    var m30 = that.storage[3];
+    var m31 = that.storage[7];
+    var m32 = that.storage[11];
+    var m33 = that.storage[15];
     var argStorage = arg.storage;
     var n00 = argStorage[0];
     var n01 = argStorage[4];
@@ -2026,23 +2499,74 @@ Matrix4.prototype.multiply = function(arg) {
     var n31 = argStorage[7];
     var n32 = argStorage[11];
     var n33 = argStorage[15];
-    this.storage[0] = (m00 * n00) + (m01 * n10) + (m02 * n20) + (m03 * n30);
-    this.storage[4] = (m00 * n01) + (m01 * n11) + (m02 * n21) + (m03 * n31);
-    this.storage[8] = (m00 * n02) + (m01 * n12) + (m02 * n22) + (m03 * n32);
-    this.storage[12] = (m00 * n03) + (m01 * n13) + (m02 * n23) + (m03 * n33);
-    this.storage[1] = (m10 * n00) + (m11 * n10) + (m12 * n20) + (m13 * n30);
-    this.storage[5] = (m10 * n01) + (m11 * n11) + (m12 * n21) + (m13 * n31);
-    this.storage[9] = (m10 * n02) + (m11 * n12) + (m12 * n22) + (m13 * n32);
-    this.storage[13] = (m10 * n03) + (m11 * n13) + (m12 * n23) + (m13 * n33);
-    this.storage[2] = (m20 * n00) + (m21 * n10) + (m22 * n20) + (m23 * n30);
-    this.storage[6] = (m20 * n01) + (m21 * n11) + (m22 * n21) + (m23 * n31);
-    this.storage[10] = (m20 * n02) + (m21 * n12) + (m22 * n22) + (m23 * n32);
-    this.storage[14] = (m20 * n03) + (m21 * n13) + (m22 * n23) + (m23 * n33);
-    this.storage[3] = (m30 * n00) + (m31 * n10) + (m32 * n20) + (m33 * n30);
-    this.storage[7] = (m30 * n01) + (m31 * n11) + (m32 * n21) + (m33 * n31);
-    this.storage[11] = (m30 * n02) + (m31 * n12) + (m32 * n22) + (m33 * n32);
-    this.storage[15] = (m30 * n03) + (m31 * n13) + (m32 * n23) + (m33 * n33);
-    return this;
+    that.storage[0] = (m00 * n00) + (m01 * n10) + (m02 * n20) + (m03 * n30);
+    that.storage[1] = (m10 * n00) + (m11 * n10) + (m12 * n20) + (m13 * n30);
+    that.storage[2] = (m20 * n00) + (m21 * n10) + (m22 * n20) + (m23 * n30);
+    that.storage[3] = (m30 * n00) + (m31 * n10) + (m32 * n20) + (m33 * n30);
+
+    that.storage[4] = (m00 * n01) + (m01 * n11) + (m02 * n21) + (m03 * n31);
+    that.storage[5] = (m10 * n01) + (m11 * n11) + (m12 * n21) + (m13 * n31);
+    that.storage[6] = (m20 * n01) + (m21 * n11) + (m22 * n21) + (m23 * n31);
+    that.storage[7] = (m30 * n01) + (m31 * n11) + (m32 * n21) + (m33 * n31);
+
+    that.storage[8] = (m00 * n02) + (m01 * n12) + (m02 * n22) + (m03 * n32);
+    that.storage[9] = (m10 * n02) + (m11 * n12) + (m12 * n22) + (m13 * n32);
+    that.storage[10] = (m20 * n02) + (m21 * n12) + (m22 * n22) + (m23 * n32);
+    that.storage[11] = (m30 * n02) + (m31 * n12) + (m32 * n22) + (m33 * n32);
+
+    that.storage[12] = (m00 * n03) + (m01 * n13) + (m02 * n23) + (m03 * n33);
+    that.storage[13] = (m10 * n03) + (m11 * n13) + (m12 * n23) + (m13 * n33);
+    that.storage[14] = (m20 * n03) + (m21 * n13) + (m22 * n23) + (m23 * n33);
+    that.storage[15] = (m30 * n03) + (m31 * n13) + (m32 * n23) + (m33 * n33);
+};
+Matrix4.simd.multiply = function(that, arg) {
+    Matrix4.simd.load(that);
+    Matrix4.simd.load(arg);
+    var out0 = SIMD.Float32x4.add(
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.mul(that.simd_c0, SIMD.Float32x4.swizzle(arg.simd_c0, 0, 0, 0, 0)),
+            SIMD.Float32x4.mul(that.simd_c1, SIMD.Float32x4.swizzle(arg.simd_c0, 1, 1, 1, 1))
+        ),
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.mul(that.simd_c2, SIMD.Float32x4.swizzle(arg.simd_c0, 2, 2, 2, 2)),
+            SIMD.Float32x4.mul(that.simd_c3, SIMD.Float32x4.swizzle(arg.simd_c0, 3, 3, 3, 3))
+        )
+    );
+    var out1 = SIMD.Float32x4.add(
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.mul(that.simd_c0, SIMD.Float32x4.swizzle(arg.simd_c1, 0, 0, 0, 0)),
+            SIMD.Float32x4.mul(that.simd_c1, SIMD.Float32x4.swizzle(arg.simd_c1, 1, 1, 1, 1))
+        ),
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.mul(that.simd_c2, SIMD.Float32x4.swizzle(arg.simd_c1, 2, 2, 2, 2)),
+            SIMD.Float32x4.mul(that.simd_c3, SIMD.Float32x4.swizzle(arg.simd_c1, 3, 3, 3, 3))
+        )
+    );
+    var out2 = SIMD.Float32x4.add(
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.mul(that.simd_c0, SIMD.Float32x4.swizzle(arg.simd_c2, 0, 0, 0, 0)),
+            SIMD.Float32x4.mul(that.simd_c1, SIMD.Float32x4.swizzle(arg.simd_c2, 1, 1, 1, 1))
+        ),
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.mul(that.simd_c2, SIMD.Float32x4.swizzle(arg.simd_c2, 2, 2, 2, 2)),
+            SIMD.Float32x4.mul(that.simd_c3, SIMD.Float32x4.swizzle(arg.simd_c2, 3, 3, 3, 3))
+        )
+    );
+    var out3 = SIMD.Float32x4.add(
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.mul(that.simd_c0, SIMD.Float32x4.swizzle(arg.simd_c3, 0, 0, 0, 0)),
+            SIMD.Float32x4.mul(that.simd_c1, SIMD.Float32x4.swizzle(arg.simd_c3, 1, 1, 1, 1))
+        ),
+        SIMD.Float32x4.add(
+            SIMD.Float32x4.mul(that.simd_c2, SIMD.Float32x4.swizzle(arg.simd_c3, 2, 2, 2, 2)),
+            SIMD.Float32x4.mul(that.simd_c3, SIMD.Float32x4.swizzle(arg.simd_c3, 3, 3, 3, 3))
+        )
+    );
+    that.simd_c0 = out0;
+    that.simd_c1 = out1;
+    that.simd_c2 = out2;
+    that.simd_c3 = out3;
+    Matrix4.simd.store(that);
 };
 
 /**
