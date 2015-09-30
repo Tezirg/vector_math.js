@@ -1821,6 +1821,15 @@ Matrix4.prototype.invert = function() {
  * @returns {number}
  */
 Matrix4.prototype.copyInverse = function(arg) {
+    if (vector_math.USE_SIMD()) {
+        return Matrix4.simd.copyInverse(this, arg);
+    }
+    else {
+        return Matrix4.scalar.copyInverse(this, arg);
+    }
+};
+
+Matrix4.scalar.copyInverse = function(that, arg) {
     var argStorage = arg.storage;
     var a00 = argStorage[0];
     var a01 = argStorage[1];
@@ -1853,27 +1862,117 @@ Matrix4.prototype.copyInverse = function(arg) {
     var det =
         (b00 * m011 - b01 * m010 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06);
     if (det == 0.0) {
-        this.setFrom(arg);
+        that.setFrom(arg);
         return 0.0;
     }
     var invDet = 1.0 / det;
-    this.storage[0] = (m001 * m011 - m002 * m010 + m003 * b09) * invDet;
-    this.storage[1] = (-a01 * m011 + a02 * m010 - a03 * b09) * invDet;
-    this.storage[2] = (m201 * b05 - m202 * b04 + m203 * b03) * invDet;
-    this.storage[3] = (-m101 * b05 + m102 * b04 - m103 * b03) * invDet;
-    this.storage[4] = (-m000 * m011 + m002 * b08 - m003 * b07) * invDet;
-    this.storage[5] = (a00 * m011 - a02 * b08 + a03 * b07) * invDet;
-    this.storage[6] = (-m200 * b05 + m202 * b02 - m203 * b01) * invDet;
-    this.storage[7] = (m100 * b05 - m102 * b02 + m103 * b01) * invDet;
-    this.storage[8] = (m000 * m010 - m001 * b08 + m003 * b06) * invDet;
-    this.storage[9] = (-a00 * m010 + a01 * b08 - a03 * b06) * invDet;
-    this.storage[10] = (m200 * b04 - m201 * b02 + m203 * b00) * invDet;
-    this.storage[11] = (-m100 * b04 + m101 * b02 - m103 * b00) * invDet;
-    this.storage[12] = (-m000 * b09 + m001 * b07 - m002 * b06) * invDet;
-    this.storage[13] = (a00 * b09 - a01 * b07 + a02 * b06) * invDet;
-    this.storage[14] = (-m200 * b03 + m201 * b01 - m202 * b00) * invDet;
-    this.storage[15] = (m100 * b03 - m101 * b01 + m102 * b00) * invDet;
+    that.storage[0] = (m001 * m011 - m002 * m010 + m003 * b09) * invDet;
+    that.storage[1] = (-a01 * m011 + a02 * m010 - a03 * b09) * invDet;
+    that.storage[2] = (m201 * b05 - m202 * b04 + m203 * b03) * invDet;
+    that.storage[3] = (-m101 * b05 + m102 * b04 - m103 * b03) * invDet;
+    that.storage[4] = (-m000 * m011 + m002 * b08 - m003 * b07) * invDet;
+    that.storage[5] = (a00 * m011 - a02 * b08 + a03 * b07) * invDet;
+    that.storage[6] = (-m200 * b05 + m202 * b02 - m203 * b01) * invDet;
+    that.storage[7] = (m100 * b05 - m102 * b02 + m103 * b01) * invDet;
+    that.storage[8] = (m000 * m010 - m001 * b08 + m003 * b06) * invDet;
+    that.storage[9] = (-a00 * m010 + a01 * b08 - a03 * b06) * invDet;
+    that.storage[10] = (m200 * b04 - m201 * b02 + m203 * b00) * invDet;
+    that.storage[11] = (-m100 * b04 + m101 * b02 - m103 * b00) * invDet;
+    that.storage[12] = (-m000 * b09 + m001 * b07 - m002 * b06) * invDet;
+    that.storage[13] = (a00 * b09 - a01 * b07 + a02 * b06) * invDet;
+    that.storage[14] = (-m200 * b03 + m201 * b01 - m202 * b00) * invDet;
+    that.storage[15] = (m100 * b03 - m101 * b01 + m102 * b00) * invDet;
     return det;
+};
+Matrix4.simd.copyInverse = function(that, arg) {
+    var row0, row1, row2, row3,
+        tmp1,
+        minor0, minor1, minor2, minor3,
+        det;
+    Matrix4.simd.load(arg);
+
+    // Compute matrix adjugate
+    tmp1 = SIMD.Float32x4.shuffle(arg.simd_c0, arg.simd_c1, 0, 1, 4, 5);
+    row1 = SIMD.Float32x4.shuffle(arg.simd_c2, arg.simd_c3, 0, 1, 4, 5);
+    row0 = SIMD.Float32x4.shuffle(tmp1, row1, 0, 2, 4, 6);
+    row1 = SIMD.Float32x4.shuffle(row1, tmp1, 1, 3, 5, 7);
+    tmp1 = SIMD.Float32x4.shuffle(arg.simd_c0, arg.simd_c1, 2, 3, 6, 7);
+    row3 = SIMD.Float32x4.shuffle(arg.simd_c2, arg.simd_c3, 2, 3, 6, 7);
+    row2 = SIMD.Float32x4.shuffle(tmp1, row3, 0, 2, 4, 6);
+    row3 = SIMD.Float32x4.shuffle(row3, tmp1, 1, 3, 5, 7);
+
+    tmp1   = SIMD.Float32x4.mul(row2, row3);
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
+    minor0 = SIMD.Float32x4.mul(row1, tmp1);
+    minor1 = SIMD.Float32x4.mul(row0, tmp1);
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
+    minor0 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row1, tmp1), minor0);
+    minor1 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row0, tmp1), minor1);
+    minor1 = SIMD.Float32x4.swizzle(minor1, 2, 3, 0, 1);
+
+    tmp1   = SIMD.Float32x4.mul(row1, row2);
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
+    minor0 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row3, tmp1), minor0);
+    minor3 = SIMD.Float32x4.mul(row0, tmp1);
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
+    minor0 = SIMD.Float32x4.sub(minor0, SIMD.Float32x4.mul(row3, tmp1));
+    minor3 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row0, tmp1), minor3);
+    minor3 = SIMD.Float32x4.swizzle(minor3, 2, 3, 0, 1);
+
+    tmp1   = SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(row1, 2, 3, 0, 1), row3);
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
+    row2   = SIMD.Float32x4.swizzle(row2, 2, 3, 0, 1);
+    minor0 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row2, tmp1), minor0);
+    minor2 = SIMD.Float32x4.mul(row0, tmp1);
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
+    minor0 = SIMD.Float32x4.sub(minor0, SIMD.Float32x4.mul(row2, tmp1));
+    minor2 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row0, tmp1), minor2);
+    minor2 = SIMD.Float32x4.swizzle(minor2, 2, 3, 0, 1);
+
+    tmp1   = SIMD.Float32x4.mul(row0, row1);
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
+    minor2 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row3, tmp1), minor2);
+    minor3 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row2, tmp1), minor3);
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
+    minor2 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row3, tmp1), minor2);
+    minor3 = SIMD.Float32x4.sub(minor3, SIMD.Float32x4.mul(row2, tmp1));
+
+    tmp1   = SIMD.Float32x4.mul(row0, row3);
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
+    minor1 = SIMD.Float32x4.sub(minor1, SIMD.Float32x4.mul(row2, tmp1));
+    minor2 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row1, tmp1), minor2);
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
+    minor1 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row2, tmp1), minor1);
+    minor2 = SIMD.Float32x4.sub(minor2, SIMD.Float32x4.mul(row1, tmp1));
+
+    tmp1   = SIMD.Float32x4.mul(row0, row2);
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
+    minor1 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row3, tmp1), minor1);
+    minor3 = SIMD.Float32x4.sub(minor3, SIMD.Float32x4.mul(row1, tmp1));
+    tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
+    minor1 = SIMD.Float32x4.sub(minor1, SIMD.Float32x4.mul(row3, tmp1));
+    minor3 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row1, tmp1), minor3);
+
+    // Compute matrix determinant
+    det   = SIMD.Float32x4.mul(row0, minor0);
+    det   = SIMD.Float32x4.add(SIMD.Float32x4.swizzle(det, 2, 3, 0, 1), det);
+    det   = SIMD.Float32x4.add(SIMD.Float32x4.swizzle(det, 1, 0, 3, 2), det);
+    tmp1  = SIMD.Float32x4.reciprocalApproximation(det);
+    det   = SIMD.Float32x4.sub(
+        SIMD.Float32x4.add(tmp1, tmp1),
+        SIMD.Float32x4.mul(det, SIMD.Float32x4.mul(tmp1, tmp1)));
+    det = SIMD.Float32x4.swizzle(det, 0, 0, 0, 0);
+    real_det = SIMD.Float32x4.extractLane(det, 0);
+    if (real_det == 0.0) {
+        that.setFrom(arg);
+        return 0.0;
+    }
+    that.simd_c0 = SIMD.Float32x4.mul(det, minor0);
+    that.simd_c1 = SIMD.Float32x4.mul(det, minor1);
+    that.simd_c2 = SIMD.Float32x4.mul(det, minor2);
+    that.simd_c3 = SIMD.Float32x4.mul(det, minor3);
+    Matrix4.simd.store(that);
+    return 1 / real_det;
 };
 
 /**
