@@ -119,7 +119,7 @@ Vector4.prototype.__defineSetter__("length", function(value) {
 /**
  * @static
  * Scalar version of set length
- * @param vector {Vector3}
+ * @param vector {Vector4}
  * @param value {Number}
  * @private
  */
