@@ -984,20 +984,6 @@ Vector4.prototype.angleTo = function(other) {
     return Math.acos(Math.min(Math.max(d, -1.0), 1.0));
 };
 
-/**
- * @method
- * Returns the signed angle between [this] and [other] around [normal] in radians.
- * @param other {Vector4}
- * @param normal {Vector4}
- * @returns {number}
- */
-Vector4.prototype.angleToSigned = function(other, normal) {
-    var angle = this.angleTo(other);
-    var c = this.cross(other);
-    var d = c.dot(normal);
-
-    return d < 0.0 ? -angle : angle;
-};
 
 /**
  * @method

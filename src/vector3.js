@@ -4,11 +4,11 @@
 
 module.exports = Vector3;
 
-var vector_math = require('./common.js');
-var SIMD = require("simd");
-
 var Matrix3 = require('./matrix3.js');
 var Matrix4 = require('./matrix4.js');
+
+var vector_math = require('./common.js');
+var SIMD = require("simd");
 
 /**
  * @class Vector3
@@ -23,7 +23,49 @@ function Vector3(x, y, z){
      * @type {Float32Array}
      */
     this.storage = new Float32Array([x, y, z]);
+    //this.storage = null;
+    /*if (vector_math.USE_SIMD()) {
+        this.storage = new Float32Array([x, y, z, 0.0]);
+    }
+    else {
+    */
+    // }
+    /**
+     * @property simd_storage
+     * @type {null|Float32x4}
+     */
+    this.simd_storage = null;
 }
+
+/**
+ * @static
+ * SIMD specialization
+ */
+Vector3.simd = {};
+/**
+ * @static
+ * Scalar specialization
+ */
+Vector3.scalar = {};
+
+/**
+ * @static
+ * Load SIMD.Float32x4 into vector.simd_storage
+ * @param vector {Vector3}
+ */
+Vector3.simd.load = function(vector) {
+    vector.simd_storage = SIMD.Float32x4.load3(vector.storage, 0);
+};
+
+/**
+ * @static
+ * Store SIMD.Float32x4 at vector.simd_storage into vector.storage
+ * @param vector {Vector3}
+ */
+Vector3.simd.store = function(vector) {
+    SIMD.Float32x4.store3(vector.storage, 0, vector.simd_storage);
+};
+
 
 /**
  * @property x
@@ -66,20 +108,52 @@ Vector3.prototype.__defineGetter__("length", function() {
     return Math.sqrt(this.length2());
 });
 Vector3.prototype.__defineSetter__("length", function(value) {
-    if (value == 0.0) {
-        this.setZero();
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd._setter_length(this, value);
     }
     else {
-        l = this.length;
+        Vector3.scalar._setter_length(this, value);
+    }
+});
+
+/**
+ * @static
+ * Scalar version of set length
+ * @param vector {Vector3}
+ * @param value {Number}
+ * @private
+ */
+Vector3.scalar._setter_length = function(vector, value) {
+    if (value == 0.0) {
+        vector.setZero();
+    }
+    else {
+        var l = this.length;
         if (l == 0.0) {
             return;
         }
         l = value / l;
-        this.storage[0] *= l;
-        this.storage[1] *= l;
-        this.storage[2] *= l;
+        vector.storage[0] *= l;
+        vector.storage[1] *= l;
+        vector.storage[2] *= l;
     }
-});
+};
+
+Vector3.simd._setter_length = function(vector, value) {
+    if (value == 0.0) {
+        vector.setZero();
+    }
+    else {
+        var l = vector.length;
+        if (l == 0.0) {
+            return;
+        }
+        l = value / l;
+        Vector3.simd.load(vector);
+        vector.simd_storage = SIMD.Float32x4.mul(vector.simd_storage, SIMD.Float32x4(l, l, l, 0));
+        Vector3.simd.store(vector);
+    }
+};
 
 /**
  * @static
@@ -172,9 +246,24 @@ Vector3.all = function(value) {
  * @param result {Vector3}
  */
 Vector3.min = function(a, b, result) {
-    result.x = Math.min(a.x, b.x);
-    result.y = Math.min(a.y, b.y);
-    result.z = Math.min(a.z, b.z);
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.min(a, b, result);
+    }
+    else {
+        Vector3.scalar.min(a, b, result);
+    }
+};
+Vector3.scalar.min = function(a, b, result) {
+    result.storage[0] = Math.min(a.x, b.x);
+    result.storage[1] = Math.min(a.y, b.y);
+    result.storage[2] = Math.min(a.z, b.z);
+};
+Vector3.simd.min = function(a, b, result) {
+    Vector3.simd.load(a);
+    Vector3.simd.load(b);
+    result.simd_storage = SIMD.Float32x4.min(a.simd_storage, b.simd_storage);
+
+    Vector3.simd.store(result);
 };
 
 /**
@@ -185,9 +274,25 @@ Vector3.min = function(a, b, result) {
  * @param result {Vector3}
  */
 Vector3.max = function(a, b, result) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.max(a, b, result);
+    }
+    else {
+        Vector3.scalar.max(a, b, result);
+    }
+};
+
+Vector3.scalar.max = function(a, b, result) {
     result.x = Math.max(a.x, b.x);
     result.y = Math.max(a.y, b.y);
     result.z = Math.max(a.z, b.z);
+};
+
+Vector3.simd.max = function(a, b, result) {
+    Vector3.simd.load(a);
+    Vector3.simd.load(b);
+    result.simd_storage = SIMD.Float32x4.max(a.simd_storage, b.simd_storage);
+    Vector3.simd.store(result);
 };
 
 /**
@@ -200,9 +305,25 @@ Vector3.max = function(a, b, result) {
  * @param result {Vector3}
  */
 Vector3.mix = function(min, max, a, result) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.mix(min, max, a, result);
+    }
+    else {
+        Vector3.scalar.mix(min, max, a, result);
+    }
+};
+Vector3.scalar.mix = function(min, max, a, result) {
     result.x = min.x + a * (max.x - min.x);
     result.y = min.y + a * (max.y - min.y);
     result.z = min.z + a * (max.z - min.z);
+};
+Vector3.simd.mix = function(min, max, a, result) {
+    Vector3.simd.load(min);
+    Vector3.simd.load(max);
+    var sub = SIMD.Float32x4.sub(max.simd_storage, min.simd_storage);
+    var interp = SIMD.Float32x4.mul(sub, SIMD.Float32x4(a, a, a, a));
+    result.simd_storage = SIMD.Float32x4.add(min.simd_storage, interp);
+    Vector3.simd.store(result);
 };
 
 /**
@@ -233,10 +354,23 @@ Vector3.prototype.setFrom = function(v) {
  * @param value {Number}
  */
 Vector3.prototype.splat = function(value) {
-    this.storage[0] = value;
-    this.storage[1] = value;
-    this.storage[2] = value;
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.splat(this, value);
+    }
+    else {
+        Vector3.scalar.splat(this, value);
+    }
     return this;
+};
+Vector3.scalar.splat = function(that, value) {
+    that.storage[0] = value;
+    that.storage[1] = value;
+    that.storage[2] = value;
+};
+Vector3.simd.splat = function(that, value) {
+    Vector3.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.splat(value);
+    Vector3.simd.store(that);
 };
 
 /**
@@ -248,16 +382,37 @@ Vector3.prototype.splat = function(value) {
  */
 Vector3.prototype.almostEquals = function(v, precision) {
     if (precision === undefined) {
-        precision = Number.EPSILON;
+        precision = vector_math.EPSILON;
     }
-    if (Math.abs(this.x-v.x) > precision ||
-        Math.abs(this.y-v.y) > precision ||
-        Math.abs(this.z-v.z) > precision) {
+
+    if (vector_math.USE_SIMD()) {
+        return Vector3.simd.almostEquals(this, v, precision);
+    }
+    else {
+        return Vector3.scalar.almostEquals(this, v, precision);
+    }
+};
+Vector3.scalar.almostEquals = function(that, v, precision) {
+    if (Math.abs(this.x - v.x) > precision ||
+        Math.abs(this.y - v.y) > precision ||
+        Math.abs(this.z - v.z) > precision) {
         return false;
     }
     return true;
 };
-
+Vector3.simd.almostEquals = function(that, v, p) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(v);
+    that.simd_storage = SIMD.Float32x4.sub(that.simd_storage, v.simd_storage);
+    that.simd_storage = SIMD.Float32x4.abs(that.simd_storage);
+    that.simd_storage = SIMD.Float32x4.greaterThan(that.simd_storage, SIMD.Float32x4(p, p, p, p));
+    if (SIMD.Bool32x4.extractLane(that.simd_storage, 0) ||
+        SIMD.Bool32x4.extractLane(that.simd_storage, 1) ||
+        SIMD.Bool32x4.extractLane(that.simd_storage, 2)) {
+        return false;
+    }
+    return true;
+};
 /**
  * @method
  * Return if this is equal to other
@@ -295,23 +450,52 @@ Vector3.prototype.isZero = function() {
  * @returns {Vector3}
  */
 Vector3.prototype.negate = function() {
-    this.storage[0] = - this.storage[0];
-    this.storage[1] = - this.storage[1];
-    this.storage[2] = - this.storage[2];
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.negate(this);
+    }
+    else {
+        Vector3.scalar.negate(this);
+    }
     return this;
+};
+
+Vector3.scalar.negate = function(that) {
+    that.storage[0] = - that.storage[0];
+    that.storage[1] = - that.storage[1];
+    that.storage[2] = - that.storage[2];
+};
+Vector3.simd.negate = function(that) {
+    Vector3.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.neg(that.simd_storage);
+    Vector3.simd.store(that);
 };
 
 /**
  * @method
  * Subtract other from this
- * @param other
+ * @param other {Vector3}
  * @returns {Vector3}
  */
 Vector3.prototype.sub = function(other) {
-    this.storage[0] = this.storage[0] - other.storage[0];
-    this.storage[1] = this.storage[1] - other.storage[1];
-    this.storage[2] = this.storage[2] - other.storage[2];
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.sub(this, other);
+    }
+    else {
+        Vector3.scalar.sub(this, other);
+    }
     return this;
+};
+
+Vector3.scalar.sub = function(that, other) {
+    that.storage[0] = that.storage[0] - other.storage[0];
+    that.storage[1] = that.storage[1] - other.storage[1];
+    that.storage[2] = that.storage[2] - other.storage[2];
+};
+Vector3.simd.sub = function(that, other) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.sub(that.simd_storage, other.simd_storage);
+    Vector3.simd.store(that);
 };
 
 /**
@@ -321,10 +505,25 @@ Vector3.prototype.sub = function(other) {
  * @returns {Vector3}
  */
 Vector3.prototype.add = function(other) {
-    this.storage[0] = this.storage[0] + other.storage[0];
-    this.storage[1] = this.storage[1] + other.storage[1];
-    this.storage[2] = this.storage[2] + other.storage[2];
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.add(this, other);
+    }
+    else {
+        Vector3.scalar.add(this, other);
+    }
     return this;
+};
+
+Vector3.scalar.add = function(that, other) {
+    that.storage[0] = that.storage[0] + other.storage[0];
+    that.storage[1] = that.storage[1] + other.storage[1];
+    that.storage[2] = that.storage[2] + other.storage[2];
+};
+Vector3.simd.add = function(that, other) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.add(that.simd_storage, other.simd_storage);
+    Vector3.simd.store(that);
 };
 
 /**
@@ -334,10 +533,25 @@ Vector3.prototype.add = function(other) {
  * @returns {Vector3}
  */
 Vector3.prototype.mul = function(other) {
-    this.storage[0] = this.storage[0] * other.storage[0];
-    this.storage[1] = this.storage[1] * other.storage[1];
-    this.storage[2] = this.storage[2] * other.storage[2];
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.mul(this, other);
+    }
+    else {
+        Vector3.scalar.mul(this, other);
+    }
     return this;
+};
+
+Vector3.scalar.mul = function(that, other) {
+    that.storage[0] = that.storage[0] + other.storage[0];
+    that.storage[1] = that.storage[1] + other.storage[1];
+    that.storage[2] = that.storage[2] + other.storage[2];
+};
+Vector3.simd.mul = function(that, other) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, other.simd_storage);
+    Vector3.simd.store(that);
 };
 
 /**
@@ -347,10 +561,25 @@ Vector3.prototype.mul = function(other) {
  * @returns {Vector3}
  */
 Vector3.prototype.div = function(other) {
-    this.storage[0] = this.storage[1] / other.storage[1];
-    this.storage[1] = this.storage[1] / other.storage[1];
-    this.storage[2] = this.storage[2] / other.storage[2];
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.div(this, other);
+    }
+    else {
+        Vector3.scalar.div(this, other);
+    }
     return this;
+};
+
+Vector3.scalar.div = function(that, other) {
+    that.storage[0] = that.storage[0] / other.storage[0];
+    that.storage[1] = that.storage[1] / other.storage[1];
+    that.storage[2] = that.storage[2] / other.storage[2];
+};
+Vector3.simd.div = function(that, other) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.div(that.simd_storage, other.simd_storage);
+    Vector3.simd.store(that);
 };
 
 /**
@@ -360,10 +589,24 @@ Vector3.prototype.div = function(other) {
  * @returns {Vector3}
  */
 Vector3.prototype.scale = function(arg) {
-    this.storage[0] = this.storage[0] * arg;
-    this.storage[1] = this.storage[1] * arg;
-    this.storage[2] = this.storage[2] * arg;
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.scale(this, arg);
+    }
+    else {
+        Vector3.scalar.scale(this, arg);
+    }
     return this;
+};
+
+Vector3.scalar.scale = function(that, scale) {
+    that.storage[0] = that.storage[0] * scale;
+    that.storage[1] = that.storage[1] * scale;
+    that.storage[2] = that.storage[2] * scale;
+};
+Vector3.simd.scale = function(that, s) {
+    Vector3.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, SIMD.Float32x4(s, s, s, s));
+    Vector3.simd.store(that);
 };
 
 /**
@@ -399,9 +642,27 @@ Vector3.prototype.reflect = function(normal) {
  * @returns {Number}
  */
 Vector3.prototype.dot = function(v) {
-    return this.storage[0] * v.x +
-           this.storage[1] * v.y +
-           this.storage[2] * v.z;
+    if (vector_math.USE_SIMD()) {
+        return Vector3.simd.dot(this, v);
+    }
+    else {
+        return Vector3.scalar.dot(this, v);
+    }
+};
+
+Vector3.scalar.dot = function(that, v) {
+    return that.storage[0] * v.x +
+           that.storage[1] * v.y +
+           that.storage[2] * v.z;
+};
+Vector3.simd.dot = function(that, v) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(v);
+
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, v.simd_storage);
+    return SIMD.Float32x4.extractLane(that.simd_storage, 0) +
+           SIMD.Float32x4.extractLane(that.simd_storage, 1) +
+           SIMD.Float32x4.extractLane(that.simd_storage, 2);
 };
 
 /**
@@ -411,11 +672,37 @@ Vector3.prototype.dot = function(v) {
  * @returns {Vector3}
  */
 Vector3.prototype.cross = function(v) {
-    var x = this.storage[1] * v.storage[2] - this.storage[2] * v.storage[1];
-    var y = this.storage[2] * v.storage[0] - this.storage[0] * v.storage[2];
-    var z = this.storage[0] * v.storage[1] - this.storage[1] * v.storage[0];
+    if (vector_math.USE_SIMD()) {
+        return Vector3.simd.cross(this, v);
+    }
+    else {
+        return Vector3.scalar.cross(this, v);
+    }
+};
+Vector3.scalar.cross = function(that, v) {
+    var x = that.storage[1] * v.storage[2] - that.storage[2] * v.storage[1];
+    var y = that.storage[2] * v.storage[0] - that.storage[0] * v.storage[2];
+    var z = that.storage[0] * v.storage[1] - that.storage[1] * v.storage[0];
 
     return new Vector3(x, y, z);
+};
+Vector3.simd.cross = function(that, v) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(v);
+    that.simd_storage = SIMD.Float32x4.swizzle(that.simd_storage, 1, 2, 0, 3);
+    v.simd_storage = SIMD.Float32x4.swizzle(v.simd_storage, 2, 0, 1, 3);
+    var mul1 = SIMD.Float32x4.mul(that.simd_storage, v.simd_storage);
+
+    Vector3.simd.load(that);
+    Vector3.simd.load(v);
+    that.simd_storage = SIMD.Float32x4.swizzle(that.simd_storage, 2, 0, 1, 3);
+    v.simd_storage = SIMD.Float32x4.swizzle(v.simd_storage, 1, 2, 0, 3);
+    var mul2 = SIMD.Float32x4.mul(that.simd_storage, v.simd_storage);
+
+    var res = SIMD.Float32x4.sub(mul1, mul2);
+    return new Vector3(SIMD.Float32x4.extractLane(res, 0),
+                       SIMD.Float32x4.extractLane(res, 1),
+                       SIMD.Float32x4.extractLane(res, 2));
 };
 
 /**
@@ -423,9 +710,22 @@ Vector3.prototype.cross = function(v) {
  * Set this to absolute value
  */
 Vector3.prototype.absolute = function() {
-    this.storage[0] = Math.abs(this.storage[0]);
-    this.storage[1] = Math.abs(this.storage[1]);
-    this.storage[2] = Math.abs(this.storage[2]);
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.absolute(this);
+    }
+    else {
+        Vector3.scalar.absolute(this);
+    }
+};
+Vector3.scalar.absolute = function(that) {
+    that.storage[0] = Math.abs(that.storage[0]);
+    that.storage[1] = Math.abs(that.storage[1]);
+    that.storage[2] = Math.abs(that.storage[2]);
+};
+Vector3.simd.absolute = function(that) {
+    Vector3.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.abs(that.simd_storage);
+    Vector3.store(that);
 };
 
 /**
@@ -575,14 +875,30 @@ Vector3.prototype.applyMatrix4 = function(arg) {
  * @returns {Vector3}
  */
 Vector3.prototype.clamp = function(min, max) {
-    var minStorage = min.storage;
-    var maxStorage = max.storage;
-    this.storage[0] = Math.min(Math.max(this.storage[0], minStorage[0]), maxStorage[0]);
-    this.storage[1] = Math.min(Math.max(this.storage[1], minStorage[1]), maxStorage[1]);
-    this.storage[2] = Math.min(Math.max(this.storage[2], minStorage[2]), maxStorage[2]);
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.clamp(this, min, max);
+    }
+    else {
+        Vector3.scalar.clamp(this, min, max);
+    }
     return this;
 };
 
+Vector3.scalar.clamp = function(that, min, max) {
+    var minStorage = min.storage;
+    var maxStorage = max.storage;
+    that.storage[0] = Math.min(Math.max(that.storage[0], minStorage[0]), maxStorage[0]);
+    that.storage[1] = Math.min(Math.max(that.storage[1], minStorage[1]), maxStorage[1]);
+    that.storage[2] = Math.min(Math.max(that.storage[2], minStorage[2]), maxStorage[2]);
+};
+Vector3.simd.clamp = function(that, min, max) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(min);
+    Vector3.simd.load(max);
+    var clamp_min = SIMD.Float32x4.max(that.simd_storage, min.simd_storage);
+    that.simd_storage = SIMD.Float32x4.min(clamp_min, max.simd_storage);
+    Vector3.simd.store(that);
+};
 /**
  * @method
  *  Clamp entries in [this] in the range [min]-[max].
@@ -591,10 +907,26 @@ Vector3.prototype.clamp = function(min, max) {
  * @returns {Vector3}
  */
 Vector3.prototype.clampScalar = function(min, max) {
-    this.storage[0] = Math.min(Math.max(this.storage[0], min), max);
-    this.storage[1] = Math.min(Math.max(this.storage[1], min), max);
-    this.storage[2] = Math.min(Math.max(this.storage[2], min), max);
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.clampScalar(this, min, max);
+    }
+    else {
+        Vector3.scalar.clampScalar(this, min, max);
+    }
     return this;
+};
+
+Vector3.scalar.clampScalar = function(that, min, max) {
+    that.storage[0] = Math.min(Math.max(that.storage[0], min), max);
+    that.storage[1] = Math.min(Math.max(that.storage[1], min), max);
+    that.storage[2] = Math.min(Math.max(that.storage[2], min), max);
+};
+Vector3.simd.clampScalar = function(that, min, max) {
+    Vector3.simd.load(that);
+    var clamp_min = SIMD.Float32x4.max(that.simd_storage, SIMD.Float32x4(min, min, min, min));
+    that.simd_storage = SIMD.Float32x4.min(clamp_min, SIMD.Float32x4(max, max, max, max));
+    Vector3.simd.store(that);
+
 };
 
 /**
@@ -638,9 +970,26 @@ Vector3.prototype.toString = function() {
  * @returns {number}
  */
 Vector3.prototype.length2 = function() {
-    return this.storage[0] * this.storage[0] +
-           this.storage[1] * this.storage[1] +
-           this.storage[2] * this.storage[2];
+    if (vector_math.USE_SIMD()) {
+        return Vector3.simd.length2(this);
+    }
+    else {
+        return Vector3.scalar.length2(this);
+    }
+};
+
+Vector3.scalar.length2 = function(that) {
+    return that.storage[0] * that.storage[0] +
+        that.storage[1] * that.storage[1] +
+        that.storage[2] * that.storage[2];
+};
+Vector3.simd.length2 = function(that) {
+    Vector3.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, that.simd_storage);
+    return SIMD.Float32x4.extractLane(that.simd_storage, 0) +
+        SIMD.Float32x4.extractLane(that.simd_storage, 1) +
+        SIMD.Float32x4.extractLane(that.simd_storage, 2);
+
 };
 
 /**
@@ -649,15 +998,34 @@ Vector3.prototype.length2 = function() {
  * @returns {Vector3}
  */
 Vector3.prototype.normalize = function() {
-    var l = this.length;
-    if (l != 0.0) {
-        l = 1.0 / l;
-        this.storage[0] *= l;
-        this.storage[1] *= l;
-        this.storage[2] *= l;
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.normalize(this);
+    }
+    else {
+        Vector3.scalar.normalize(this);
     }
     return this;
 };
+
+Vector3.scalar.normalize = function(that) {
+    var l = that.length;
+    if (l != 0.0) {
+        l = 1.0 / l;
+        that.storage[0] *= l;
+        that.storage[1] *= l;
+        that.storage[2] *= l;
+    }
+};
+Vector3.simd.normalize = function(that) {
+    var l = that.length;
+    if (l != 0.0) {
+        l = 1.0 / l;
+        Vector3.simd.load(that);
+        that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, SIMD.Float32x4(l, l, l, l));
+        Vector3.simd.store(that);
+    }
+};
+
 
 /**
  * @method
@@ -676,10 +1044,27 @@ Vector3.prototype.normalized = function() {
  * @returns {number}
  */
 Vector3.prototype.distanceToSquared = function(v) {
-    var dx = this.x - v.x;
-    var dy = this.y - v.y;
-    var dz = this.z - v.z;
+    if (vector_math.USE_SIMD()) {
+        return Vector3.simd.distanceToSquared(this, v);
+    }
+    else {
+        return Vector3.scalar.distanceToSquared(this, v);
+    }
+};
+Vector3.scalar.distanceToSquared = function(that, v) {
+    var dx = that.x - v.x;
+    var dy = that.y - v.y;
+    var dz = that.z - v.z;
     return dx * dx + dy * dy + dz * dz;
+};
+Vector3.simd.distanceToSquared = function(that, v) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(v);
+    that.simd_storage = SIMD.Float32x4.sub(that.simd_storage, v.simd_storage);
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, that.simd_storage);
+    return SIMD.Float32x4.extractLane(that.simd_storage, 0) +
+        SIMD.Float32x4.extractLane(that.simd_storage, 1) +
+        SIMD.Float32x4.extractLane(that.simd_storage, 2);
 };
 
 /**
