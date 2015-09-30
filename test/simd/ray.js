@@ -9,7 +9,8 @@ var Triangle = require('../../src/triangle.js');
 var Aabb3 = require('../../src/aabb3.js');
 var TEST = require('./test_utils.js');
 
-var SIMD = require("simd");
+var vector_math = require('../../src/common.js');
+vector_math.ENABLE_SIMD = true;
 
 module.exports = {
     testRayAt: function(test) {

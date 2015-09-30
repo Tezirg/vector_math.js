@@ -4,7 +4,9 @@
 var Plane = require('../../src/plane.js');
 var Vector3 = require('../../src/vector3.js');
 
-var SIMD = require("simd");
+var vector_math = require('../../src/common.js');
+vector_math.ENABLE_SIMD = true;
+
 
 module.exports = {
 

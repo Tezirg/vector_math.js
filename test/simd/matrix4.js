@@ -10,7 +10,9 @@ var Vector4 = require('../../src/vector4.js');
 var Quaternion = require('../../src/quaternion.js');
 var TEST = require('./test_utils.js');
 
-var SIMD = require("simd");
+var vector_math = require('../../src/common.js');
+vector_math.ENABLE_SIMD = true;
+
 
 module.exports = {
 

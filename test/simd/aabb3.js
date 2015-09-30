@@ -9,7 +9,8 @@ var Quad = require('../../src/quad.js');
 var Plane = require('../../src/plane.js');
 var TEST = require('./test_utils.js');
 
-var SIMD = require("simd");
+var vector_math = require('../../src/common.js');
+vector_math.ENABLE_SIMD = true;
 
 module.exports = {
 

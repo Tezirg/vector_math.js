@@ -5,8 +5,8 @@
 var Sphere = require('../../src/sphere.js');
 var Vector3 = require('../../src/vector3.js');
 
-var simd = require('simd');
-simd.shim();
+var vector_math = require('../../src/common.js');
+vector_math.ENABLE_SIMD = true;
 
 module.exports = {
 
