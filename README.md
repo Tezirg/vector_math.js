@@ -11,6 +11,11 @@ Javascript version of [vector_math.dart](https://github.com/google/vector_math.d
 * Well tested.
 * Heavily optimized.
 
+###Missing features
+
+* Utilities like color and common rendering related operations
+* Flexible getters and setters, for example, position.xwz = color.grb;.
+
 ### Browser install
 
 ```html
