@@ -19,7 +19,7 @@ Javascript version of [vector_math.dart](https://github.com/google/vector_math.d
 
 ### Example
 
-This sample code shows how to maniupulate matrices : 
+This sample code shows how to manipulate matrices :
 ```javascript
 var m1 = Matrix4.identity();
 var m2 = new Matrix4(0.0, 1.0, 2.0, 3.0,
@@ -28,7 +28,7 @@ var m2 = new Matrix4(0.0, 1.0, 2.0, 3.0,
 var scale_mul = m1.scaled(0.5).mult(m2);
 ```
 
-This sample code shows how to maniupulate vectors : 
+This sample code shows how to manipulate vectors :
 ```javascript
 var v1 = Vector3.zero();
 var v2 = new Vector3(1.0, 0.0, 2.0);
