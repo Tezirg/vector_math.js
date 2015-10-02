@@ -8,7 +8,7 @@ var Aabb3 = require('./aabb3.js');
 
 /**
  * @class Ray
- * Defines a [Ray] by an [origin] and a [direction].
+ * @description Defines a [Ray] by an [origin] and a [direction].
  * @constructor
  */
 function Ray () {
@@ -26,10 +26,10 @@ function Ray () {
 }
 
 /**
- * @static
- * Create a ray as a copy of [other].
+ * @static copy
+ * @description Create a ray as a copy of [other].
  * @param other {Ray}
- * @returns {Ray}
+ * @return {Ray}
  */
 Ray.copy = function(other) {
     var r = new Ray();
@@ -39,10 +39,11 @@ Ray.copy = function(other) {
 };
 
 /**
- * /// Create a ray with an [origin] and a [direction].
+ * @static originDirection
+ * @description Create a ray with an [origin] and a [direction].
  * @param origin {Vector3}
  * @param direction {Vector3}
- * @returns {Ray}
+ * @return {Ray}
  */
 Ray.originDirection = function(origin, direction) {
     var r = new Ray();
@@ -52,8 +53,8 @@ Ray.originDirection = function(origin, direction) {
 };
 
 /**
- * @method
- * Copy the [origin] and [direction] from [other] into [this].
+ * @method copyFrom
+ * @description Copy the [origin] and [direction] from [other] into [this].
  * @param other {Ray}
  */
 Ray.prototype.copyFrom = function(other) {
@@ -62,10 +63,10 @@ Ray.prototype.copyFrom = function(other) {
 };
 
 /**
- * @method
- * Returns the position on [this] with a distance of [t] from [origin].
+ * @method at
+ * @description return the position on [this] with a distance of [t] from [origin].
  * @param t {Number}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Ray.prototype.at = function(t) {
     var res = this.direction.scaled(t);
@@ -74,8 +75,8 @@ Ray.prototype.at = function(t) {
 };
 
 /**
- * @method
- * Copy the position on [this] with a distance of [t] from [origin] into [other].
+ * @method copyAt
+ * @description Copy the position on [this] with a distance of [t] from [origin] into [other].
  * @param other {Vector3}
  * @param t {number}
  */
@@ -86,11 +87,11 @@ Ray.prototype.copyAt = function(other, t) {
 };
 
 /**
- * @method
- * Return the distance from the origin of [this] to the intersection with
+ * @method intersectsWithSphere
+ * @description Return the distance from the origin of [this] to the intersection with
  * [other] if [this] intersects with [other], or null if the don't intersect.
- * @param other
- * @returns {number|null}
+ * @param other {Sphere}
+ * @return {number|null}
  */
 Ray.prototype.intersectsWithSphere = function(other) {
     var r = other.radius;
@@ -121,11 +122,11 @@ var _s = Vector3.zero();
 var _r = Vector3.zero();
 
 /**
- * @method
- * Return the distance from the origin of [this] to the intersection with
+ * @method intersectsWithTriangle
+ * @description Return the distance from the origin of [this] to the intersection with
  * [other] if [this] intersects with [other], or null if the don't intersect.
  * @param other {Triangle}
- * @returns {number | null}
+ * @return {number | null}
  */
 Ray.prototype.intersectsWithTriangle = function(other) {
     var EPSILON = 10e-6;
@@ -168,11 +169,11 @@ Ray.prototype.intersectsWithTriangle = function(other) {
 };
 
 /**
- * @method
- * Return the distance from the origin of [this] to the intersection with
+ * @method intersectsWithQuad
+ * @description  Return the distance from the origin of [this] to the intersection with
  * [other] if [this] intersects with [other], or null if the don't intersect.
  * @param other {Quad}
- * @returns {number | null}
+ * @return {number | null}
  */
 Ray.prototype.intersectsWithQuad = function(other) {
     var EPSILON = 10e-6;
@@ -243,11 +244,11 @@ Ray.prototype.intersectsWithQuad = function(other) {
 };
 
 /**
- * @method
- * Return the distance from the origin of [this] to the intersection with
+ * @method intersectsWithAabb3
+ * @description Return the distance from the origin of [this] to the intersection with
  * [other] if [this] intersects with [other], or null if the don't intersect.
  * @param other {Aabb3}
- * @returns {number | null}
+ * @return {number | null}
  */
 Ray.prototype.intersectsWithAabb3 = function(other) {
     var otherMin = other.min;

@@ -5,7 +5,11 @@ module.exports = Sphere;
 
 var Vector3 = require('./vector3.js');
 
-/// Defines a sphere with a [center] and a [radius].
+/**
+ * @class Sphere
+ * @description Defines a sphere with a [center] and a [radius].
+ * @constructor
+ */
 function Sphere() {
     /**
      * @property center
@@ -20,10 +24,10 @@ function Sphere() {
     this.radius = 0.0;
 }
 /**
- * @static
- * Create a sphere as a copy of [other].
+ * @static copy
+ * @description Create a sphere as a copy of [other].
  * @param other {Sphere}
- * @returns {Sphere}
+ * @return {Sphere}
  */
 Sphere.copy = function(other) {
     var s = new Sphere();
@@ -33,11 +37,11 @@ Sphere.copy = function(other) {
 };
 
 /**
- * @static
- * Create a sphere from a [center] and a [radius].
+ * @static centerRadius
+ * @description Create a sphere from a [center] and a [radius].
  * @param center {Vector3}
  * @param radius {number}
- * @returns {Sphere}
+ * @return {Sphere}
  */
 Sphere.centerRadius = function(center, radius) {
     var s = new Sphere();
@@ -47,9 +51,9 @@ Sphere.centerRadius = function(center, radius) {
 };
 
 /**
- * method
- * Copy the sphere from [other] into [this].
- * @param other
+ * @method copyFrom
+ * @description Copy the sphere from [other] into [this].
+ * @param other {Sphere}
  */
 Sphere.prototype.copyFrom = function(other) {
     this.center.setFrom(other.center);
@@ -57,30 +61,30 @@ Sphere.prototype.copyFrom = function(other) {
 };
 
 /**
- * @method
- * Return if [this] contains [other].
+ * @method containsVector3
+ * @description Return if [this] contains [other].
  * @param other {Vector3}
- * @returns {boolean}
+ * @return {boolean}
  */
 Sphere.prototype.containsVector3 = function(other) {
     return other.distanceToSquared(this.center) < this.radius * this.radius;
 };
 
 /**
- * @method
- * Return if [this] intersects with [other].
+ * @method intersectsWithVector3
+ * @description Return if [this] intersects with [other].
  * @param other {Vector3}
- * @returns {boolean}
+ * @return {boolean}
  */
 Sphere.prototype.intersectsWithVector3 = function(other) {
     return other.distanceToSquared(this.center) <= this.radius * this.radius;
 };
 
 /**
- * @method
- * Return if [this] intersects with [other].
+ * @method intersectsWithSphere
+ * @description Return if [this] intersects with [other].
  * @param other {Sphere}
- * @returns {boolean}
+ * @return {boolean}
  */
 Sphere.prototype.intersectsWithSphere = function(other) {
     var radiusSum = this.radius + other.radius;

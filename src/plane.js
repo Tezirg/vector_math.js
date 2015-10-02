@@ -15,8 +15,8 @@ function Plane() {
 }
 
 /**
- * @static
- * Find the intersection point between the three planes [a], [b] and [c] and copy it into [result].
+ * @static intersection
+ * @description Find the intersection point between the three planes [a], [b] and [c] and copy it into [result].
  * @param a {Plane}
  * @param b {Plane}
  * @param c {Plane}
@@ -41,10 +41,10 @@ Plane.intersection = function(a, b, c, result) {
 
 
 /**
- * @static
- * Returns a copy of other
+ * @static copy
+ * @description return a copy of other
  * @param other {Plane}
- * @returns {Plane}
+ * @return {Plane}
  */
 Plane.copy = function(other) {
     var p = new Plane();
@@ -54,13 +54,13 @@ Plane.copy = function(other) {
 };
 
 /**
- * @static
- * Constructs a Plane from components
+ * @static components
+ * @description Constructs a Plane from components
  * @param x {number}
  * @param y {number}
  * @param z {number}
  * @param w {number}
- * @returns {Plane}
+ * @return {Plane}
  */
 Plane.components = function(x, y, z, w) {
     var p = new Plane();
@@ -69,11 +69,11 @@ Plane.components = function(x, y, z, w) {
 };
 
 /**
- * @static
- * Constructs a Plane from a normal vector and constant value
+ * @static normalconstant
+ * @description Constructs a Plane from a normal vector and constant value
  * @param normal {Vector3}
  * @param constant {number}
- * @returns {Plane}
+ * @return {Plane}
  */
 Plane.normalconstant = function(normal, constant) {
     var p = new Plane();
@@ -84,8 +84,8 @@ Plane.normalconstant = function(normal, constant) {
 
 
 /**
- * @method
- * Copy other into this
+ * @method copyFrom
+ * @description Copy other into this
  * @param o {Plane}
  */
 Plane.prototype.copyFrom = function(o) {
@@ -94,8 +94,8 @@ Plane.prototype.copyFrom = function(o) {
 };
 
 /**
- * @method
- * Sets this from values
+ * @method setFromComponents
+ * @description Sets this from values
  * @param x {number}
  * @param y {number}
  * @param z {number}
@@ -107,8 +107,8 @@ Plane.prototype.setFromComponents = function(x, y, z, w) {
 };
 
 /**
- * @method
- * Normalize this
+ * @method normalize
+ * @description Normalize this
  */
 Plane.prototype.normalize = function() {
     var inverseLength = 1.0 / this.normal.length;
@@ -117,10 +117,10 @@ Plane.prototype.normalize = function() {
 };
 
 /**
- * @method
- * Compute distance to a point
+ * @method distanceToVector3
+ * @description Compute distance to a point
  * @param point {Vector3}
- * @returns {number}
+ * @return {number}
  */
 Plane.prototype.distanceToVector3 = function(point) {
     return this.normal.dot(point) + this.constant;

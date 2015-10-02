@@ -8,7 +8,7 @@ var Triangle = require('./triangle.js');
 
 /**
  * @class Quad
- * Defines a quad by four points.
+ * @description Defines a quad by four points.
  * @constructor
  */
 function Quad () {
@@ -44,10 +44,10 @@ function Quad () {
 }
 
 /**
- * @static
- * Create a quad as a copy of [other].
+ * @static copy
+ * @description Create a quad as a copy of [other].
  * @param other {Quad}
- * @returns {Quad}
+ * @return {Quad}
  */
 Quad.copy = function(other) {
     var q = new Quad();
@@ -59,13 +59,13 @@ Quad.copy = function(other) {
 };
 
 /**
- * @static
- * Create a quad by four points.
+ * @static points
+ * @description Create a quad by four points.
  * @param point0 {Vector3}
  * @param point1 {Vector3}
  * @param point2 {Vector3}
  * @param point3 {Vector3}
- * @returns {Quad}
+ * @return {Quad}
  */
 Quad.points = function(point0, point1, point2, point3) {
     var q = new Quad();
@@ -77,8 +77,8 @@ Quad.points = function(point0, point1, point2, point3) {
 };
 
 /**
- * @method
- * Copy the quad from [other] into [this].
+ * @method copyFrom
+ * @description Copy the quad from [other] into [this].
  * @param other {Quad}
  */
 Quad.prototype.copyFrom = function(other) {
@@ -89,8 +89,8 @@ Quad.prototype.copyFrom = function(other) {
 };
 
 /**
- * @method
- * Copy the normal of [this] into [normal].
+ * @method copyNormalInto
+ * @description Copy the normal of [this] into [normal].
  * @param normal {Vector3}
  */
 Quad.prototype.copyNormalInto = function(normal) {
@@ -103,8 +103,8 @@ Quad.prototype.copyNormalInto = function(normal) {
 };
 
 /**
- * @method
- * Copies the two triangles that define [this].
+ * @method copyTriangles
+ * @description Copies the two triangles that define [this].
  * @param triangle0 {Triangle}
  * @param triangle1 {Triangle}
  */
@@ -118,8 +118,8 @@ Quad.prototype.copyTriangles = function(triangle0, triangle1) {
 };
 
 /**
- * @method
- * Transform [this] by the transform [t].
+ * @method transform
+ * @description Transform [this] by the transform [t].
  * @param t {Matrix4}
  */
 Quad.prototype.transform = function(t) {
@@ -130,8 +130,8 @@ Quad.prototype.transform = function(t) {
 };
 
 /**
- * @method
- * Translate [this] by [offset].
+ * @method translate
+ * @description Translate [this] by [offset].
  * @param offset {Vector3}
  */
 Quad.prototype.translate = function(offset) {

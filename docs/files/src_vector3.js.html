@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src\vector3.js - vector_math.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="vector_math.js"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/Aabb2.html">Aabb2</a></li>
+            
+                <li><a href="../classes/Aabb3.html">Aabb3</a></li>
+            
+                <li><a href="../classes/Matrix2.html">Matrix2</a></li>
+            
+                <li><a href="../classes/Matrix3.html">Matrix3</a></li>
+            
+                <li><a href="../classes/Matrix4.html">Matrix4</a></li>
+            
+                <li><a href="../classes/Plane.html">Plane</a></li>
+            
+                <li><a href="../classes/Quad.html">Quad</a></li>
+            
+                <li><a href="../classes/Quaternion.html">Quaternion</a></li>
+            
+                <li><a href="../classes/Ray.html">Ray</a></li>
+            
+                <li><a href="../classes/Sphere.html">Sphere</a></li>
+            
+                <li><a href="../classes/Triangle.html">Triangle</a></li>
+            
+                <li><a href="../classes/Vector2.html">Vector2</a></li>
+            
+                <li><a href="../classes/Vector3.html">Vector3</a></li>
+            
+                <li><a href="../classes/Vector4.html">Vector4</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: src\vector3.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ * Created by grizet_j on 9/20/2015.
+ */
+
+module.exports = Vector3;
+
+var Matrix3 = require(&#x27;./matrix3.js&#x27;);
+var Matrix4 = require(&#x27;./matrix4.js&#x27;);
+
+var vector_math = require(&#x27;./common.js&#x27;);
+var SIMD = require(&quot;simd&quot;);
+
+/**
+ * @class Vector3
+ * @param x {number}
+ * @param y {number}
+ * @param z {number}
+ * @constructor
+ */
+function Vector3(x, y, z){
+    /**
+     * @property storage
+     * @type {Float32Array}
+     */
+    this.storage = new Float32Array([x, y, z]);
+
+    /**
+     * @property simd_storage
+     * @type {null|Float32x4}
+     */
+    this.simd_storage = null;
+}
+
+/**
+ * @static
+ * SIMD specialization
+ */
+Vector3.simd = {};
+/**
+ * @static
+ * Scalar specialization
+ */
+Vector3.scalar = {};
+
+/**
+ * @static load
+ * @description Load SIMD.Float32x4 into vector.simd_storage
+ * @param vector {Vector3}
+ */
+Vector3.simd.load = function(vector) {
+    vector.simd_storage = SIMD.Float32x4.load3(vector.storage, 0);
+};
+
+/**
+ * @static store
+ * @description Store SIMD.Float32x4 at vector.simd_storage into vector.storage
+ * @param vector {Vector3}
+ */
+Vector3.simd.store = function(vector) {
+    SIMD.Float32x4.store3(vector.storage, 0, vector.simd_storage);
+};
+
+
+/**
+ * @property x
+ * @type {Number}
+ */
+Vector3.prototype.__defineGetter__(&quot;x&quot;, function() {
+    return this.storage[0];
+});
+Vector3.prototype.__defineSetter__(&quot;x&quot;, function(value) {
+    this.storage[0] = value;
+});
+
+/**
+ * @property y
+ * @type {Number}
+ */
+Vector3.prototype.__defineGetter__(&quot;y&quot;, function() {
+    return this.storage[1];
+});
+Vector3.prototype.__defineSetter__(&quot;y&quot;, function(value) {
+    this.storage[1] = value;
+});
+
+/**
+ * @property z
+ * @type {Number}
+ */
+Vector3.prototype.__defineGetter__(&quot;z&quot;, function() {
+    return this.storage[2];
+});
+Vector3.prototype.__defineSetter__(&quot;z&quot;, function(value) {
+    this.storage[2] = value;
+});
+
+/**
+ * @property length
+ * @type {number}
+ */
+Vector3.prototype.__defineGetter__(&quot;length&quot;, function() {
+    return Math.sqrt(this.length2());
+});
+Vector3.prototype.__defineSetter__(&quot;length&quot;, function(value) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd._setter_length(this, value);
+    }
+    else {
+        Vector3.scalar._setter_length(this, value);
+    }
+});
+
+Vector3.scalar._setter_length = function(vector, value) {
+    if (value == 0.0) {
+        vector.setZero();
+    }
+    else {
+        var l = this.length;
+        if (l == 0.0) {
+            return;
+        }
+        l = value / l;
+        vector.storage[0] *= l;
+        vector.storage[1] *= l;
+        vector.storage[2] *= l;
+    }
+};
+
+Vector3.simd._setter_length = function(vector, value) {
+    if (value == 0.0) {
+        vector.setZero();
+    }
+    else {
+        var l = vector.length;
+        if (l == 0.0) {
+            return;
+        }
+        l = value / l;
+        Vector3.simd.load(vector);
+        vector.simd_storage = SIMD.Float32x4.mul(vector.simd_storage, SIMD.Float32x4(l, l, l, 0));
+        Vector3.simd.store(vector);
+    }
+};
+
+/**
+ * @static zero
+ * @property {Vector3} zero
+ */
+Vector3.zero = function() {
+    var v = new Vector3(0.0, 0.0, 0.0);
+    return v;
+};
+
+/**
+ * @method setZero
+ * @description Zero the vector.
+ * @return {Vector3}
+ */
+Vector3.prototype.setZero = function() {
+    this.storage[0] = 0.0;
+    this.storage[1] = 0.0;
+    this.storage[2] = 0.0;
+    return this;
+};
+
+/**
+ * @static fromFloat32Array
+ * @description Constructs Vector3 with a given [Float32Array] as [storage].
+ * @param array {Float32Array}
+ * @return {Vector3}
+ */
+Vector3.fromFloat32Array = function(array) {
+    var vec = Vector3.zero();
+    vec.storage = array;
+    return vec;
+};
+
+
+/**
+ * @static fromBuffer
+ * @description Constructs Vector3 with a [storage] that views given [buffer] starting at
+ * [offset]. [offset] has to be multiple of [Float32Array.BYTES_PER_ELEMENT].
+ * @param buffer {buffer}
+ * @param offset {number}
+ * @return {Vector3}
+ */
+Vector3.fromBuffer = function(buffer, offset) {
+    var vec = Vector3.zero();
+    vec.storage = new Float32Array(buffer, offset, 3);
+    return vec.clone();
+};
+
+/**
+ * @method setValues
+ * @description Set the values of the vector.
+ * @param x {number}
+ * @param y {number}
+ * @param z {number}
+ * @return {Vector3}
+ */
+Vector3.prototype.setValues = function(x, y, z) {
+    this.storage[0] = x;
+    this.storage[1] = y;
+    this.storage[2] = z;
+    return this;
+};
+
+
+/**
+ * @static copy
+ * @param v {Vector3}
+ * @return {Vector3}
+ */
+Vector3.copy = function(v) {
+    return new Vector3(v.x, v.y, v.z);
+};
+
+/**
+ * @static all
+ * @param value {Vector3}
+ */
+Vector3.all = function(value) {
+    var v = Vector3.zero();
+    v.splat(value);
+    return v;
+};
+
+/**
+ * @static min
+ * @description Set the values of [result] to the minimum of [a] and [b] for each line.
+ * @param a {Vector3}
+ * @param b {Vector3}
+ * @param result {Vector3}
+ */
+Vector3.min = function(a, b, result) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.min(a, b, result);
+    }
+    else {
+        Vector3.scalar.min(a, b, result);
+    }
+};
+Vector3.scalar.min = function(a, b, result) {
+    result.storage[0] = Math.min(a.x, b.x);
+    result.storage[1] = Math.min(a.y, b.y);
+    result.storage[2] = Math.min(a.z, b.z);
+};
+Vector3.simd.min = function(a, b, result) {
+    Vector3.simd.load(a);
+    Vector3.simd.load(b);
+    result.simd_storage = SIMD.Float32x4.min(a.simd_storage, b.simd_storage);
+
+    Vector3.simd.store(result);
+};
+
+/**
+ * @static max
+ * @description Set the values of [result] to the maximum of [a] and [b] for each line.
+ * @param a {Vector3}
+ * @param b {Vector3}
+ * @param result {Vector3}
+ */
+Vector3.max = function(a, b, result) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.max(a, b, result);
+    }
+    else {
+        Vector3.scalar.max(a, b, result);
+    }
+};
+
+Vector3.scalar.max = function(a, b, result) {
+    result.x = Math.max(a.x, b.x);
+    result.y = Math.max(a.y, b.y);
+    result.z = Math.max(a.z, b.z);
+};
+
+Vector3.simd.max = function(a, b, result) {
+    Vector3.simd.load(a);
+    Vector3.simd.load(b);
+    result.simd_storage = SIMD.Float32x4.max(a.simd_storage, b.simd_storage);
+    Vector3.simd.store(result);
+};
+
+/**
+ * @static mix
+ * @description Interpolate between [min] and [max] with the amount of [a] using a linear
+ * interpolation and store the values in [result].
+ * @param min {Vector3}
+ * @param max {Vector3}
+ * @param a {Number}
+ * @param result {Vector3}
+ */
+Vector3.mix = function(min, max, a, result) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.mix(min, max, a, result);
+    }
+    else {
+        Vector3.scalar.mix(min, max, a, result);
+    }
+};
+Vector3.scalar.mix = function(min, max, a, result) {
+    result.x = min.x + a * (max.x - min.x);
+    result.y = min.y + a * (max.y - min.y);
+    result.z = min.z + a * (max.z - min.z);
+};
+Vector3.simd.mix = function(min, max, a, result) {
+    Vector3.simd.load(min);
+    Vector3.simd.load(max);
+    var sub = SIMD.Float32x4.sub(max.simd_storage, min.simd_storage);
+    var interp = SIMD.Float32x4.mul(sub, SIMD.Float32x4(a, a, a, a));
+    result.simd_storage = SIMD.Float32x4.add(min.simd_storage, interp);
+    Vector3.simd.store(result);
+};
+
+/**
+ * @method clone
+ * @description return a copy of this
+ * @return {Vector3}
+ */
+Vector3.prototype.clone = function() {
+    return Vector3.copy(this);
+};
+
+/**
+ * @method setFrom
+ * @description Set this from another vector3
+ * @param v {Vector3}
+ * @return {Vector3}
+ */
+Vector3.prototype.setFrom = function(v) {
+    this.storage[0] = v.storage[0];
+    this.storage[1] = v.storage[1];
+    this.storage[2] = v.storage[2];
+    return this;
+};
+
+/**
+ * @method splat
+ * @description Splat [arg] into all lanes of the vector.
+ * @param value {Number}
+ */
+Vector3.prototype.splat = function(value) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.splat(this, value);
+    }
+    else {
+        Vector3.scalar.splat(this, value);
+    }
+    return this;
+};
+Vector3.scalar.splat = function(that, value) {
+    that.storage[0] = value;
+    that.storage[1] = value;
+    that.storage[2] = value;
+};
+Vector3.simd.splat = function(that, value) {
+    Vector3.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.splat(value);
+    Vector3.simd.store(that);
+};
+
+/**
+ * @method almostEquals
+ * @description Return if this is almost equal to other
+ * @param v {Vector3}
+ * @param precision {number}
+ * @return {boolean}
+ */
+Vector3.prototype.almostEquals = function(v, precision) {
+    if (precision === undefined) {
+        precision = vector_math.EPSILON;
+    }
+
+    if (vector_math.USE_SIMD()) {
+        return Vector3.simd.almostEquals(this, v, precision);
+    }
+    else {
+        return Vector3.scalar.almostEquals(this, v, precision);
+    }
+};
+Vector3.scalar.almostEquals = function(that, v, precision) {
+    if (Math.abs(this.x - v.x) &gt; precision ||
+        Math.abs(this.y - v.y) &gt; precision ||
+        Math.abs(this.z - v.z) &gt; precision) {
+        return false;
+    }
+    return true;
+};
+Vector3.simd.almostEquals = function(that, v, p) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(v);
+    that.simd_storage = SIMD.Float32x4.sub(that.simd_storage, v.simd_storage);
+    that.simd_storage = SIMD.Float32x4.abs(that.simd_storage);
+    that.simd_storage = SIMD.Float32x4.greaterThan(that.simd_storage, SIMD.Float32x4(p, p, p, p));
+    if (SIMD.Bool32x4.extractLane(that.simd_storage, 0) ||
+        SIMD.Bool32x4.extractLane(that.simd_storage, 1) ||
+        SIMD.Bool32x4.extractLane(that.simd_storage, 2)) {
+        return false;
+    }
+    return true;
+};
+/**
+ * @method equals
+ * @description Return if this is equal to other
+ * @param v {Vector3}
+ * @return {boolean}
+ */
+Vector3.prototype.equals = function(v) {
+    return (this.x == v.x &amp;&amp; this.y == v.y &amp;&amp; this.z == v.z);
+};
+
+Vector3.prototype.almostZero = function(precision) {
+    if (precision === undefined) {
+        precision = Number.EPSILON;
+    }
+    if (Math.abs(this.x) &gt; precision ||
+        Math.abs(this.y) &gt; precision ||
+        Math.abs(this.z) &gt; precision) {
+        return false;
+    }
+    return true;
+};
+
+/**
+ * @method isZero
+ * @description return if this is a zero vector
+ * @return {boolean}
+ */
+Vector3.prototype.isZero = function() {
+  return (this.x == 0 &amp;&amp; this.y == 0 &amp;&amp; this.z == 0);
+};
+
+/**
+ * @method negate
+ * @description negate [this]
+ * @return {Vector3}
+ */
+Vector3.prototype.negate = function() {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.negate(this);
+    }
+    else {
+        Vector3.scalar.negate(this);
+    }
+    return this;
+};
+
+Vector3.scalar.negate = function(that) {
+    that.storage[0] = - that.storage[0];
+    that.storage[1] = - that.storage[1];
+    that.storage[2] = - that.storage[2];
+};
+Vector3.simd.negate = function(that) {
+    Vector3.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.neg(that.simd_storage);
+    Vector3.simd.store(that);
+};
+
+/**
+ * @method sub
+ * @description Subtract other from this
+ * @param other {Vector3}
+ * @return {Vector3}
+ */
+Vector3.prototype.sub = function(other) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.sub(this, other);
+    }
+    else {
+        Vector3.scalar.sub(this, other);
+    }
+    return this;
+};
+
+Vector3.scalar.sub = function(that, other) {
+    that.storage[0] = that.storage[0] - other.storage[0];
+    that.storage[1] = that.storage[1] - other.storage[1];
+    that.storage[2] = that.storage[2] - other.storage[2];
+};
+Vector3.simd.sub = function(that, other) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.sub(that.simd_storage, other.simd_storage);
+    Vector3.simd.store(that);
+};
+
+/**
+ * @method add
+ * @description Add other to this
+ * @param other
+ * @return {Vector3}
+ */
+Vector3.prototype.add = function(other) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.add(this, other);
+    }
+    else {
+        Vector3.scalar.add(this, other);
+    }
+    return this;
+};
+
+Vector3.scalar.add = function(that, other) {
+    that.storage[0] = that.storage[0] + other.storage[0];
+    that.storage[1] = that.storage[1] + other.storage[1];
+    that.storage[2] = that.storage[2] + other.storage[2];
+};
+Vector3.simd.add = function(that, other) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.add(that.simd_storage, other.simd_storage);
+    Vector3.simd.store(that);
+};
+
+/**
+ * @method mul
+ * @description Multiply other to this
+ * @param other
+ * @return {Vector3}
+ */
+Vector3.prototype.mul = function(other) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.mul(this, other);
+    }
+    else {
+        Vector3.scalar.mul(this, other);
+    }
+    return this;
+};
+
+Vector3.scalar.mul = function(that, other) {
+    that.storage[0] = that.storage[0] + other.storage[0];
+    that.storage[1] = that.storage[1] + other.storage[1];
+    that.storage[2] = that.storage[2] + other.storage[2];
+};
+Vector3.simd.mul = function(that, other) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, other.simd_storage);
+    Vector3.simd.store(that);
+};
+
+/**
+ * @method div
+ * @description Divide this by other
+ * @param other
+ * @return {Vector3}
+ */
+Vector3.prototype.div = function(other) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.div(this, other);
+    }
+    else {
+        Vector3.scalar.div(this, other);
+    }
+    return this;
+};
+
+Vector3.scalar.div = function(that, other) {
+    that.storage[0] = that.storage[0] / other.storage[0];
+    that.storage[1] = that.storage[1] / other.storage[1];
+    that.storage[2] = that.storage[2] / other.storage[2];
+};
+Vector3.simd.div = function(that, other) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(other);
+    that.simd_storage = SIMD.Float32x4.div(that.simd_storage, other.simd_storage);
+    Vector3.simd.store(that);
+};
+
+/**
+ * @method scale
+ * @description Scale this
+ * @param arg {number}
+ * @return {Vector3}
+ */
+Vector3.prototype.scale = function(arg) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.scale(this, arg);
+    }
+    else {
+        Vector3.scalar.scale(this, arg);
+    }
+    return this;
+};
+
+Vector3.scalar.scale = function(that, scale) {
+    that.storage[0] = that.storage[0] * scale;
+    that.storage[1] = that.storage[1] * scale;
+    that.storage[2] = that.storage[2] * scale;
+};
+Vector3.simd.scale = function(that, s) {
+    Vector3.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, SIMD.Float32x4(s, s, s, s));
+    Vector3.simd.store(that);
+};
+
+/**
+ * @method scaled
+ * @description return Scaled copy this
+ * @param arg
+ * @return {Vector3}
+ */
+Vector3.prototype.scaled = function(arg) {
+    var v = this.clone();
+    v.scale(arg);
+    return v;
+};
+
+
+/**
+ * @method reflect
+ * @description Reflect [this].
+ * @param normal {Vector3}
+ * @return {Vector3}
+ */
+Vector3.prototype.reflect = function(normal) {
+    var n_copy = normal.clone();
+    n_copy.scale(2.0 * normal.dot(this));
+    this.sub(n_copy);
+    return this;
+};
+
+/**
+ * @method dot
+ * @description Compute dot product
+ * @param v {Vector3}
+ * @return {Number}
+ */
+Vector3.prototype.dot = function(v) {
+    if (vector_math.USE_SIMD()) {
+        return Vector3.simd.dot(this, v);
+    }
+    else {
+        return Vector3.scalar.dot(this, v);
+    }
+};
+
+Vector3.scalar.dot = function(that, v) {
+    return that.storage[0] * v.x +
+           that.storage[1] * v.y +
+           that.storage[2] * v.z;
+};
+Vector3.simd.dot = function(that, v) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(v);
+
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, v.simd_storage);
+    return SIMD.Float32x4.extractLane(that.simd_storage, 0) +
+           SIMD.Float32x4.extractLane(that.simd_storage, 1) +
+           SIMD.Float32x4.extractLane(that.simd_storage, 2);
+};
+
+/**
+ * @method cross
+ * @description Compute cross product
+ * @param v {Vector3}
+ * @return {Vector3}
+ */
+Vector3.prototype.cross = function(v) {
+    if (vector_math.USE_SIMD()) {
+        return Vector3.simd.cross(this, v);
+    }
+    else {
+        return Vector3.scalar.cross(this, v);
+    }
+};
+Vector3.scalar.cross = function(that, v) {
+    var x = that.storage[1] * v.storage[2] - that.storage[2] * v.storage[1];
+    var y = that.storage[2] * v.storage[0] - that.storage[0] * v.storage[2];
+    var z = that.storage[0] * v.storage[1] - that.storage[1] * v.storage[0];
+
+    return new Vector3(x, y, z);
+};
+Vector3.simd.cross = function(that, v) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(v);
+    that.simd_storage = SIMD.Float32x4.swizzle(that.simd_storage, 1, 2, 0, 3);
+    v.simd_storage = SIMD.Float32x4.swizzle(v.simd_storage, 2, 0, 1, 3);
+    var mul1 = SIMD.Float32x4.mul(that.simd_storage, v.simd_storage);
+
+    Vector3.simd.load(that);
+    Vector3.simd.load(v);
+    that.simd_storage = SIMD.Float32x4.swizzle(that.simd_storage, 2, 0, 1, 3);
+    v.simd_storage = SIMD.Float32x4.swizzle(v.simd_storage, 1, 2, 0, 3);
+    var mul2 = SIMD.Float32x4.mul(that.simd_storage, v.simd_storage);
+
+    var res = SIMD.Float32x4.sub(mul1, mul2);
+    return new Vector3(SIMD.Float32x4.extractLane(res, 0),
+                       SIMD.Float32x4.extractLane(res, 1),
+                       SIMD.Float32x4.extractLane(res, 2));
+};
+
+/**
+ * @method absolute
+ * @description Set this to absolute value
+ */
+Vector3.prototype.absolute = function() {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.absolute(this);
+    }
+    else {
+        Vector3.scalar.absolute(this);
+    }
+};
+Vector3.scalar.absolute = function(that) {
+    that.storage[0] = Math.abs(that.storage[0]);
+    that.storage[1] = Math.abs(that.storage[1]);
+    that.storage[2] = Math.abs(that.storage[2]);
+};
+Vector3.simd.absolute = function(that) {
+    Vector3.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.abs(that.simd_storage);
+    Vector3.store(that);
+};
+
+/**
+ * @method postmultiply
+ * @description Transforms [this] into the product of [this] as a row vector,
+ * postmultiplied by matrix, [arg].
+ * If [arg] is a rotation matrix, this is a computational shortcut for applying,
+ * the inverse of the transformation.
+ *
+ * @param arg {Matrix3}
+ * @return {Vector3}
+ */
+Vector3.prototype.postmultiply = function(arg) {
+    var argStorage = arg.storage;
+    var v0 = this.storage[0];
+    var v1 = this.storage[1];
+    var v2 = this.storage[2];
+
+    this.storage[0] =
+        v0 * argStorage[0] + v1 * argStorage[1] + v2 * argStorage[2];
+    this.storage[1] =
+        v0 * argStorage[3] + v1 * argStorage[4] + v2 * argStorage[5];
+    this.storage[2] =
+        v0 * argStorage[6] + v1 * argStorage[7] + v2 * argStorage[8];
+    return this;
+};
+
+/**
+ * @method apllyProjection
+ * @description Projects [this] using the projection matrix [arg]
+ * @param arg {Matrix4}
+ * @return {Vector3}
+ */
+Vector3.prototype.applyProjection = function(arg) {
+    var argStorage = arg.storage;
+    var x = this.storage[0];
+    var y = this.storage[1];
+    var z = this.storage[2];
+    var d = 1.0 /
+    (argStorage[3] * x +
+    argStorage[7] * y +
+    argStorage[11] * z +
+    argStorage[15]);
+    this.storage[0] = (argStorage[0] * x +
+    argStorage[4] * y +
+    argStorage[8] * z +
+    argStorage[12]) *
+    d;
+    this.storage[1] = (argStorage[1] * x +
+    argStorage[5] * y +
+    argStorage[9] * z +
+    argStorage[13]) *
+    d;
+    this.storage[2] = (argStorage[2] * x +
+    argStorage[6] * y +
+    argStorage[10] * z +
+    argStorage[14]) *
+    d;
+    return this;
+};
+
+/**
+ * @method applyAxisAngle
+ * @description Applies a rotation specified by [axis] and [angle].
+ * @param axis {Vector3}
+ * @param angle {number}
+ * @return {Vector3}
+ */
+Vector3.prototype.applyAxisAngle = function(axis, angle) {
+    this.applyQuaternion(Quaternion.axisAngle(axis, angle));
+    return this;
+};
+
+/**
+ * @method applyQuaternion
+ * @description Applies a quaternion transform.
+ * @param arg {Quaternion}
+ * @return {Vector3}
+ */
+Vector3.prototype.applyQuaternion = function(arg) {
+    var argStorage = arg.storage;
+    var v0 = this.storage[0];
+    var v1 = this.storage[1];
+    var v2 = this.storage[2];
+    var qx = argStorage[0];
+    var qy = argStorage[1];
+    var qz = argStorage[2];
+    var qw = argStorage[3];
+    var ix = qw * v0 + qy * v2 - qz * v1;
+    var iy = qw * v1 + qz * v0 - qx * v2;
+    var iz = qw * v2 + qx * v1 - qy * v0;
+    var iw = -qx * v0 - qy * v1 - qz * v2;
+    this.storage[0] = ix * qw + iw * -qx + iy * -qz - iz * -qy;
+    this.storage[1] = iy * qw + iw * -qy + iz * -qx - ix * -qz;
+    this.storage[2] = iz * qw + iw * -qz + ix * -qy - iy * -qx;
+    return this;
+};
+
+/**
+ * @method applyMatrix3
+ * @description Multiplies [this] by [arg].
+ * @param arg {Matrix3}
+ */
+Vector3.prototype.applyMatrix3 = function(arg) {
+    var argStorage = arg.storage;
+    var v0 = this.storage[0];
+    var v1 = this.storage[1];
+    var v2 = this.storage[2];
+    this.storage[0] =
+        argStorage[0] * v0 + argStorage[3] * v1 + argStorage[6] * v2;
+    this.storage[1] =
+        argStorage[1] * v0 + argStorage[4] * v1 + argStorage[7] * v2;
+    this.storage[2] =
+        argStorage[2] * v0 + argStorage[5] * v1 + argStorage[8] * v2;
+    return this;
+};
+
+/**
+ * @method applyMatrix4
+ * @description Multiplies [this] by a 4x3 subset of [arg]. Expects [arg] to be an affine transformation matrix.
+ * @param arg {Matrix4}
+ * @return {Vector3}
+ */
+Vector3.prototype.applyMatrix4 = function(arg) {
+    var argStorage = arg.storage;
+    var v0 = this.storage[0];
+    var v1 = this.storage[1];
+    var v2 = this.storage[2];
+    this.storage[0] = argStorage[0] * v0 +
+    argStorage[4] * v1 +
+    argStorage[8] * v2 +
+    argStorage[12];
+    this.storage[1] = argStorage[1] * v0 +
+    argStorage[5] * v1 +
+    argStorage[9] * v2 +
+    argStorage[13];
+    this.storage[2] = argStorage[2] * v0 +
+    argStorage[6] * v1 +
+    argStorage[10] * v2 +
+    argStorage[14];
+    return this;
+};
+
+/**
+ * @method clamp
+ * @description Clamp each entry n in [this] in the range [min[n]]-[max[n]].
+ * @param min {Vector3}
+ * @param max {Vector3}
+ * @return {Vector3}
+ */
+Vector3.prototype.clamp = function(min, max) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.clamp(this, min, max);
+    }
+    else {
+        Vector3.scalar.clamp(this, min, max);
+    }
+    return this;
+};
+
+Vector3.scalar.clamp = function(that, min, max) {
+    var minStorage = min.storage;
+    var maxStorage = max.storage;
+    that.storage[0] = Math.min(Math.max(that.storage[0], minStorage[0]), maxStorage[0]);
+    that.storage[1] = Math.min(Math.max(that.storage[1], minStorage[1]), maxStorage[1]);
+    that.storage[2] = Math.min(Math.max(that.storage[2], minStorage[2]), maxStorage[2]);
+};
+Vector3.simd.clamp = function(that, min, max) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(min);
+    Vector3.simd.load(max);
+    var clamp_min = SIMD.Float32x4.max(that.simd_storage, min.simd_storage);
+    that.simd_storage = SIMD.Float32x4.min(clamp_min, max.simd_storage);
+    Vector3.simd.store(that);
+};
+/**
+ * @method clampScalar
+ * @description Clamp entries in [this] in the range [min]-[max].
+ * @param min {number}
+ * @param max {number}
+ * @return {Vector3}
+ */
+Vector3.prototype.clampScalar = function(min, max) {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.clampScalar(this, min, max);
+    }
+    else {
+        Vector3.scalar.clampScalar(this, min, max);
+    }
+    return this;
+};
+
+Vector3.scalar.clampScalar = function(that, min, max) {
+    that.storage[0] = Math.min(Math.max(that.storage[0], min), max);
+    that.storage[1] = Math.min(Math.max(that.storage[1], min), max);
+    that.storage[2] = Math.min(Math.max(that.storage[2], min), max);
+};
+Vector3.simd.clampScalar = function(that, min, max) {
+    Vector3.simd.load(that);
+    var clamp_min = SIMD.Float32x4.max(that.simd_storage, SIMD.Float32x4(min, min, min, min));
+    that.simd_storage = SIMD.Float32x4.min(clamp_min, SIMD.Float32x4(max, max, max, max));
+    Vector3.simd.store(that);
+
+};
+
+/**
+ * @method isNaN
+ * @description Check is vector contains NaN values
+ * @return {boolean}
+ */
+Vector3.prototype.isNaN = function() {
+    var is_nan = false;
+    is_nan = is_nan || this.storage[0].isNaN;
+    is_nan = is_nan || this.storage[1].isNaN;
+    is_nan = is_nan || this.storage[2].isNaN;
+    return is_nan;
+};
+
+/**
+ * @method isInfinite
+ * @description Check if vector contains Infinite values
+ * @return {boolean}
+ */
+Vector3.prototype.isInfinite = function() {
+    var is_inf = false;
+    is_inf = is_inf || this.storage[0].isInfinite();
+    is_inf = is_inf || this.storage[1].isInfinite();
+    is_inf = is_inf || this.storage[2].isInfinite();
+    return is_inf;
+};
+
+/**
+ * @method toString
+ * @description Printable string
+ * @return {string}
+ */
+Vector3.prototype.toString = function() {
+    return &#x27;[x=&#x27; + this.storage[0] + &#x27;, y=&#x27; + this.storage[1] + &#x27;, z=&#x27; + this.storage[2] + &#x27;]&#x27;;
+};
+
+/**
+ * @method length2
+ * @description Squared length
+ * @return {number}
+ */
+Vector3.prototype.length2 = function() {
+    if (vector_math.USE_SIMD()) {
+        return Vector3.simd.length2(this);
+    }
+    else {
+        return Vector3.scalar.length2(this);
+    }
+};
+
+Vector3.scalar.length2 = function(that) {
+    return that.storage[0] * that.storage[0] +
+        that.storage[1] * that.storage[1] +
+        that.storage[2] * that.storage[2];
+};
+Vector3.simd.length2 = function(that) {
+    Vector3.simd.load(that);
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, that.simd_storage);
+    return SIMD.Float32x4.extractLane(that.simd_storage, 0) +
+        SIMD.Float32x4.extractLane(that.simd_storage, 1) +
+        SIMD.Float32x4.extractLane(that.simd_storage, 2);
+
+};
+
+/**
+ * @method normalize
+ * @description Normalize this
+ * @return {Vector3}
+ */
+Vector3.prototype.normalize = function() {
+    if (vector_math.USE_SIMD()) {
+        Vector3.simd.normalize(this);
+    }
+    else {
+        Vector3.scalar.normalize(this);
+    }
+    return this;
+};
+
+Vector3.scalar.normalize = function(that) {
+    var l = that.length;
+    if (l != 0.0) {
+        l = 1.0 / l;
+        that.storage[0] *= l;
+        that.storage[1] *= l;
+        that.storage[2] *= l;
+    }
+};
+Vector3.simd.normalize = function(that) {
+    var l = that.length;
+    if (l != 0.0) {
+        l = 1.0 / l;
+        Vector3.simd.load(that);
+        that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, SIMD.Float32x4(l, l, l, l));
+        Vector3.simd.store(that);
+    }
+};
+
+
+/**
+ * @method normalized
+ * @description return a normalized copy of this
+ * @return {Vector3}
+ */
+Vector3.prototype.normalized = function() {
+    var v = this.clone();
+    return v.normalize();
+};
+
+/**
+ * @method distanceToSquared
+ * @description Compute squared distance to other
+ * @param v {Vector3}
+ * @return {number}
+ */
+Vector3.prototype.distanceToSquared = function(v) {
+    if (vector_math.USE_SIMD()) {
+        return Vector3.simd.distanceToSquared(this, v);
+    }
+    else {
+        return Vector3.scalar.distanceToSquared(this, v);
+    }
+};
+Vector3.scalar.distanceToSquared = function(that, v) {
+    var dx = that.x - v.x;
+    var dy = that.y - v.y;
+    var dz = that.z - v.z;
+    return dx * dx + dy * dy + dz * dz;
+};
+Vector3.simd.distanceToSquared = function(that, v) {
+    Vector3.simd.load(that);
+    Vector3.simd.load(v);
+    that.simd_storage = SIMD.Float32x4.sub(that.simd_storage, v.simd_storage);
+    that.simd_storage = SIMD.Float32x4.mul(that.simd_storage, that.simd_storage);
+    return SIMD.Float32x4.extractLane(that.simd_storage, 0) +
+        SIMD.Float32x4.extractLane(that.simd_storage, 1) +
+        SIMD.Float32x4.extractLane(that.simd_storage, 2);
+};
+
+/**
+ * @method distanceTo
+ * @description Compute distance to other
+ * @param v {Vector3}
+ * @return {number}
+ */
+Vector3.prototype.distanceTo = function(v) {
+   return Math.sqrt(this.distanceToSquared(v));
+};
+
+/**
+ * @method angleTo
+ * @description return the angle between [this] vector and [other] in radians.
+ * @param other {Vector3}
+ * @return {number}
+ */
+Vector3.prototype.angleTo = function(other) {
+    var otherStorage = other.storage;
+    if (this.storage[0] == otherStorage[0] &amp;&amp;
+        this.storage[1] == otherStorage[1] &amp;&amp;
+        this.storage[2] == otherStorage[2]) {
+        return 0.0;
+    }
+
+    var d = this.dot(other);
+
+    return Math.acos(Math.min(Math.max(d, -1.0), 1.0));
+};
+
+/**
+ * @method angleToSigned
+ * @description return the signed angle between [this] and [other] around [normal] in radians.
+ * @param other {Vector3}
+ * @param normal {Vector3}
+ * @return {number}
+ */
+Vector3.prototype.angleToSigned = function(other, normal) {
+    var angle = this.angleTo(other);
+    var c = this.cross(other);
+    var d = c.dot(normal);
+
+    return d &lt; 0.0 ? -angle : angle;
+};
+
+/**
+ * @method floor
+ * @description Floor entries in [this].
+ * @return {Vector3}
+ */
+Vector3.prototype.floor = function() {
+    this.storage[0] = Math.floor(this.x);
+    this.storage[1] = Math.floor(this.y);
+    this.storage[2] = Math.floor(this.z);
+    return this;
+};
+
+/**
+ * @method ceil
+ * @description Ceil entries in [this].
+ * @return {Vector3}
+ */
+Vector3.prototype.ceil = function() {
+    this.storage[0] = Math.ceil(this.x);
+    this.storage[1] = Math.ceil(this.y);
+    this.storage[2] = Math.ceil(this.z);
+    return this;
+};
+
+/**
+ * @method round
+ * @description Round entries in [this].
+ * @return {Vector3}
+ */
+Vector3.prototype.round = function() {
+    this.storage[0] = Math.round(this.x);
+    this.storage[1] = Math.round(this.y);
+    this.storage[2] = Math.round(this.z);
+    return this;
+};
+
+/**
+ * @method roundToZero
+ * @description Round entries in [this] towards zero.
+ * @return {Vector3}
+ */
+Vector3.prototype.roundToZero = function() {
+    this.storage[0] = this.storage[0] &lt; 0.0
+        ? Math.ceil(this.storage[0])
+        : Math.floor(this.storage[0]);
+    this.storage[1] = this.storage[1] &lt; 0.0
+        ? Math.ceil(this.storage[1])
+        : Math.floor(this.storage[1]);
+    this.storage[2] = this.storage[2] &lt; 0.0
+        ? Math.ceil(this.storage[2])
+        : Math.floor(this.storage[2]);
+    return this;
+};
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

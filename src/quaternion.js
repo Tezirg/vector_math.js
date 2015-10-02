@@ -7,7 +7,7 @@ var Vector3 = require('./vector3.js');
 
 /**
  * @class Quaternion
- * Defines a [Quaternion] (a four-dimensional vector) for efficient rotation calculations.
+ * @description Defines a [Quaternion] (a four-dimensional vector) for efficient rotation calculations.
  * @param x {number}
  * @param y {number}
  * @param z {number}
@@ -74,9 +74,9 @@ Quaternion.zero = function() {
 };
 
 /**
- * @static
+ * @static fromRotation
  * @param rotationMatrix {Matrix3}
- * @returns {Quaternion}
+ * @return {Quaternion}
  */
 Quaternion.fromRotation = function(rotationMatrix) {
     var q = Quaternion.zero();
@@ -85,11 +85,11 @@ Quaternion.fromRotation = function(rotationMatrix) {
 };
 
 /**
- * @static
- * Constructs from axis and angle
+ * @static axisAngle
+ * @description Constructs from axis and angle
  * @param axis {Vector3}
  * @param angle {number}
- * @returns {Quaternion}
+ * @return {Quaternion}
  */
 Quaternion.axisAngle = function(axis, angle) {
     var q = Quaternion.zero();
@@ -104,10 +104,10 @@ Quaternion.copy = function(original) {
 };
 
 /**
- * @static
- * Constructs a quaternion with a random rotation. The random number
+ * @static random
+ * @description Constructs a quaternion with a random rotation. The random number
  * generator [rn] is used to generate the random numbers for the rotation.
- * @returns {Quaternion}
+ * @return {Quaternion}
  */
 Quaternion.random = function() {
     var q = Quaternion.zero();
@@ -117,9 +117,9 @@ Quaternion.random = function() {
 
 
 /**
- * @static
- * Constructs a quaternion set to the identity quaternion.
- * @returns {Quaternion}
+ * @static identity
+ * @description Constructs a quaternion set to the identity quaternion.
+ * @return {Quaternion}
  */
 Quaternion.identity = function() {
     var q = Quaternion.zero();
@@ -128,11 +128,11 @@ Quaternion.identity = function() {
 };
 
 /**
- * @static
- * Constructs a quaternion from time derivative of [q] with angular velocity [omega].
+ * @static dq
+ * @description Constructs a quaternion from time derivative of [q] with angular velocity [omega].
  * @param q {Quaternion}
  * @param omega {Vector3}
- * @returns {Quaternion}
+ * @return {Quaternion}
  */
 Quaternion.dq = function(q, omega) {
     var quat = Quaternion.zero();
@@ -141,12 +141,12 @@ Quaternion.dq = function(q, omega) {
 };
 
 /**
- * @static
- * Constructs a quaternion from [yaw], [pitch] and [roll].
+ * @static euler
+ * @description Constructs a quaternion from [yaw], [pitch] and [roll].
  * @param yaw {number}
  * @param pitch {number}
  * @param roll {number}
- * @returns {Quaternion}
+ * @return {Quaternion}
  */
 Quaternion.euler = function(yaw, pitch, roll) {
     var q = Quaternion.zero();
@@ -156,10 +156,10 @@ Quaternion.euler = function(yaw, pitch, roll) {
 
 
 /**
- * @static
- * Constructs a quaternion with given Float32Array as [storage].
+ * @static fromFloat32Array
+ * @description Constructs a quaternion with given Float32Array as [storage].
  * @param array {Float32Array}
- * @returns {Quaternion}
+ * @return {Quaternion}
  */
 Quaternion.fromFloat32Array = function(array) {
     var q = Quaternion.zero();
@@ -168,11 +168,12 @@ Quaternion.fromFloat32Array = function(array) {
 };
 
 /**
- * /// Constructs a quaternion with a [storage] that views given [buffer] starting at [offset].
- * // [offset] has to be multiple of [Float32Array.BYTES_PER_ELEMENT].
+ * @static fromBuffer
+ * @description Constructs a quaternion with a [storage] that views given [buffer] starting at [offset].
+ * [offset] has to be multiple of [Float32Array.BYTES_PER_ELEMENT].
  * @param buffer {buffer}
  * @param offset {number}
- * @returns {Quaternion}
+ * @return {Quaternion}
  */
 Quaternion.fromBuffer = function(buffer, offset) {
     var q = Quaternion.zero();
@@ -181,17 +182,17 @@ Quaternion.fromBuffer = function(buffer, offset) {
 };
 
 /**
- * @method
- * /// Returns a new copy of [this].
- * @returns {Quaternion}
+ * @method clone
+ * @description Returns a new copy of [this].
+ * @return {Quaternion}
  */
 Quaternion.prototype.clone = function() {
     return Quaternion.copy(this);
 };
 
 /**
- * @method
- * Copy [source] into [this].
+ * @method setFrom
+ * @description Copy [source] into [this].
  * @param source {Quaternion}
  */
 Quaternion.prototype.setFrom = function(source) {
@@ -203,8 +204,8 @@ Quaternion.prototype.setFrom = function(source) {
 };
 
 /**
- * @method
- * Set the quaternion to the raw values [x], [y], [z], and [w].
+ * @method setValues
+ * @description Set the quaternion to the raw values [x], [y], [z], and [w].
  * @param x {number}
  * @param y {number}
  * @param z {number}
@@ -218,8 +219,8 @@ Quaternion.prototype.setValues = function(x, y, z, w) {
 };
 
 /**
- * @method
- * Set the quaternion with rotation of [radians] around [axis].
+ * @method setAxisAngle
+ * @description Set the quaternion with rotation of [radians] around [axis].
  * @param axis {Vector3}
  * @param radians {number}
  */
@@ -236,7 +237,11 @@ Quaternion.prototype.setAxisAngle = function(axis, radians) {
         this.storage[3] = Math.cos(radians * 0.5);
 };
 
-/// Set the quaternion with rotation from a rotation matrix [rotationMatrix].
+/**
+ * @method setFromRotation
+ * @description Set the quaternion with rotation from a rotation matrix [rotationMatrix].
+ * @param rotationMatrix {Matrix3}
+ */
 Quaternion.prototype.setFromRotation = function(rotationMatrix) {
     var rotationMatrixStorage = rotationMatrix.storage;
     var trace = rotationMatrix.trace();
@@ -272,9 +277,9 @@ Quaternion.prototype.setFromRotation = function(rotationMatrix) {
 };
 
 /**
- * @method
- * /// Set the quaternion to a random rotation. The random number generator [rn]
- * /// is used to generate the random numbers for the rotation.
+ * @method setRandom
+ * @description Set the quaternion to a random rotation. The random number generator [rn]
+ * is used to generate the random numbers for the rotation.
  */
 Quaternion.prototype.setRandom = function() {
     var x0 = Math.random();
@@ -293,8 +298,8 @@ Quaternion.prototype.setRandom = function() {
 };
 
 /**
- * @method
- * Set the quaternion to the time derivative of [q] with angular velocity [omega].
+ * @method setDQ
+ * @description Set the quaternion to the time derivative of [q] with angular velocity [omega].
  * @param q {Quaternion}
  * @param omega {Vector3}
  */
@@ -319,8 +324,8 @@ Quaternion.prototype.setDQ = function(q, omega) {
 };
 
 /**
- * @method
- * Set quaternion with rotation of [yaw], [pitch] and [roll].
+ * @method setEuler
+ * @description Set quaternion with rotation of [yaw], [pitch] and [roll].
  * @param yaw {number}
  * @param pitch {number}
  * @param roll {number}
@@ -342,9 +347,9 @@ Quaternion.prototype.setEuler = function(yaw, pitch, roll) {
 };
 
 /**
- * @method
- * Normalize [this].
- * @returns {Quaternion}
+ * @method normalize
+ * @description Normalize [this].
+ * @return {Quaternion}
  */
 Quaternion.prototype.normalize = function() {
     var l = this.length;
@@ -360,9 +365,9 @@ Quaternion.prototype.normalize = function() {
 };
 
 /**
- * @method
- * Conjugate [this].
- * @returns {Quaternion}
+ * @method conjugate
+ * @description Conjugate [this].
+ * @return {Quaternion}
  */
 Quaternion.prototype.conjugate = function() {
     this.storage[2] = -this.storage[2];
@@ -372,9 +377,9 @@ Quaternion.prototype.conjugate = function() {
 };
 
 /**
- * @method
- * Invert [this].
- * @returns {Quaternion}
+ * @method inverse
+ * @description Invert [this].
+ * @return {Quaternion}
  */
 Quaternion.prototype.inverse = function() {
     var l = 1.0 / this.length2;
@@ -386,9 +391,9 @@ Quaternion.prototype.inverse = function() {
 };
 
 /**
- * @method
- * Normalized copy of [this].
- * @returns {Quaternion}
+ * @method normalized
+ * @description Normalized copy of [this].
+ * @return {Quaternion}
  */
 Quaternion.prototype.normalized = function() {
     var q = this.clone();
@@ -397,9 +402,9 @@ Quaternion.prototype.normalized = function() {
 };
 
 /**
- * @method
- * Conjugated copy of [this].
- * @returns {Quaternion}
+ * @method conjugated
+ * @description Conjugated copy of [this].
+ * @return {Quaternion}
  */
 Quaternion.prototype.conjugated = function() {
     var q = this.clone();
@@ -408,9 +413,9 @@ Quaternion.prototype.conjugated = function() {
 };
 
 /**
- * @method
- * Inverted copy of [this].
- * @returns {Quaternion}
+ * @method inverted
+ * @description Inverted copy of [this].
+ * @return {Quaternion}
  */
 Quaternion.prototype.inverted = function() {
     var q = this.clone();
@@ -420,7 +425,7 @@ Quaternion.prototype.inverted = function() {
 
 /**
  * @property radians
- * [radians] of rotation around the [axis] of the rotation.
+ * @description [radians] of rotation around the [axis] of the rotation.
  * @type {number}
  */
 Quaternion.prototype.__defineGetter__("radians", function() {
@@ -429,7 +434,7 @@ Quaternion.prototype.__defineGetter__("radians", function() {
 
 /**
  * @property axis
- * [axis] of rotation.
+ * @description [axis] of rotation.
  * @type {Vector3}
  */
 Quaternion.prototype.__defineGetter__("axis", function() {
@@ -439,7 +444,7 @@ Quaternion.prototype.__defineGetter__("axis", function() {
 
 /**
  * @property length2
- * Length squared.
+ * @description Length squared.
  * @type {number}
  */
 Quaternion.prototype.__defineGetter__("length2", function() {
@@ -452,7 +457,7 @@ Quaternion.prototype.__defineGetter__("length2", function() {
 
 /**
  * @property length
- * Length.
+ * @description Length.
  * @type {number}
  */
 Quaternion.prototype.__defineGetter__("length", function() {
@@ -460,10 +465,10 @@ Quaternion.prototype.__defineGetter__("length", function() {
 });
 
 /**
- * @method
- * Returns a copy of [v] rotated by quaternion.
+ * @method rotated
+ * @description Returns a copy of [v] rotated by quaternion.
  * @param v {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Quaternion.prototype.rotated = function(v) {
     var out = v.clone();
@@ -472,10 +477,10 @@ Quaternion.prototype.rotated = function(v) {
 };
 
 /**
- * @method
- * Rotates [v] by [this].
+ * @method rotate
+ * @description Rotates [v] by [this].
  * @param v {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Quaternion.prototype.rotate = function(v) {
     // conjugate(this) * [v,0] * this
@@ -502,8 +507,8 @@ Quaternion.prototype.rotate = function(v) {
 };
 
 /**
- * @method
- * Add [arg] to [this].
+ * @method add
+ * @description Add [arg] to [this].
  * @param arg {Quaternion}
  */
 Quaternion.prototype.add = function(arg) {
@@ -515,8 +520,8 @@ Quaternion.prototype.add = function(arg) {
 };
 
 /**
- * @method
- * Subtracts [arg] from [this].
+ * @method sub
+ * @description Subtracts [arg] from [this].
  * @param arg {Quaternion}
  */
 Quaternion.prototype.sub = function(arg) {
@@ -528,8 +533,8 @@ Quaternion.prototype.sub = function(arg) {
 };
 
 /**
- * @method
- * Scales [this] by [scale].
+ * @method scale
+ * @description Scales [this] by [scale].
  * @param scale {number}
  */
 Quaternion.prototype.scale = function(scale) {
@@ -540,10 +545,10 @@ Quaternion.prototype.scale = function(scale) {
 };
 
 /**
- * @method
- * Scaled copy of [this].
+ * @method scaled
+ * @description Scaled copy of [this].
  * @param scale {number}
- * @returns {Quaternion}
+ * @return {Quaternion}
  */
 Quaternion.prototype.scaled = function(scale) {
     var q = this.clone();
@@ -552,10 +557,10 @@ Quaternion.prototype.scaled = function(scale) {
 };
 
 /**
- * @method
- * [this] rotated by [other].
+ * @method mult
+ * @description [this] rotated by [other].
  * @param other {Quaternion}
- * @returns {Quaternion}
+ * @return {Quaternion}
  */
 Quaternion.prototype.mult = function(other) {
     var _w = this.storage[3];
@@ -575,10 +580,10 @@ Quaternion.prototype.mult = function(other) {
 };
 
 /**
- * @method
- * Returns if other equals this
+ * @method equals
+ * @description Returns if other equals this
  * @param other {Quaternion}
- * @returns {boolean}
+ * @return {boolean}
  */
 Quaternion.prototype.equals = function(other) {
     return (this.storage[0] == other.storage[0] &&
@@ -588,11 +593,11 @@ Quaternion.prototype.equals = function(other) {
 };
 
 /**
- * @method
- * Returns if other is almost this
+ * @method almostEquals
+ * @description Returns if other is almost this
  * @param q {Quaternion}
  * @param precision {number}
- * @returns {boolean}
+ * @return {boolean}
  */
 Quaternion.prototype.almostEquals = function(q, precision) {
     if (precision === undefined) {
@@ -608,10 +613,10 @@ Quaternion.prototype.almostEquals = function(q, precision) {
 };
 
 /**
- * @method
- * Returns copy of [this] + [other].
+ * @method added
+ * @description Returns copy of [this] + [other].
  * @param other {Quaternion}
- * @returns {Quaternion}
+ * @return {Quaternion}
  */
 Quaternion.prototype.added = function(other) {
     var q = this.clone();
@@ -620,10 +625,10 @@ Quaternion.prototype.added = function(other) {
 };
 
 /**
- * @method
- * Returns copy of [this] - [other].
+ * @method subbed
+ * @description Returns copy of [this] - [other].
  * @param other {Quaternion}
- * @returns {Quaternion}
+ * @return {Quaternion}
  */
 Quaternion.prototype.subbed = function(other) {
     var q = this.clone();
@@ -632,27 +637,27 @@ Quaternion.prototype.subbed = function(other) {
 };
 
 /**
- * @method
- * Returns negated copy of [this].
- * @returns {Quaternion}
+ * @method negated
+ * @description Returns negated copy of [this].
+ * @return {Quaternion}
  */
 Quaternion.prototype.negated = function() {
     return this.conjugated();
 };
 
 /**
- * @method
- * Access the component of the quaternion at the index [i].
+ * @method getAt
+ * @description Access the component of the quaternion at the index [i].
  * @param i {number}
- * @returns {number}
+ * @return {number}
  */
 Quaternion.prototype.getAt = function(i) {
     return this.storage[i];
 };
 
 /**
- * @method
- * Set the component of the quaternion at the index [i].
+ * @method setAt
+ * @description Set the component of the quaternion at the index [i].
  * @param i {number}
  * @param arg {number}
  */
@@ -661,19 +666,19 @@ Quaternion.prototype.setAt = function(i, arg) {
 };
 
 /**
- * @method
- * Returns a rotation matrix containing the same rotation as [this].
- * @returns {Matrix3}
+ * @method asRotationMatrix
+ * @description Returns a rotation matrix containing the same rotation as [this].
+ * @return {Matrix3}
  */
 Quaternion.prototype.asRotationMatrix = function() {
     return this.copyRotationInto(Matrix3.zero());
 };
 
 /**
- * @method
- * Set [rotationMatrix] to a rotation matrix containing the same rotation as [this].
+ * @method copyRotationInto
+ * @description Set [rotationMatrix] to a rotation matrix containing the same rotation as [this].
  * @param rotationMatrix {Matrix3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Quaternion.prototype.copyRotationInto = function(rotationMatrix) {
     var d = this.length2;
@@ -717,9 +722,9 @@ Quaternion.prototype.copyRotationInto = function(rotationMatrix) {
 };
 
 /**
- * @method
- * Printable string.
- * @returns {string}
+ * @method toString
+ * @description Printable string.
+ * @return {string}
  */
 Quaternion.prototype.toString = function() {
     return this.storage[0].toString() + ', ' +
@@ -729,10 +734,10 @@ Quaternion.prototype.toString = function() {
 };
 
 /**
- * @method
- * Relative error between [this] and [correct].
+ * @method relativeError
+ * @description Relative error between [this] and [correct].
  * @param correct {Quaternion}
- * @returns {number}
+ * @return {number}
  */
 Quaternion.prototype.relativeError = function(correct) {
     var diff = correct.subbed(this);
@@ -742,10 +747,10 @@ Quaternion.prototype.relativeError = function(correct) {
 };
 
 /**
- * @method
- * Absolute error between [this] and [correct].
+ * @method absoluteError
+ * @description Absolute error between [this] and [correct].
  * @param correct {Quaternion}
- * @returns {number}
+ * @return {number}
  */
 Quaternion.prototype.absoluteError = function(correct) {
     var this_norm = this.length;

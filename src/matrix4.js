@@ -12,7 +12,7 @@ var SIMD = require("simd");
 
 /**
  * @class Matrix4
- * /// 4D Matrix. Values are stored in column major order.
+ * @description 4D Matrix. Values are stored in column major order.
  * @param m00 {number}
  * @param m01 {number}
  * @param m02 {number}
@@ -109,8 +109,8 @@ Matrix4.simd.store = function(matrix) {
 
 
 /**
- * @static
- * /// Constructs Matrix4 with a given [Float32Array] as [storage].
+ * @static fromFloat32Array
+ * @description Constructs Matrix4 with a given [Float32Array] as [storage].
  * @param array {Float32Array}
  * @return {Matrix4}
  */
@@ -121,8 +121,8 @@ Matrix4.fromFloat32Array = function(array) {
 };
 
 /**
- * @static
- * /// Constructs Matrix2 with a [storage] that views given [buffer] starting at
+ * @static fromBuffer
+ * @description Constructs Matrix2 with a [storage] that views given [buffer] starting at
  * [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
  * @param buffer {buffer}
  * @param offset {number}
@@ -134,8 +134,8 @@ Matrix4.fromBuffer = function(buffer, offset) {
 };
 
 /**
- * @static
- * /// Solve [A] * [x] = [b].
+ * @static solve2
+ * @description Solve [A] * [x] = [b].
  * @param A {Matrix4}
  * @param x {Vector2}
  * @param b {Vector2}
@@ -158,8 +158,8 @@ Matrix4.solve2 = function(A, x, b) {
 };
 
 /**
- * @static
- * /// Solve [A] * [x] = [b].
+ * @static solve3
+ * @description Solve [A] * [x] = [b].
  * @param A {Matrix4}
  * @param x {Vector3}
  * @param b {Vector3}
@@ -213,8 +213,8 @@ Matrix4.solve3 = function(A, x, b) {
 };
 
 /**
- * @static
- * /// Solve [A] * [x] = [b].
+ * @static solve
+ * @description Solve [A] * [x] = [b].
  * @param A {Matrix4}
  * @param x {Vector4}
  * @param b {Vector4}
@@ -287,8 +287,8 @@ Matrix4.solve = function(A, x, b) {
 };
 
 /**
- * Return index in storage for [row], [col] value.
  * @method index
+ * @description Return index in storage for [row], [col] value.
  * @param row
  * @param col
  */
@@ -298,10 +298,11 @@ Matrix4.prototype.index = function(row, col) {
 
 
 /**
- * Value at [row], [col].
+ * @method entry
+ * @description Value at [row], [col].
  * @param row {Number}
  * @param col {Number}
- * @returns {Number} {null}
+ * @return {Number} {null}
  */
 Matrix4.prototype.entry = function(row, col) {
     if (((row >= 0) && (row < this.dimension)) == false) {
@@ -315,11 +316,12 @@ Matrix4.prototype.entry = function(row, col) {
 };
 
 /**
- * Set value at [row], [col] to be [v].
+ * @method setEntry
+ * @description Set value at [row], [col] to be [v].
  * @param row {Number}
  * @param col {Number}
  * @param v {Number}
- * @returns {null}
+ * @return {null}
  */
 Matrix4.prototype.setEntry = function(row, col, v) {
     if (((row >= 0) && (row < this.dimension)) == false) {
@@ -333,9 +335,9 @@ Matrix4.prototype.setEntry = function(row, col, v) {
 };
 
 /**
- * Zero matrix.
- * @static
- * @returns {Matrix4}
+ * @static zero
+ * @description Zero matrix.
+ * @return {Matrix4}
  */
 Matrix4.zero = function() {
     var m = new Matrix4(0.0, 0.0, 0.0, 0.0,
@@ -346,9 +348,9 @@ Matrix4.zero = function() {
 };
 
 /**
- * Identity matrix.
- * @static
- * @returns {Matrix4}
+ * @static identity
+ * @description Identity matrix.
+ * @return {Matrix4}
  */
 Matrix4.identity = function() {
     var m = Matrix4.zero();
@@ -357,10 +359,10 @@ Matrix4.identity = function() {
 };
 
 /**
- * Copies values from [other].
- * @static
+ * @static cpoy
+ * @description Copies values from [other].
  * @param other {Matrix4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.copy = function(other) {
     var m = Matrix4.zero();
@@ -369,13 +371,13 @@ Matrix4.copy = function(other) {
 };
 
 /**
- * /// Matrix with values from column arguments.
- * @static
+ * @static columns
+ * @description Matrix with values from column arguments.
  * @param arg0 {Vector4}
  * @param arg1 {Vector4}
  * @param arg2 {Vector4}
  * @param arg3 {Vector4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.columns = function(arg0, arg1, arg2, arg3) {
     var m = Matrix4.zero();
@@ -384,11 +386,11 @@ Matrix4.columns = function(arg0, arg1, arg2, arg3) {
 };
 
 /**
- * /// Outer product of [u] and [v].
- * @static
+ * @static outer
+ * @description Outer product of [u] and [v].
  * @param u {Vector4}
  * @param v {Vector4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.outer = function(u, v) {
     var m = Matrix4.zero();
@@ -397,9 +399,10 @@ Matrix4.outer = function(u, v) {
 };
 
 /**
- * /// Rotation of [radians].
+ * @static rotation
+ * @description Rotation of [radians].
  * @param radians {Number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.rotation = function(radians) {
     var m = Matrix4.zero();
@@ -409,9 +412,10 @@ Matrix4.rotation = function(radians) {
 
 
 /**
- * /// Rotation of [radians] on X.
+ * @static rotationX
+ * @description Rotation of [radians] on X.
  * @param radians {Number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.rotationX = function(radians) {
     var m = Matrix4.zero();
@@ -421,9 +425,10 @@ Matrix4.rotationX = function(radians) {
 };
 
 /**
- * /// Rotation of [radians] on Y.
+ * @static rotationY
+ * @description Rotation of [radians] on Y.
  * @param radians {Number}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix4.rotationY = function(radians) {
     var m = Matrix4.zero();
@@ -433,9 +438,10 @@ Matrix4.rotationY = function(radians) {
 };
 
 /**
- * /// Rotation of [radians] on Z.
+ * @static rotationZ
+ * @description Rotation of [radians] on Z.
  * @param radians {Number}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix4.rotationZ = function(radians) {
     var m = Matrix4.zero();
@@ -445,10 +451,10 @@ Matrix4.rotationZ = function(radians) {
 };
 
 /**
- * @static
- * Scale matrix
+ * @static translation
+ * @description Scale matrix
  * @param scale {Vector4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.translation = function(scale) {
     var m = Matrix4.zero();
@@ -458,13 +464,13 @@ Matrix4.translation = function(scale) {
 };
 
 /**
- * @static
- * Scale matrix from values x,y,z,w
+ * @static diagonalValues
+ * @description Scale matrix from values x,y,z,w
  * @param x {number}
  * @param y {number}
  * @param z {number}
  * @param w {number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.diagonalValues = function(x, y, z, w) {
     var m = Matrix4.zero();
@@ -474,10 +480,10 @@ Matrix4.diagonalValues = function(x, y, z, w) {
 };
 
 /**
- * @static
- * Translation matrix
+ * @static translation
+ * @description Translation matrix
  * @param translation {Vector3}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.translation = function(translation) {
     var m = Matrix4.zero();
@@ -487,12 +493,12 @@ Matrix4.translation = function(translation) {
 };
 
 /**
- * @static
- * Translation matrix from values x,y,z
+ * @static translationValues
+ * @description Translation matrix from values x,y,z
  * @param x {number}
  * @param y {number}
  * @param z {number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.translationValues = function(x, y, z) {
     var m = Matrix4.zero();
@@ -502,12 +508,12 @@ Matrix4.translationValues = function(x, y, z) {
 };
 
 /**
- * @static
- * Constructs a Matrix4 from translation, rotation and scale
+ * @static compose
+ * @description Constructs a Matrix4 from translation, rotation and scale
  * @param translation {Vector3}
  * @param rotation {Quaternion}
  * @param scale {Vector3}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.compose = function(translation, rotation, scale) {
     var m = Matrix4.zero();
@@ -516,10 +522,10 @@ Matrix4.compose = function(translation, rotation, scale) {
 };
 
 /**
- * @method
- * /// Sets the diagonal to [arg].
+ * @method splatDiagonal
+ * @description Sets the diagonal to [arg].
  * @param arg {Number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.splatDiagonal = function(arg) {
     this.storage[0] = arg;
@@ -530,7 +536,8 @@ Matrix4.prototype.splatDiagonal = function(arg) {
 };
 
 /**
- * Sets the matrix with specified values
+ * @method setValues
+ * @description Sets the matrix with specified values
  * @param arg0 {number}
  * @param arg1 {number}
  * @param arg2 {number}
@@ -547,7 +554,7 @@ Matrix4.prototype.splatDiagonal = function(arg) {
  * @param arg13 {number}
  * @param arg14 {number}
  * @param arg15 {number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.setValues = function(arg0, arg1, arg2, arg3,
                                        arg4, arg5, arg6, arg7,
@@ -573,13 +580,13 @@ Matrix4.prototype.setValues = function(arg0, arg1, arg2, arg3,
 };
 
 /**
- * @method
- * Sets the entire matrix to the column values.
+ * @method setColumns
+ * @description Sets the entire matrix to the column values.
  * @param arg0 {Vector4}
  * @param arg1 {Vector4}
  * @param arg2 {Vector4}
  * @param arg3 {Vector4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.setColumns = function(arg0, arg1, arg2, arg3) {
     var arg0Storage = arg0.storage;
@@ -606,10 +613,10 @@ Matrix4.prototype.setColumns = function(arg0, arg1, arg2, arg3) {
 };
 
 /**
- * @method
- * /// Sets the entire matrix to the matrix in [arg].
+ * @method setFrom
+ * @description Sets the entire matrix to the matrix in [arg].
  * @param arg {Matrix4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.setFrom = function(arg) {
     var argStorage = arg.storage;
@@ -633,11 +640,11 @@ Matrix4.prototype.setFrom = function(arg) {
 };
 
 /**
- * @method
- * Sets the matrix from translation [arg0] and rotation [arg1].
+ * @method setFromTranslationRotation
+ * @description Sets the matrix from translation [arg0] and rotation [arg1].
  * @param arg0 {Vector3}
  * @param arg1 {Quaternion}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.setFromTranslationRotation = function(arg0, arg1) {
     var arg1Storage = arg1.storage;
@@ -679,12 +686,12 @@ Matrix4.prototype.setFromTranslationRotation = function(arg0, arg1) {
 };
 
 /**
- * @method
- * Sets the matrix from [translation], [rotation] and [scale].
+ * @method setFromTranslationRotationScale
+ * @description Sets the matrix from [translation], [rotation] and [scale].
  * @param translation {Vector3}
  * @param rotation {Quaternion}
  * @param scale {Vector3}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.setFromTranslationRotationScale = function(translation, rotation, scale) {
     this.setFromTranslationRotation(translation, rotation);
@@ -693,10 +700,10 @@ Matrix4.prototype.setFromTranslationRotationScale = function(translation, rotati
 };
 
 /**
- * @method
- * /// Sets the upper 2x2 of the matrix to be [arg].
+ * @method setUpper2x2
+ * @description Sets the upper 2x2 of the matrix to be [arg].
  * @param arg {Matrix2}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.setUpper2x2 = function(arg) {
     var argStorage = arg.storage;
@@ -708,10 +715,10 @@ Matrix4.prototype.setUpper2x2 = function(arg) {
 };
 
 /**
- * @method
- * /// Sets the diagonal of the matrix to be [arg].
+ * @method setDiagonal
+ * @description Sets the diagonal of the matrix to be [arg].
  * @param arg {Vector4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.setDiagonal = function(arg) {
     var argStorage = arg.storage;
@@ -723,8 +730,8 @@ Matrix4.prototype.setDiagonal = function(arg) {
 };
 
 /**
- * @method
- * Set [this] to the outer product of [u] and [v].
+ * @method setOuter
+ * @description Set [this] to the outer product of [u] and [v].
  * @param u {Vector4}
  * @param v {Vector4}
  */
@@ -768,9 +775,9 @@ Matrix4.simd.setOuter = function(that, u, v) {
 };
 
 /**
- * @method
- * Printable string
- * @returns {string}
+ * @method toString
+ * @description Printable string
+ * @return {string}
  */
 Matrix4.prototype.toString = function() {
     return '[0] '+ this.getRow(0).toString() +
@@ -780,18 +787,18 @@ Matrix4.prototype.toString = function() {
 };
 
 /**
- * /// Access the element of the matrix at the index [i].
- * @method
+ * @method getAt
+ * @description Access the element of the matrix at the index [i].
  * @param i {number}
- * @returns {Number}
+ * @return {Number}
  */
 Matrix4.prototype.getAt = function(i) {
     return this.storage[i];
 };
 
 /**
- * /// Set the element of the matrix at the index [i].
- * @method
+ * @method setAt
+ * @description Set the element of the matrix at the index [i].
  * @param i {number}
  * @param v {number}
  */
@@ -800,10 +807,10 @@ Matrix4.prototype.setAt = function(i, v) {
 };
 
 /**
- * @method
- * /// Check if two matrices are the same.
+ * @method equals
+ * @description Check if two matrices are the same.
  * @param other {Matrix4}
- * @returns {boolean}
+ * @return {boolean}
  */
 Matrix4.prototype.equals = function(other) {
     if (other.dimension == null || other.dimension != 4) {
@@ -828,11 +835,11 @@ Matrix4.prototype.equals = function(other) {
 };
 
 /**
- * @method
- * /// Check if two matrices are almost the same.
+ * @method almostEquals
+ * @description Check if two matrices are almost the same.
  * @param other {Matrix4}
  * @param precision {number}
- * @returns {boolean}
+ * @return {boolean}
  */
 Matrix4.prototype.almostEquals = function(other, precision) {
     if (precision === undefined) {
@@ -972,10 +979,10 @@ Matrix4.prototype.setRow = function(row, arg) {
 };
 
 /**
- * @method
- * /// Gets the [row] of the matrix
+ * @method getRow
+ * @description Gets the [row] of the matrix
  * @param row {Number}
- * @returns {Vector4}
+ * @return {Vector4}
  */
 Matrix4.prototype.getRow = function(row) {
     var r = Vector4.zero();
@@ -988,8 +995,8 @@ Matrix4.prototype.getRow = function(row) {
 };
 
 /**
- * @method
- * /// Assigns the [column] of the matrix [arg]
+ * @method setColumn
+ * @description Assigns the [column] of the matrix [arg]
  * @param column {Number}
  * @param arg {Vector4}
  */
@@ -1004,10 +1011,10 @@ Matrix4.prototype.setColumn = function(column, arg) {
 };
 
 /**
- * @method
- * /// Gets the [column] of the matrix
+ * @method getColumn
+ * @description Gets the [column] of the matrix
  * @param column {Number}
- * @returns {Vector4}
+ * @return {Vector4}
  */
 Matrix4.prototype.getColumn = function(column) {
     var r = Vector4.zero();
@@ -1021,17 +1028,19 @@ Matrix4.prototype.getColumn = function(column) {
 };
 
 /**
- * /// Create a copy of [this].
- * @returns {Matrix4}
+ * @method clone
+ * @description Create a copy of [this].
+ * @return {Matrix4}
  */
 Matrix4.prototype.clone = function() {
     return Matrix4.copy(this);
 };
 
 /**
- * /// Copy [this] into [arg].
+ * @method copyInto
+ * @description Copy [this] into [arg].
  * @param arg {Matrix4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.copyInto = function(arg) {
     arg.setFrom(this);
@@ -1039,9 +1048,10 @@ Matrix4.prototype.copyInto = function(arg) {
 };
 
 /**
- * /// Returns a new vector or matrix by multiplying [this] with [arg].
+ * @method mult
+ * @description return a new vector or matrix by multiplying [this] with [arg].
  * @param arg
- * @returns {*}
+ * @return {*}
  */
 Matrix4.prototype.mult = function(arg) {
     if (typeof arg == "Number") {
@@ -1060,10 +1070,10 @@ Matrix4.prototype.mult = function(arg) {
 };
 
 /**
- * @method
- * /// Returns new matrix after component wise [this] + [arg]
+ * @method added
+ * @description return new matrix after component wise [this] + [arg]
  * @param arg {Matrix4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.added = function(arg) {
     var m = this.clone();
@@ -1072,10 +1082,10 @@ Matrix4.prototype.added = function(arg) {
 };
 
 /**
- * @method
- * /// Returns new matrix after component wise [this] - [arg]
+ * @method subbed
+ * @description return new matrix after component wise [this] - [arg]
  * @param arg {Matrix4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.subbed = function(arg) {
     var m = this.clone();
@@ -1084,9 +1094,9 @@ Matrix4.prototype.subbed = function(arg) {
 };
 
 /**
- * @method
- * /// Returns new matrix after negating [this]
- * @returns {Matrix4}
+ * @method negated
+ * @description return new matrix after negating [this]
+ * @return {Matrix4}
  */
 Matrix4.prototype.negated = function() {
     var m = this.clone();
@@ -1095,12 +1105,12 @@ Matrix4.prototype.negated = function() {
 };
 
 /**
- * @method
- * Translate this matrix by a [Vector3], [Vector4], or x,y,z
+ * @method translate
+ * @description Translate this matrix by a [Vector3], [Vector4], or x,y,z
  * @param x {Vector4|Vector3|number}
  * @param y {number}
  * @param z {number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.translate = function(x, y, z) {
     var tx;
@@ -1160,11 +1170,11 @@ Matrix4.simd.translate = function(that, tx, ty, tz, tw) {
 };
 
 /**
- * @method
- * Rotate this [angle] radians around [axis]
+ * @method rotate
+ * @description Rotate this [angle] radians around [axis]
  * @param axis {Vector3}
  * @param angle {number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.rotate = function(axis, angle) {
     var len = axis.length;
@@ -1213,10 +1223,10 @@ Matrix4.prototype.rotate = function(axis, angle) {
 
 
 /**
- * @method
- * Rotate this [angle] radians around X
+ * @method rotateX
+ * @description Rotate this [angle] radians around X
  * @param angle {number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.rotateX = function(angle) {
     var cosAngle = Math.cos(angle);
@@ -1241,10 +1251,10 @@ Matrix4.prototype.rotateX = function(angle) {
 };
 
 /**
- * @method
- * Rotate this matrix [angle] radians around Y
+ * @method rotateY
+ * @description Rotate this matrix [angle] radians around Y
  * @param angle {number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.rotateY = function(angle) {
     var cosAngle = Math.cos(angle);
@@ -1269,10 +1279,10 @@ Matrix4.prototype.rotateY = function(angle) {
 };
 
 /**
- * @method
- * Rotate this matrix [angle] radians around Z
+ * @method rotateZ
+ * @description Rotate this matrix [angle] radians around Z
  * @param angle {number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.rotateZ = function(angle) {
     var  cosAngle = Math.cos(angle);
@@ -1298,12 +1308,12 @@ Matrix4.prototype.rotateZ = function(angle) {
 
 
 /**
- * @method
- * Scale this matrix by a [Vector3], [Vector4], or x,y,z
+ * @method scale
+ * @description Scale this matrix by a [Vector3], [Vector4], or x,y,z
  * @param x {Vector4 | Vector3 | number}
  * @param y {number | undefined}
  * @param z {number | undefined}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.scale = function(x, y, z) {
     var sx;
@@ -1356,11 +1366,12 @@ Matrix4.simd.scale = function(that, sx, sy, sz, sw) {
 };
 
 /**
- * Create a copy of [this] scaled by a [Vector3], [Vector4] or [x],[y], and [z].
+ * @method scaled
+ * @description Create a copy of [this] scaled by a [Vector3], [Vector4] or [x],[y], and [z].
  * @param x
  * @param y
  * @param z
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.scaled = function(x, y, z) {
     var m = this.clone();
@@ -1369,9 +1380,9 @@ Matrix4.prototype.scaled = function(x, y, z) {
 };
 
 /**
- * @method
- * Zeros [this].
- * @returns {Matrix4}
+ * @method setZero
+ * @description Zeros [this].
+ * @return {Matrix4}
  */
 Matrix4.prototype.setZero = function() {
     this.storage[0] = 0.0;
@@ -1395,9 +1406,9 @@ Matrix4.prototype.setZero = function() {
 
 
 /**
- * @method
- * Makes [this] into the identity matrix.
- * @returns {Matrix4}
+ * @method setIdentity
+ * @description Makes [this] into the identity matrix.
+ * @return {Matrix4}
  */
 Matrix4.prototype.setIdentity = function() {
     this.storage[0] = 1.0;
@@ -1420,9 +1431,9 @@ Matrix4.prototype.setIdentity = function() {
 };
 
 /**
- * @method
- * Returns the tranpose copy of this.
- * @returns {Matrix4}
+ * @method transposed
+ * @description return the tranpose copy of this.
+ * @return {Matrix4}
  */
 Matrix4.prototype.transposed = function() {
     var m = this.clone();
@@ -1431,9 +1442,9 @@ Matrix4.prototype.transposed = function() {
 };
 
 /**
- * @method
- * transpose this.
- * @returns {Matrix4}
+ * @method transpose
+ * @description transpose this.
+ * @return {Matrix4}
  */
 Matrix4.prototype.transpose = function() {
     if (vector_math.USE_SIMD()) {
@@ -1483,9 +1494,9 @@ Matrix4.simd.transpose = function(that) {
 };
 
 /**
- * @method
- * Returns the component wise absolute value copy of that.
- * @returns {Matrix4}
+ * @method absolute
+ * @description return the component wise absolute value copy of that.
+ * @return {Matrix4}
  */
 Matrix4.prototype.absolute = function() {
     if (vector_math.USE_SIMD()) {
@@ -1526,9 +1537,9 @@ Matrix4.simd.absolute = function(that) {
 };
 
 /**
- * @method
- * Returns the determinant of this matrix.
- * @returns {number}
+ * @method determinant
+ * @description return the determinant of this matrix.
+ * @return {number}
  */
 Matrix4.prototype.determinant = function() {
     var det2_01_01 =
@@ -1562,11 +1573,11 @@ Matrix4.prototype.determinant = function() {
 };
 
 /**
- * @method
- * Returns the dot product of row [i] and [v].
+ * @method dotRow
+ * @description return the dot product of row [i] and [v].
  * @param i {number}
  * @param v {Vector4}
- * @returns {number}
+ * @return {number}
  */
 Matrix4.prototype.dotRow = function(i, v) {
     var vStorage = v.storage;
@@ -1577,11 +1588,11 @@ Matrix4.prototype.dotRow = function(i, v) {
 };
 
 /**
- * @method
- * Returns the dot product of column [j] and [v].
+ * @method dotColumn
+ * @description return the dot product of column [j] and [v].
  * @param j {number}
  * @param v {Vector4}
- * @returns {number}
+ * @return {number}
  */
 Matrix4.prototype.dotColumn = function(j, v) {
     var vStorage = v.storage;
@@ -1592,9 +1603,9 @@ Matrix4.prototype.dotColumn = function(j, v) {
 };
 
 /**
- * @method
- * Returns the trace of the matrix. The trace of a matrix is the sum of the diagonal entries.
- * @returns {number}
+ * @method trace
+ * @description return the trace of the matrix. The trace of a matrix is the sum of the diagonal entries.
+ * @return {number}
  */
 Matrix4.prototype.trace = function() {
     var t = 0.0;
@@ -1606,9 +1617,9 @@ Matrix4.prototype.trace = function() {
 };
 
 /**
- * @method
- * Returns infinity norm of the matrix. Used for numerical analysis.
- * @returns {number}
+ * @method infinityNorm
+ * @description return infinity norm of the matrix. Used for numerical analysis.
+ * @return {number}
  */
 Matrix4.prototype.infinityNorm = function() {
     var norm = 0.0;
@@ -1648,8 +1659,8 @@ Matrix4.prototype.infinityNorm = function() {
 };
 
 /**
- * @method
- * Returns relative error between [this] and [correct]
+ * @method relativeError
+ * @description return relative error between [this] and [correct]
  * @param correct {Matrix4}
  */
 Matrix4.prototype.relativeError = function(correct) {
@@ -1660,10 +1671,10 @@ Matrix4.prototype.relativeError = function(correct) {
 };
 
 /**
- * @method
- * Returns absolute error between [this] and [correct]
+ * @method absoluteError
+ * @description return absolute error between [this] and [correct]
  * @param correct
- * @returns {number}
+ * @return {number}
  */
 Matrix4.prototype.absoluteError = function(correct) {
     var this_norm = this.infinityNorm();
@@ -1674,9 +1685,9 @@ Matrix4.prototype.absoluteError = function(correct) {
 
 
 /**
- * @method
- * Returns the translation vector from this homogeneous transformation matrix.
- * @returns {Vector3}
+ * @method getTranslation
+ * @description return the translation vector from this homogeneous transformation matrix.
+ * @return {Vector3}
  */
 Matrix4.prototype.getTranslation = function() {
     var z = this.storage[14];
@@ -1686,8 +1697,8 @@ Matrix4.prototype.getTranslation = function() {
 };
 
 /**
- * @method
- * Sets the translation vector in this homogeneous transformation matrix.
+ * @method setTranslation
+ * @description Sets the translation vector in this homogeneous transformation matrix.
  * @param t {Vector3}
  */
 Matrix4.prototype.setTranslation = function(t) {
@@ -1701,9 +1712,9 @@ Matrix4.prototype.setTranslation = function(t) {
 };
 
 /**
- * @method
- * Returns the rotation matrix from this homogeneous transformation matrix.
- * @returns {Matrix3}
+ * @method getRotation
+ * @description return the rotation matrix from this homogeneous transformation matrix.
+ * @return {Matrix3}
  */
 Matrix4.prototype.getRotation = function() {
     var r = Matrix3.zero();
@@ -1712,8 +1723,8 @@ Matrix4.prototype.getRotation = function() {
 };
 
 /**
- * @method
- * Copies the rotation matrix from this homogeneous transformation matrix into [rotation].
+ * @method copyRotation
+ * @description Copies the rotation matrix from this homogeneous transformation matrix into [rotation].
  * @param rotation {Matrix3}
  */
 Matrix4.prototype.copyRotation = function(rotation) {
@@ -1730,8 +1741,8 @@ Matrix4.prototype.copyRotation = function(rotation) {
 };
 
 /**
- * @method
- * Sets the rotation matrix in this homogeneous transformation matrix.
+ * @method setRotation
+ * @description Sets the rotation matrix in this homogeneous transformation matrix.
  * @param r {Matrix3}
  */
 Matrix4.prototype.setRotation = function(r) {
@@ -1748,10 +1759,10 @@ Matrix4.prototype.setRotation = function(r) {
 };
 
 /**
- * @method
- * Returns the normal matrix from this homogeneous transformation matrix. The normal
+ * @method getNormalMatrix
+ * @description return the normal matrix from this homogeneous transformation matrix. The normal
  * matrix is the transpose of the inverse of the top-left 3x3 part of this 4x4 matrix.
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix4.prototype.getNormalMatrix = function() {
     var m = Matrix3.identity();
@@ -1761,9 +1772,9 @@ Matrix4.prototype.getNormalMatrix = function() {
 
 
 /**
- * @method
- * Returns the max scale value of the 3 axes.
- * @returns {number}
+ * @method getMaxScaleOnAxis
+ * @description return the max scale value of the 3 axes.
+ * @return {number}
  */
 Matrix4.prototype.getMaxScaleOnAxis = function() {
     var scaleXSq = this.storage[0] * this.storage[0] +
@@ -1779,9 +1790,9 @@ Matrix4.prototype.getMaxScaleOnAxis = function() {
 };
 
 /**
- * @method
- * Transposes just the upper 3x3 rotation matrix.
- * @returns {Matrix4}
+ * @method transposeRotation
+ * @description Transposes just the upper 3x3 rotation matrix.
+ * @return {Matrix4}
  */
 Matrix4.prototype.transposeRotation = function() {
     var temp;
@@ -1807,18 +1818,18 @@ Matrix4.prototype.transposeRotation = function() {
 };
 
 /**
- * @method
- * Invert [this].
+ * @method invert
+ * @description Invert [this].
  */
 Matrix4.prototype.invert = function() {
     this.copyInverse(this);
 };
 
 /**
- * @method
- * Set this matrix to be the inverse of [arg]
+ * @method copyInverse
+ * @description Set this matrix to be the inverse of [arg]
  * @param arg {Matrix4}
- * @returns {number}
+ * @return {number}
  */
 Matrix4.prototype.copyInverse = function(arg) {
     if (vector_math.USE_SIMD()) {
@@ -1976,8 +1987,8 @@ Matrix4.simd.copyInverse = function(that, arg) {
 };
 
 /**
- * @method
- * @returns {number}
+ * @method invertRotation
+ * @return {number}
  */
 Matrix4.prototype.invertRotation = function() {
     var det = this.determinant();
@@ -2025,8 +2036,8 @@ Matrix4.prototype.invertRotation = function() {
 };
 
 /**
- * @method
- * Sets the upper 3x3 to a rotation of [radians] around X
+ * @method setRotationX
+ * @description Sets the upper 3x3 to a rotation of [radians] around X
  * @param radians
  */
 Matrix4.prototype.setRotationX = function(radians) {
@@ -2047,8 +2058,8 @@ Matrix4.prototype.setRotationX = function(radians) {
 };
 
 /**
- * @method
- * Sets the upper 3x3 to a rotation of [radians] around Y
+ * @method setRotationY
+ * @description Sets the upper 3x3 to a rotation of [radians] around Y
  * @param radians {number}
  */
 Matrix4.prototype.setRotationY = function(radians) {
@@ -2069,8 +2080,8 @@ Matrix4.prototype.setRotationY = function(radians) {
 };
 
 /**
- * @method
- * Sets the upper 3x3 to a rotation of [radians] around Z
+ * @method setRotationZ
+ * @description Sets the upper 3x3 to a rotation of [radians] around Z
  * @param radians {number}
  */
 Matrix4.prototype.setRotationZ = function(radians) {
@@ -2091,10 +2102,10 @@ Matrix4.prototype.setRotationZ = function(radians) {
 };
 
 /**
- * @method
- * Converts into Adjugate matrix and scales by [scale]
+ * @method scaleAdjoint
+ * @description Converts into Adjugate matrix and scales by [scale]
  * @param scale {number}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.scaleAdjoint = function(scale) {
     if (vector_math.USE_SIMD()) {
@@ -2391,12 +2402,11 @@ Matrix4.simd.scaleAdjoint = function(that, scale) {
 };
 
 /**
- * @method
- * /// Rotates [arg] by the absolute rotation of [that]
- * /// Returns [arg].
- * /// Primarily used by AABB transformation code.
+ * @method absoluteRotate
+ * @description Rotates [arg] by the absolute rotation of [that] return [arg].
+ * Primarily used by AABB transformation code.
  * @param arg {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Matrix4.prototype.absoluteRotate = function(arg) {
     var m00 = Math.abs(this.storage[0]);
@@ -2419,10 +2429,10 @@ Matrix4.prototype.absoluteRotate = function(arg) {
 };
 
 /**
- * @method
- * /// Add [o] to [this].
+ * @method add
+ * @description  Add [o] to [this].
  * @param o {Matrix4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.add = function(o) {
     if (vector_math.USE_SIMD()) {
@@ -2463,10 +2473,10 @@ Matrix4.simd.add = function(that, o) {
 };
 
 /**
- * @method
- * /// Subtract [o] from [this].
+ * @method sub
+ * @description Subtract [o] from [this].
  * @param o {Matrix4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.sub = function(o) {
     if (vector_math.USE_SIMD()) {
@@ -2508,9 +2518,9 @@ Matrix4.simd.sub = function(that, o) {
 
 
 /**
- * @method
- * /// Negate [this].
- * @returns {Matrix4}
+ * @method negate
+ * @description Negate [this].
+ * @return {Matrix4}
  */
 Matrix4.prototype.negate = function() {
     if (vector_math.USE_SIMD()) {
@@ -2551,10 +2561,10 @@ Matrix4.simd.neg = function(that) {
 
 
 /**
- * @method
- * Multiply [this] by [arg].
+ * @method multiply
+ * @description Multiply [this] by [arg].
  * @param arg {Matrix4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.multiply = function(arg) {
     if (vector_math.USE_SIMD()) {
@@ -2670,10 +2680,10 @@ Matrix4.simd.multiply = function(that, arg) {
 };
 
 /**
- * @method
- * Create a copy of [this] and multiply it by [arg].
+ * @method multiplied
+ * @description Create a copy of [this] and multiply it by [arg].
  * @param arg {Matrix4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.multiplied = function(arg) {
     var m = this.clone();
@@ -2683,10 +2693,10 @@ Matrix4.prototype.multiplied = function(arg) {
 
 
 /**
- * @method
- * Multiply a transposed [this] with [arg].
+ * @method transposeMultiply
+ * @description Multiply a transposed [this] with [arg].
  * @param arg {Matrix4}
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.transposeMultiply = function(arg) {
     var m00 = this.storage[0];
@@ -2774,10 +2784,10 @@ Matrix4.prototype.transposeMultiply = function(arg) {
 };
 
 /**
- * @method
- * Multiply [this] with a transposed [arg].
+ * @method multiplyTranspose
+ * @description Multiply [this] with a transposed [arg].
  * @param arg
- * @returns {Matrix4}
+ * @return {Matrix4}
  */
 Matrix4.prototype.multiplyTranspose = function(arg) {
     var m00 = this.storage[0];
@@ -2865,7 +2875,8 @@ Matrix4.prototype.multiplyTranspose = function(arg) {
 };
 
 /**
- * Decomposes [this] into [translation], [rotation] and [scale] components.
+ * @method decompose
+ * @description Decomposes [this] into [translation], [rotation] and [scale] components.
  * @param translation {Vector3}
  * @param rotation {Quaternion}
  * @param scale {Vector3}
@@ -2905,8 +2916,8 @@ Matrix4.prototype.decompose = function(translation, rotation, scale) {
 };
 
 /**
- * @method
- * Rotate [arg] of type [Vector3] using the rotation defined by [this].
+ * @method rotate3
+ * @description Rotate [arg] of type [Vector3] using the rotation defined by [this].
  * @param arg {Vector3}
  */
 Matrix4.prototype.rotate3 = function(arg) {
@@ -2928,10 +2939,10 @@ Matrix4.prototype.rotate3 = function(arg) {
 
 
 /**
- * @method
- * Rotate a copy of [arg] of type [Vector3] using the rotation defined by [this].
+ * @method rotated3
+ * @description Rotate a copy of [arg] of type [Vector3] using the rotation defined by [this].
  * @param arg {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Matrix4.prototype.rotated3 = function(arg) {
     var out = Vector3.copy(arg);
@@ -2939,9 +2950,10 @@ Matrix4.prototype.rotated3 = function(arg) {
 };
 
 /**
- * Transform [arg] of type [Vector3] using the transformation defined by [this].
+ * @method transform3
+ * @description Transform [arg] of type [Vector3] using the transformation defined by [this].
  * @param arg {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Matrix4.prototype.transform3 = function(arg) {
     var argStorage = arg.storage;
@@ -2964,9 +2976,10 @@ Matrix4.prototype.transform3 = function(arg) {
 };
 
 /**
- * Transform a copy of [arg] of type [Vector3] using the transformation defined by [this].
+ * @method transformed3
+ * @description Transform a copy of [arg] of type [Vector3] using the transformation defined by [this].
  * @param arg {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Matrix4.prototype.transformed3 = function(arg) {
     var out = Vector3.copy(arg);
@@ -2974,10 +2987,10 @@ Matrix4.prototype.transformed3 = function(arg) {
 };
 
 /**
- * @method
- * Transform [arg] of type [Vector4] using the transformation defined by [this].
+ * @method transform
+ * @description Transform [arg] of type [Vector4] using the transformation defined by [this].
  * @param arg {Vector4}
- * @returns {Vector4}
+ * @return {Vector4}
  */
 Matrix4.prototype.transform = function(arg) {
     var argStorage = arg.storage;
@@ -3005,10 +3018,10 @@ Matrix4.prototype.transform = function(arg) {
 };
 
 /**
- * @method
- * Transform [arg] of type [Vector3] using the perspective transformation defined by [this].
+ * @method perspectiveTransform
+ * @description Transform [arg] of type [Vector3] using the perspective transformation defined by [this].
  * @param arg {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Matrix4.prototype.perspectiveTransform = function(arg) {
     var argStorage = arg.storage;
@@ -3036,10 +3049,10 @@ Matrix4.prototype.perspectiveTransform = function(arg) {
 };
 
 /**
- * @method
- * Transform a copy of [arg] of type [Vector4] using the transformation defined by [this].
+ * @method transformed
+ * @description Transform a copy of [arg] of type [Vector4] using the transformation defined by [this].
  * @param arg
- * @returns {Vector4}
+ * @return {Vector4}
  */
 Matrix4.prototype.transformed = function(arg) {
     var out = Vector4.copy(arg);
@@ -3047,8 +3060,8 @@ Matrix4.prototype.transformed = function(arg) {
 };
 
 /**
- * @method
- * Copies [this] into [array] starting at [offset].
+ * @method copyIntoArray
+ * @description Copies [this] into [array] starting at [offset].
  * @param array {Array}
  * @param offset {number}
  */
@@ -3076,8 +3089,8 @@ Matrix4.prototype.copyIntoArray = function(array, offset) {
 };
 
 /**
- * @method
- * Copies elements from [array] into [this] starting at [offset].
+ * @method copyFromArray
+ * @description Copies elements from [array] into [this] starting at [offset].
  * @param array {Array}
  * @param offset {number}
  */

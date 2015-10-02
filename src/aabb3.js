@@ -13,7 +13,7 @@ var Plane = require('./plane.js');
 
 /**
  * @class Aabb3
- * Defines a 3-dimensional axis-aligned bounding box between a [min] and a [max] position.
+ * @description Defines a 3-dimensional axis-aligned bounding box between a [min] and a [max] position.
  * @constructor
  */
 function Aabb3() {
@@ -31,9 +31,9 @@ function Aabb3() {
 }
 
 /**
- * @method
- * The center of the AABB.
- * @returns {Vector3}
+ * @method center
+ * @description The center of the AABB.
+ * @return {Vector3}
  */
 Aabb3.prototype.__defineGetter__("center", function() {
     var center = this.min.clone();
@@ -44,8 +44,8 @@ Aabb3.prototype.__defineGetter__("center", function() {
 
 
 /**
- * @static
- * Create a new AABB as a copy of [other].
+ * @static copy
+ * @description Create a new AABB as a copy of [other].
  * @param other {Aabb3}
  * @return {Aabb3}
  */
@@ -57,11 +57,11 @@ Aabb3.copy = function(other) {
 };
 
 /**
- * @static
- * Create a new AABB with a [min] and [max].
+ * @static minMax
+ * @description Create a new AABB with a [min] and [max].
  * @param min {Vector3}
  * @param max {Vector3}
- * @returns {Aabb3}
+ * @return {Aabb3}
  */
 Aabb3.minMax = function(min,  max) {
     var bb = new Aabb3();
@@ -71,10 +71,10 @@ Aabb3.minMax = function(min,  max) {
 };
 
 /**
- * @static
- * Create a new AABB that encloses a [sphere].
+ * @static fromSphere
+ * @description Create a new AABB that encloses a [sphere].
  * @param sphere {Sphere}
- * @returns {Aabb3}
+ * @return {Aabb3}
  */
 Aabb3.fromSphere = function(sphere) {
     var bb = new Aabb3();
@@ -83,10 +83,10 @@ Aabb3.fromSphere = function(sphere) {
 };
 
 /**
- * @static
- * Create a new AABB that encloses a [triangle].
+ * @static fromTriangle
+ * @description Create a new AABB that encloses a [triangle].
  * @param triangle {Triangle}
- * @returns {Aabb3}
+ * @return {Aabb3}
  */
 Aabb3.fromTriangle = function(triangle) {
     var bb = new Aabb3();
@@ -95,10 +95,10 @@ Aabb3.fromTriangle = function(triangle) {
 };
 
 /**
- * @static
- * Create a new AABB that encloses a [quad].
+ * @static fromQuad
+ * @description Create a new AABB that encloses a [quad].
  * @param quad {Quad}
- * @returns {Aabb3}
+ * @return {Aabb3}
  */
 Aabb3.fromQuad = function(quad) {
     var bb = new Aabb3();
@@ -108,13 +108,13 @@ Aabb3.fromQuad = function(quad) {
 
 
 /**
- * @static
- * Create a new AABB that encloses a limited [ray] (or line segment) that has
+ * @static fromRay
+ * @description Create a new AABB that encloses a limited [ray] (or line segment) that has
  * a minLimit and maxLimit.
  * @param ray {Ray}
  * @param limitMin {number}
  * @param limitMax {number}
- * @returns {Aabb3}
+ * @return {Aabb3}
  */
 Aabb3.fromRay = function(ray, limitMin, limitMax) {
     var bb = new Aabb3();
@@ -124,11 +124,11 @@ Aabb3.fromRay = function(ray, limitMin, limitMax) {
 
 
 /**
- * @static
- * Create a new AABB with a [center] and [halfExtents].
+ * @static centerAndHalfExtends
+ * @description Create a new AABB with a [center] and [halfExtents].
  * @param center {Vector3}
  * @param halfExtents {Vector3}
- * @returns {Aabb3}
+ * @return {Aabb3}
  */
 Aabb3.centerAndHalfExtents = function(center, halfExtents) {
     var bb = new Aabb3();
@@ -138,12 +138,12 @@ Aabb3.centerAndHalfExtents = function(center, halfExtents) {
 
 
 /**
- * @static
- * Constructs [Aabb3] with a min/max [storage] that views given [buffer]
+ * @static fromBuffer
+ * @description Constructs [Aabb3] with a min/max [storage] that views given [buffer]
  * starting at [offset]. [offset] has to be multiple of [Float32Array.BYTES_PER_ELEMENT].
  * @param buffer {buffer}
  * @param offset {number}
- * @returns {Aabb3}
+ * @return {Aabb3}
  */
 Aabb3.fromBuffer = function(buffer, offset) {
     var bb = new Aabb3();
@@ -153,8 +153,8 @@ Aabb3.fromBuffer = function(buffer, offset) {
 };
 
 /**
- * @method
- * Set the AABB by a [center] and [halfExtents].
+ * @method setCenterAndHalfExtends
+ * @description Set the AABB by a [center] and [halfExtents].
  * @param center {Vector3}
  * @param halfExtents {Vector3}
  */
@@ -167,8 +167,8 @@ Aabb3.prototype.setCenterAndHalfExtents = function(center, halfExtents) {
 
 
 /**
- * @method
- * Set the AABB to enclose a [sphere].
+ * @method setSphere
+ * @description Set the AABB to enclose a [sphere].
  * @param sphere {Sphere}
  */
 Aabb3.prototype.setSphere = function(sphere) {
@@ -180,8 +180,8 @@ Aabb3.prototype.setSphere = function(sphere) {
 };
 
 /**
- * @method
- * Set the AABB to enclose a [triangle].
+ * @method setTriangle
+ * @description Set the AABB to enclose a [triangle].
  * @param triangle {Triangle}
  */
 Aabb3.prototype.setTriangle = function(triangle) {
@@ -202,8 +202,8 @@ Aabb3.prototype.setTriangle = function(triangle) {
 };
 
 /**
- * @method
- * Set the AABB to enclose a [quad].
+ * @method setQuad
+ * @description Set the AABB to enclose a [quad].
  * @param quad {Quad}
  */
 Aabb3.prototype.setQuad = function(quad) {
@@ -229,8 +229,8 @@ Aabb3.prototype.setQuad = function(quad) {
 
 
 /**
- * @method
- * Set the AABB to enclose a limited [ray] (or line segment) that is limited by [limitMin] and [limitMax].
+ * @method setRay
+ * @description Set the AABB to enclose a limited [ray] (or line segment) that is limited by [limitMin] and [limitMax].
  * @param ray {Ray}
  * @param limitMin {number}
  * @param limitMax {number}
@@ -259,8 +259,8 @@ Aabb3.prototype.setRay = function(ray, limitMin, limitMax) {
 };
 
 /**
- * @method
- * Copy the [center] and the [halfExtends] of [this].
+ * @method copyCenterAndHalfExtends
+ * @description Copy the [center] and the [halfExtends] of [this].
  * @param center {Vector3}
  * @param halfExtents {Vector3}
  */
@@ -275,8 +275,8 @@ Aabb3.prototype.copyCenterAndHalfExtents = function(center, halfExtents) {
 };
 
 /**
- * @method
- * Copy the [center] of [this].
+ * @method copyCenter
+ * @description Copy the [center] of [this].
  * @param center {Vector3}
  */
 Aabb3.prototype.copyCenter = function(center) {
@@ -286,8 +286,8 @@ Aabb3.prototype.copyCenter = function(center) {
 };
 
 /**
- * @method
- * Copy the [min] and [max] from [other] into [this].
+ * @method copyFrom
+ * @description Copy the [min] and [max] from [other] into [this].
  * @param other {Aabb3}
  */
 Aabb3.prototype.copyFrom = function(other) {
@@ -296,10 +296,10 @@ Aabb3.prototype.copyFrom = function(other) {
 };
 
 /**
- * @method
- * Transform [this] by the transform [t].
+ * @method transform
+ * @description Transform [this] by the transform [t].
  * @param t {Matrix4}
- * @returns {Aabb3}
+ * @return {Aabb3}
  */
 Aabb3.prototype.transform = function(t) {
     var center = Vector3.zero();
@@ -316,10 +316,10 @@ Aabb3.prototype.transform = function(t) {
 };
 
 /**
- * @method
- * Rotate [this] by the rotation matrix [t].
+ * @method rotate
+ * @description Rotate [this] by the rotation matrix [t].
  * @param t {Matrix4}
- * @returns {Aabb3}
+ * @return {Aabb3}
  */
 Aabb3.prototype.rotate = function(t) {
     var center = Vector3.zero();
@@ -335,8 +335,8 @@ Aabb3.prototype.rotate = function(t) {
 };
 
 /**
- * @method
- * Create a copy of [this] that is transformed by the transform [t] and store it in [out].
+ * @method transformed
+ * @description Create a copy of [this] that is transformed by the transform [t] and store it in [out].
  * @param t {Matrix4}
  * @param out {Aabb3}
  */
@@ -346,8 +346,8 @@ Aabb3.prototype.transformed = function(t, out) {
 };
 
 /**
- * @method
- * Create a copy of [this] that is rotated by the rotation matrix [t] and store it in [out].
+ * @method rotated
+ * @description Create a copy of [this] that is rotated by the rotation matrix [t] and store it in [out].
  * @param t {Matrix4}
  * @param out {Aabb3}
  */
@@ -383,8 +383,8 @@ Aabb3.prototype.getPN = function(planeNormal, outP, outN) {
 };
 
 /**
- * @method
- * Set the min and max of [this] so that [this] is a hull of [this] and [other].
+ * @method hull
+ * @description Set the min and max of [this] so that [this] is a hull of [this] and [other].
  * @param other {Aabb3}
  */
 Aabb3.prototype.hull = function(other) {
@@ -393,8 +393,8 @@ Aabb3.prototype.hull = function(other) {
 };
 
 /**
- * @method
- * Set the min and max of [this] so that [this] contains [point].
+ * @method hullPoint
+ * @description Set the min and max of [this] so that [this] contains [point].
  * @param point {Vector3}
  */
 Aabb3.prototype.hullPoint = function(point) {
@@ -403,10 +403,10 @@ Aabb3.prototype.hullPoint = function(point) {
 };
 
 /**
- * @method
- * Return if [this] contains [other].
+ * @method containsAabb3
+ * @description Return if [this] contains [other].
  * @param other {Aabb3}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb3.prototype.containsAabb3 = function(other) {
     var otherMax = other.max;
@@ -421,10 +421,10 @@ Aabb3.prototype.containsAabb3 = function(other) {
 };
 
 /**
- * @method
- * Return if [this] contains [other].
+ * @method containsSphere
+ * @description Return if [this] contains [other].
  * @param other {Sphere}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb3.prototype.containsSphere = function(other) {
     var boxExtends = Vector3.all(other.radius);
@@ -434,10 +434,10 @@ Aabb3.prototype.containsSphere = function(other) {
 };
 
 /**
- * @method
- * Return if [this] contains [other].
+ * @method containsVector3
+ * @description Return if [this] contains [other].
  * @param other {Vector3}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb3.prototype.containsVector3 = function(other) {
     return (this.min.x < other.x) &&
@@ -449,10 +449,10 @@ Aabb3.prototype.containsVector3 = function(other) {
 };
 
 /**
- * @method
- * Return if [this] contains [other].
+ * @method containsTriangle
+ * @description Return if [this] contains [other].
  * @param other {Triangle}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb3.prototype.containsTriangle = function(other) {
     return (this.containsVector3(other.point0) &&
@@ -461,10 +461,10 @@ Aabb3.prototype.containsTriangle = function(other) {
 };
 
 /**
- * @method
- * Return if [this] intersects with [other].
+ * @method intersectsWithAabb3
+ * @description Return if [this] intersects with [other].
  * @param other {Aabb3}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb3.prototype.intersectsWithAabb3 = function(other) {
     var otherMax = other.max;
@@ -479,10 +479,10 @@ Aabb3.prototype.intersectsWithAabb3 = function(other) {
 };
 
 /**
- * @method
- * Return if [this] intersects with [other].
+ * @method intersectsWithSphere
+ * @description Return if [this] intersects with [other].
  * @param other {Sphere}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb3.prototype.intersectsWithSphere = function(other) {
     var center = other.center;
@@ -512,9 +512,10 @@ Aabb3.prototype.intersectsWithSphere = function(other) {
 };
 
 /**
- * Return if [this] intersects with [other].
+ * @method intersectsWithVector3
+ * @description Return if [this] intersects with [other].
  * @param other {Vector3}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb3.prototype.intersectsWithVector3 = function(other) {
     return (this.min.x <= other.x) &&
@@ -537,10 +538,10 @@ var _f2 = Vector3.zero();
 var _trianglePlane = new Plane();
 
 /**
- * @method
- * Return if [this] intersects with [other].
+ * @method intersectsWithTriangle
+ * @description Return if [this] intersects with [other].
  * @param other {Triangle}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb3.prototype.intersectsWithTriangle = function(other) {
     var epsilon = Number.EPSILON;
@@ -713,10 +714,10 @@ Aabb3.prototype.intersectsWithTriangle = function(other) {
 };
 
 /**
- * @method
- * Return if [this] intersects with [other]
+ * @method intersectsWithPlane
+ * @description  Return if [this] intersects with [other]
  * @param other {Plane}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb3.prototype.intersectsWithPlane = function(other) {
     // This line is not necessary with a (center, extents) AABB representation
@@ -741,10 +742,10 @@ var _quadTriangle0 = new Triangle();
 var _quadTriangle1 = new Triangle();
 
 /**
- * @method
- * Return if [this] intersects with [other].
+ * @method intersectsWithQuad
+ * @description Return if [this] intersects with [other].
  * @param other {Quad}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb3.prototype.intersectsWithQuad = function(other) {
     other.copyTriangles(_quadTriangle0, _quadTriangle1);

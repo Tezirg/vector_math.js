@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src\aabb2.js - vector_math.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="vector_math.js"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/Aabb2.html">Aabb2</a></li>
+            
+                <li><a href="../classes/Aabb3.html">Aabb3</a></li>
+            
+                <li><a href="../classes/Matrix2.html">Matrix2</a></li>
+            
+                <li><a href="../classes/Matrix3.html">Matrix3</a></li>
+            
+                <li><a href="../classes/Matrix4.html">Matrix4</a></li>
+            
+                <li><a href="../classes/Plane.html">Plane</a></li>
+            
+                <li><a href="../classes/Quad.html">Quad</a></li>
+            
+                <li><a href="../classes/Quaternion.html">Quaternion</a></li>
+            
+                <li><a href="../classes/Ray.html">Ray</a></li>
+            
+                <li><a href="../classes/Sphere.html">Sphere</a></li>
+            
+                <li><a href="../classes/Triangle.html">Triangle</a></li>
+            
+                <li><a href="../classes/Vector2.html">Vector2</a></li>
+            
+                <li><a href="../classes/Vector3.html">Vector3</a></li>
+            
+                <li><a href="../classes/Vector4.html">Vector4</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: src\aabb2.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ * Created by grizet_j on 9/21/2015.
+ */
+
+module.exports = Aabb2;
+
+var Vector2 = require(&#x27;./vector2.js&#x27;);
+
+/**
+ * @class Aabb2
+ * @description Defines a 2-dimensional axis-aligned bounding box between a [min] and a [max] position.
+ * @constructor
+ */
+function Aabb2() {
+    /// The minimum point defining the AABB.
+    /**
+     * @property min
+     * @type {Vector2}
+     */
+    this.min = Vector2.zero();
+
+    /// The maximum point defining the AABB.
+    /**
+     * @property max
+     * @type {Vector2}
+     */
+    this.max = Vector2.zero();
+}
+
+/**
+ * @method center
+ * @description Returns the center of this
+ */
+Aabb2.prototype.__defineGetter__(&quot;center&quot;, function() {
+    var tmp = this.min.clone();
+    tmp.add(this.max);
+    tmp.scale(0.5);
+    return tmp;
+});
+
+
+/**
+ * @static copy
+ * @description Create a new AABB as a copy of [other].
+ * @param other {Aabb2}
+ * @return {Aabb2}
+ */
+Aabb2.copy = function(other) {
+    var bb = new Aabb2();
+    bb.min.setFrom(other.min);
+    bb.max.setFrom(other.max);
+    return bb;
+};
+
+/**
+ * @static minMax
+ * @description Create a new AABB with a [min] and [max].
+ * @param min {Vector2}
+ * @param max {Vector2}
+ * @return {Aabb2}
+ */
+Aabb2.minMax = function(min,  max) {
+    var bb = new Aabb2();
+    bb.min.setFrom(min);
+    bb.max.setFrom(max);
+    return bb;
+};
+
+/**
+ * @static centerAndHalfExtends
+ * @description Create a new AABB with a [center] and [halfExtents].
+ * @param center {Vector2}
+ * @param halfExtents {Vector2}
+ * @return {Aabb2}
+ */
+Aabb2.centerAndHalfExtents = function(center, halfExtents) {
+    var bb = new Aabb2();
+    bb.setCenterAndHalfExtents(center, halfExtents);
+    return bb;
+};
+
+/**
+ * @static from buffer
+ * @description Constructs [Aabb2] with a min/max [storage] that views given [buffer]
+ * starting at [offset]. [offset] has to be multiple of
+ * [Float32Array.BYTES_PER_ELEMENT].
+ * @param buffer {buffer}
+ * @param offset {number}
+ * @return {Aabb2}
+ */
+Aabb2.fromBuffer = function(buffer, offset) {
+    var bb = new Aabb2();
+    bb.min = Vector2.fromBuffer(buffer, offset);
+    bb.max = Vector2.fromBuffer(buffer, offset + Float32Array.BYTES_PER_ELEMENT * 2);
+    return bb;
+};
+
+/**
+ * @method setCenterAndHalfExtends
+ * @description Set the AABB by a [center] and [halfExtents].
+ * @param center {Vector2}
+ * @param halfExtents {Vector2}
+ */
+Aabb2.prototype.setCenterAndHalfExtents = function(center, halfExtents) {
+    this.min.setFrom(center);
+    this.min.sub(halfExtents);
+    this.max.setFrom(center);
+    this.max.add(halfExtents);
+};
+
+/**
+ * @method copyCenterAndHalfExtends
+ * @description Copy the [center] and the [halfExtends] of [this].
+ * @param center {Vector2}
+ * @param halfExtents {Vector2}
+ */
+Aabb2.prototype.copyCenterAndHalfExtents = function(center, halfExtents) {
+    center.setFrom(this.min);
+    center.add(this.max);
+    center.scale(0.5);
+    halfExtents.setFrom(this.max);
+    halfExtents.sub(this.min);
+    halfExtents.scale(0.5);
+};
+
+/**
+ * @method copyFrom
+ * @description Copy the [min] and [max] from [other] into [this].
+ * @param other {Aabb2}
+ */
+Aabb2.prototype.copyFrom = function(other) {
+    this.min.setFrom(other.min);
+    this.max.setFrom(other.max);
+};
+
+/**
+ * @method transform
+ * @description Transform [this] by the transform [t].
+ * @param t {Matrix3}
+ * @return {Aabb2}
+ */
+Aabb2.prototype.transform = function(t) {
+    var center = Vector2.zero();
+    var halfExtents = Vector2.zero();
+    this.copyCenterAndHalfExtents(center, halfExtents);
+    t.transform2(center);
+    t.absoluteRotate2(halfExtents);
+    this.min.setFrom(center);
+    this.min.sub(halfExtents);
+    this.max.setFrom(center);
+    this.max.add(halfExtents);
+    return this;
+};
+
+/**
+ * @method rotate
+ * @description Rotate [this] by the rotation matrix [t].
+ * @param t {Matrix3}
+ * @return {Aabb2}
+ */
+Aabb2.prototype.rotate = function(t) {
+    var center = Vector2.zero();
+    var halfExtents = Vector2.zero();
+    this.copyCenterAndHalfExtents(center, halfExtents);
+    t.absoluteRotate2(halfExtents);
+    this.min.setFrom(center);
+    this.min.sub(halfExtents);
+    this.max.setFrom(center);
+    this.max.add(halfExtents);
+    return this;
+};
+
+/**
+ * @method transformed
+ * @description Create a copy of [this] that is transformed by the transform [t] and store
+ * it in [out].
+ * @param t {Matrix3}
+ * @param out {Aabb2}
+ */
+Aabb2.prototype.transformed = function(t, out) {
+    out.copyFrom(this);
+    out.transform(t);
+};
+
+/**
+ * @method rotated
+ * @description Create a copy of [this] that is rotated by the rotation matrix [t] and
+ * store it in [out].
+ * @param t {Matrix3}
+ * @param out {Aabb2}
+ */
+Aabb2.prototype.rotated = function(t, out) {
+    out.copyFrom(this);
+    out.rotate(t);
+};
+
+/**
+ * @method hull
+ * @description Set the min and max of [this] so that [this] is a hull of [this] and [other].
+ * @param other {Aabb2}
+ */
+Aabb2.prototype.hull = function(other) {
+    Vector2.min(this.min, other.min, this.min);
+    Vector2.max(this.max, other.max, this.max);
+};
+
+/**
+ * @method hullPoint
+ * @description Set the min and max of [this] so that [this] contains [point].
+ * @param point {Vector2}
+ */
+Aabb2.prototype.hullPoint = function(point) {
+    Vector2.min(this.min, point, this.min);
+    Vector2.max(this.max, point, this.max);
+};
+
+/**
+ * @method containsAabb2
+ * @description Return if [this] contains [other].
+ * @param other {Aabb2}
+ * @return {boolean}
+ */
+Aabb2.prototype.containsAabb2 = function(other) {
+    var otherMax = other.max;
+    var otherMin = other.min;
+
+    return (this.min.x &lt; otherMin.x) &amp;&amp;
+           (this.min.y &lt; otherMin.y) &amp;&amp;
+           (this.max.y &gt; otherMax.y) &amp;&amp;
+           (this.max.x &gt; otherMax.x);
+};
+
+/**
+ * @method containsVector2
+ * @description Return if [this] contains [other].
+ * @param other {Vector2}
+ * @return {boolean}
+ */
+Aabb2.prototype.containsVector2 = function(other) {
+    return (this.min.x &lt; other.x) &amp;&amp;
+           (this.min.y &lt; other.y) &amp;&amp;
+           (this.max.x &gt; other.x) &amp;&amp;
+           (this.max.y &gt; other.y);
+};
+
+/**
+ * @method intersectsWithAabb2
+ * @description Return if [this] intersects with [other].
+ * @param other {Aabb2}
+ * @return {boolean}
+ */
+Aabb2.prototype.intersectsWithAabb2 = function(other) {
+    var otherMax = other.max;
+    var otherMin = other.min;
+
+    return (this.min.x &lt;= otherMax.x) &amp;&amp;
+           (this.min.y &lt;= otherMax.y) &amp;&amp;
+           (this.max.x &gt;= otherMin.x) &amp;&amp;
+           (this.max.y &gt;= otherMin.y);
+};
+
+/**
+ * @method intersectsWithVector2
+ * @description Return if [this] intersects with [other].
+ * @param other {Aabb2}
+ * @returns {boolean}
+ */
+Aabb2.prototype.intersectsWithVector2 = function(other) {
+    return (this.min.x &lt;= other.x) &amp;&amp;
+           (this.min.y &lt;= other.y) &amp;&amp;
+           (this.max.x &gt;= other.x) &amp;&amp;
+           (this.max.y &gt;= other.y);
+};
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

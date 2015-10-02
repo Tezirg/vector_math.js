@@ -7,7 +7,7 @@ var Vector3 = require('./vector3.js');
 
 /**
  * @class Triangle
- * Defines a triangle by three points.
+ * @description Defines a triangle by three points.
  * @constructor
  */
 function Triangle() {
@@ -31,10 +31,10 @@ function Triangle() {
 }
 
 /**
- * @static
- * Create a triangle as a copy of [other].
+ * @static copy
+ * @description Create a triangle as a copy of [other].
  * @param other {Triangle}
- * @returns {Triangle}
+ * @return {Triangle}
  */
 Triangle.copy = function(other) {
     var t = new Triangle();
@@ -45,12 +45,12 @@ Triangle.copy = function(other) {
 };
 
 /**
- * @static
- * Create a triangle by three points.
+ * @static points
+ * @description Create a triangle by three points.
  * @param point0 {Vector3}
  * @param point1 {Vector3}
  * @param point2 {Vector3}
- * @returns {Triangle}
+ * @return {Triangle}
  */
 Triangle.points = function(point0, point1, point2) {
     var t = new Triangle();
@@ -61,8 +61,8 @@ Triangle.points = function(point0, point1, point2) {
 };
 
 /**
- * @method
- * Copy the triangle from [other] into [this].
+ * @method copyFrom
+ * @description Copy the triangle from [other] into [this].
  * @param other {Triangle}
  */
 Triangle.prototype.copyFrom = function(other) {
@@ -72,8 +72,8 @@ Triangle.prototype.copyFrom = function(other) {
 };
 
 /**
- * @method
- * Copy the normal of [this] into [normal].
+ * @method copyNormalInto
+ * @description Copy the normal of [this] into [normal].
  * @param normal {Vector3}
  */
 Triangle.prototype.copyNormalInto = function(normal) {
@@ -86,8 +86,8 @@ Triangle.prototype.copyNormalInto = function(normal) {
 };
 
 /**
- * @method
- * Transform [this] by the transform [t].
+ * @method transform
+ * @description Transform [this] by the transform [t].
  * @param t {Matrix4}
  */
 Triangle.prototype.transform = function(t) {
@@ -97,8 +97,8 @@ Triangle.prototype.transform = function(t) {
 };
 
 /**
- * @method
- * Translate [this] by [offset].
+ * @method translate
+ * @description Translate [this] by [offset].
  * @param offset {Vector3}
  */
 Triangle.prototype.translate = function(offset) {

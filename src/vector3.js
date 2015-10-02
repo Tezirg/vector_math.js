@@ -12,9 +12,9 @@ var SIMD = require("simd");
 
 /**
  * @class Vector3
- * @param x
- * @param y
- * @param z
+ * @param x {number}
+ * @param y {number}
+ * @param z {number}
  * @constructor
  */
 function Vector3(x, y, z){
@@ -43,8 +43,8 @@ Vector3.simd = {};
 Vector3.scalar = {};
 
 /**
- * @static
- * Load SIMD.Float32x4 into vector.simd_storage
+ * @static load
+ * @description Load SIMD.Float32x4 into vector.simd_storage
  * @param vector {Vector3}
  */
 Vector3.simd.load = function(vector) {
@@ -52,8 +52,8 @@ Vector3.simd.load = function(vector) {
 };
 
 /**
- * @static
- * Store SIMD.Float32x4 at vector.simd_storage into vector.storage
+ * @static store
+ * @description Store SIMD.Float32x4 at vector.simd_storage into vector.storage
  * @param vector {Vector3}
  */
 Vector3.simd.store = function(vector) {
@@ -110,13 +110,6 @@ Vector3.prototype.__defineSetter__("length", function(value) {
     }
 });
 
-/**
- * @static
- * Scalar version of set length
- * @param vector {Vector3}
- * @param value {Number}
- * @private
- */
 Vector3.scalar._setter_length = function(vector, value) {
     if (value == 0.0) {
         vector.setZero();
@@ -150,7 +143,7 @@ Vector3.simd._setter_length = function(vector, value) {
 };
 
 /**
- * @static
+ * @static zero
  * @property {Vector3} zero
  */
 Vector3.zero = function() {
@@ -159,9 +152,9 @@ Vector3.zero = function() {
 };
 
 /**
- * @method
- * Zero the vector.
- * @returns {Vector3}
+ * @method setZero
+ * @description Zero the vector.
+ * @return {Vector3}
  */
 Vector3.prototype.setZero = function() {
     this.storage[0] = 0.0;
@@ -171,10 +164,10 @@ Vector3.prototype.setZero = function() {
 };
 
 /**
- * @static
- * Constructs Vector3 with a given [Float32Array] as [storage].
+ * @static fromFloat32Array
+ * @description Constructs Vector3 with a given [Float32Array] as [storage].
  * @param array {Float32Array}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.fromFloat32Array = function(array) {
     var vec = Vector3.zero();
@@ -184,12 +177,12 @@ Vector3.fromFloat32Array = function(array) {
 
 
 /**
- * @static
- * Constructs Vector3 with a [storage] that views given [buffer] starting at
+ * @static fromBuffer
+ * @description Constructs Vector3 with a [storage] that views given [buffer] starting at
  * [offset]. [offset] has to be multiple of [Float32Array.BYTES_PER_ELEMENT].
  * @param buffer {buffer}
  * @param offset {number}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.fromBuffer = function(buffer, offset) {
     var vec = Vector3.zero();
@@ -198,11 +191,12 @@ Vector3.fromBuffer = function(buffer, offset) {
 };
 
 /**
- *  Set the values of the vector.
+ * @method setValues
+ * @description Set the values of the vector.
  * @param x {number}
  * @param y {number}
  * @param z {number}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.setValues = function(x, y, z) {
     this.storage[0] = x;
@@ -213,18 +207,17 @@ Vector3.prototype.setValues = function(x, y, z) {
 
 
 /**
- * @static
- * @property copy
- * @param v {vector3}
- * @returns {Vector3}
+ * @static copy
+ * @param v {Vector3}
+ * @return {Vector3}
  */
 Vector3.copy = function(v) {
     return new Vector3(v.x, v.y, v.z);
 };
 
 /**
- * @static
- * @property {Vector3} all
+ * @static all
+ * @param value {Vector3}
  */
 Vector3.all = function(value) {
     var v = Vector3.zero();
@@ -233,8 +226,8 @@ Vector3.all = function(value) {
 };
 
 /**
+ * @static min
  * @description Set the values of [result] to the minimum of [a] and [b] for each line.
- * @static
  * @param a {Vector3}
  * @param b {Vector3}
  * @param result {Vector3}
@@ -261,8 +254,8 @@ Vector3.simd.min = function(a, b, result) {
 };
 
 /**
+ * @static max
  * @description Set the values of [result] to the maximum of [a] and [b] for each line.
- * @static
  * @param a {Vector3}
  * @param b {Vector3}
  * @param result {Vector3}
@@ -290,9 +283,9 @@ Vector3.simd.max = function(a, b, result) {
 };
 
 /**
+ * @static mix
  * @description Interpolate between [min] and [max] with the amount of [a] using a linear
  * interpolation and store the values in [result].
- * @static
  * @param min {Vector3}
  * @param max {Vector3}
  * @param a {Number}
@@ -321,19 +314,19 @@ Vector3.simd.mix = function(min, max, a, result) {
 };
 
 /**
- * @method
- * Returns a copy of this
- * @returns {Vector3}
+ * @method clone
+ * @description return a copy of this
+ * @return {Vector3}
  */
 Vector3.prototype.clone = function() {
     return Vector3.copy(this);
 };
 
 /**
- * @method
- * Set this from another vector3
+ * @method setFrom
+ * @description Set this from another vector3
  * @param v {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.setFrom = function(v) {
     this.storage[0] = v.storage[0];
@@ -343,8 +336,8 @@ Vector3.prototype.setFrom = function(v) {
 };
 
 /**
- * @description Splat [arg] into all lanes of the vector.
  * @method splat
+ * @description Splat [arg] into all lanes of the vector.
  * @param value {Number}
  */
 Vector3.prototype.splat = function(value) {
@@ -368,11 +361,11 @@ Vector3.simd.splat = function(that, value) {
 };
 
 /**
- * @method
- * Return if this is almost equal to other
+ * @method almostEquals
+ * @description Return if this is almost equal to other
  * @param v {Vector3}
  * @param precision {number}
- * @returns {boolean}
+ * @return {boolean}
  */
 Vector3.prototype.almostEquals = function(v, precision) {
     if (precision === undefined) {
@@ -408,10 +401,10 @@ Vector3.simd.almostEquals = function(that, v, p) {
     return true;
 };
 /**
- * @method
- * Return if this is equal to other
- * @param v {other}
- * @returns {boolean}
+ * @method equals
+ * @description Return if this is equal to other
+ * @param v {Vector3}
+ * @return {boolean}
  */
 Vector3.prototype.equals = function(v) {
     return (this.x == v.x && this.y == v.y && this.z == v.z);
@@ -430,18 +423,18 @@ Vector3.prototype.almostZero = function(precision) {
 };
 
 /**
- * @method
- * Returns if this is a zero vector
- * @returns {boolean}
+ * @method isZero
+ * @description return if this is a zero vector
+ * @return {boolean}
  */
 Vector3.prototype.isZero = function() {
   return (this.x == 0 && this.y == 0 && this.z == 0);
 };
 
 /**
- * @method
- * negate this
- * @returns {Vector3}
+ * @method negate
+ * @description negate [this]
+ * @return {Vector3}
  */
 Vector3.prototype.negate = function() {
     if (vector_math.USE_SIMD()) {
@@ -465,10 +458,10 @@ Vector3.simd.negate = function(that) {
 };
 
 /**
- * @method
- * Subtract other from this
+ * @method sub
+ * @description Subtract other from this
  * @param other {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.sub = function(other) {
     if (vector_math.USE_SIMD()) {
@@ -493,10 +486,10 @@ Vector3.simd.sub = function(that, other) {
 };
 
 /**
- * @method
- * Add other to this
+ * @method add
+ * @description Add other to this
  * @param other
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.add = function(other) {
     if (vector_math.USE_SIMD()) {
@@ -521,10 +514,10 @@ Vector3.simd.add = function(that, other) {
 };
 
 /**
- * @method
- * Multiply other to this
+ * @method mul
+ * @description Multiply other to this
  * @param other
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.mul = function(other) {
     if (vector_math.USE_SIMD()) {
@@ -549,10 +542,10 @@ Vector3.simd.mul = function(that, other) {
 };
 
 /**
- * @method
- * Divide this by other
+ * @method div
+ * @description Divide this by other
  * @param other
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.div = function(other) {
     if (vector_math.USE_SIMD()) {
@@ -577,10 +570,10 @@ Vector3.simd.div = function(that, other) {
 };
 
 /**
- * @method
- * Scale this
- * @param arg
- * @returns {Vector3}
+ * @method scale
+ * @description Scale this
+ * @param arg {number}
+ * @return {Vector3}
  */
 Vector3.prototype.scale = function(arg) {
     if (vector_math.USE_SIMD()) {
@@ -604,10 +597,10 @@ Vector3.simd.scale = function(that, s) {
 };
 
 /**
- * @method
- * Returns Scaled copy this
+ * @method scaled
+ * @description return Scaled copy this
  * @param arg
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.scaled = function(arg) {
     var v = this.clone();
@@ -617,10 +610,10 @@ Vector3.prototype.scaled = function(arg) {
 
 
 /**
- * @method
- * Reflect [this].
- * @param normal
- * @returns {Vector3}
+ * @method reflect
+ * @description Reflect [this].
+ * @param normal {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.reflect = function(normal) {
     var n_copy = normal.clone();
@@ -631,9 +624,9 @@ Vector3.prototype.reflect = function(normal) {
 
 /**
  * @method dot
- * Compute dot product
+ * @description Compute dot product
  * @param v {Vector3}
- * @returns {Number}
+ * @return {Number}
  */
 Vector3.prototype.dot = function(v) {
     if (vector_math.USE_SIMD()) {
@@ -660,10 +653,10 @@ Vector3.simd.dot = function(that, v) {
 };
 
 /**
- * @method
- * Compute cross product
+ * @method cross
+ * @description Compute cross product
  * @param v {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.cross = function(v) {
     if (vector_math.USE_SIMD()) {
@@ -700,8 +693,8 @@ Vector3.simd.cross = function(that, v) {
 };
 
 /**
- * @method
- * Set this to absolute value
+ * @method absolute
+ * @description Set this to absolute value
  */
 Vector3.prototype.absolute = function() {
     if (vector_math.USE_SIMD()) {
@@ -723,14 +716,14 @@ Vector3.simd.absolute = function(that) {
 };
 
 /**
- * @method
- * Transforms [this] into the product of [this] as a row vector,
+ * @method postmultiply
+ * @description Transforms [this] into the product of [this] as a row vector,
  * postmultiplied by matrix, [arg].
  * If [arg] is a rotation matrix, this is a computational shortcut for applying,
  * the inverse of the transformation.
  *
  * @param arg {Matrix3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.postmultiply = function(arg) {
     var argStorage = arg.storage;
@@ -748,10 +741,10 @@ Vector3.prototype.postmultiply = function(arg) {
 };
 
 /**
- * @method
- * /// Projects [this] using the projection matrix [arg]
+ * @method apllyProjection
+ * @description Projects [this] using the projection matrix [arg]
  * @param arg {Matrix4}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.applyProjection = function(arg) {
     var argStorage = arg.storage;
@@ -782,10 +775,11 @@ Vector3.prototype.applyProjection = function(arg) {
 };
 
 /**
- * /// Applies a rotation specified by [axis] and [angle].
+ * @method applyAxisAngle
+ * @description Applies a rotation specified by [axis] and [angle].
  * @param axis {Vector3}
  * @param angle {number}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.applyAxisAngle = function(axis, angle) {
     this.applyQuaternion(Quaternion.axisAngle(axis, angle));
@@ -793,10 +787,10 @@ Vector3.prototype.applyAxisAngle = function(axis, angle) {
 };
 
 /**
- * @method
- * Applies a quaternion transform.
+ * @method applyQuaternion
+ * @description Applies a quaternion transform.
  * @param arg {Quaternion}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.applyQuaternion = function(arg) {
     var argStorage = arg.storage;
@@ -818,7 +812,8 @@ Vector3.prototype.applyQuaternion = function(arg) {
 };
 
 /**
- * /// Multiplies [this] by [arg]. 
+ * @method applyMatrix3
+ * @description Multiplies [this] by [arg].
  * @param arg {Matrix3}
  */
 Vector3.prototype.applyMatrix3 = function(arg) {
@@ -836,10 +831,10 @@ Vector3.prototype.applyMatrix3 = function(arg) {
 };
 
 /**
- * @method
- * /// Multiplies [this] by a 4x3 subset of [arg]. Expects [arg] to be an affine transformation matrix.
+ * @method applyMatrix4
+ * @description Multiplies [this] by a 4x3 subset of [arg]. Expects [arg] to be an affine transformation matrix.
  * @param arg {Matrix4}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.applyMatrix4 = function(arg) {
     var argStorage = arg.storage;
@@ -862,11 +857,11 @@ Vector3.prototype.applyMatrix4 = function(arg) {
 };
 
 /**
- * @method
- * Clamp each entry n in [this] in the range [min[n]]-[max[n]].
+ * @method clamp
+ * @description Clamp each entry n in [this] in the range [min[n]]-[max[n]].
  * @param min {Vector3}
  * @param max {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.clamp = function(min, max) {
     if (vector_math.USE_SIMD()) {
@@ -894,11 +889,11 @@ Vector3.simd.clamp = function(that, min, max) {
     Vector3.simd.store(that);
 };
 /**
- * @method
- *  Clamp entries in [this] in the range [min]-[max].
+ * @method clampScalar
+ * @description Clamp entries in [this] in the range [min]-[max].
  * @param min {number}
  * @param max {number}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Vector3.prototype.clampScalar = function(min, max) {
     if (vector_math.USE_SIMD()) {
@@ -924,9 +919,9 @@ Vector3.simd.clampScalar = function(that, min, max) {
 };
 
 /**
- * @method
- * Check is vector contains NaN values
- * @returns {boolean}
+ * @method isNaN
+ * @description Check is vector contains NaN values
+ * @return {boolean}
  */
 Vector3.prototype.isNaN = function() {
     var is_nan = false;
@@ -937,9 +932,9 @@ Vector3.prototype.isNaN = function() {
 };
 
 /**
- * @method
- * Check if vector contains Infinte values
- * @returns {boolean}
+ * @method isInfinite
+ * @description Check if vector contains Infinite values
+ * @return {boolean}
  */
 Vector3.prototype.isInfinite = function() {
     var is_inf = false;
@@ -950,18 +945,18 @@ Vector3.prototype.isInfinite = function() {
 };
 
 /**
- * @method
- * Printable string
- * @returns {string}
+ * @method toString
+ * @description Printable string
+ * @return {string}
  */
 Vector3.prototype.toString = function() {
     return '[x=' + this.storage[0] + ', y=' + this.storage[1] + ', z=' + this.storage[2] + ']';
 };
 
 /**
- * @method
- * Squared length
- * @returns {number}
+ * @method length2
+ * @description Squared length
+ * @return {number}
  */
 Vector3.prototype.length2 = function() {
     if (vector_math.USE_SIMD()) {
@@ -987,9 +982,9 @@ Vector3.simd.length2 = function(that) {
 };
 
 /**
- * @method
- * Normalize this
- * @returns {Vector3}
+ * @method normalize
+ * @description Normalize this
+ * @return {Vector3}
  */
 Vector3.prototype.normalize = function() {
     if (vector_math.USE_SIMD()) {
@@ -1022,9 +1017,9 @@ Vector3.simd.normalize = function(that) {
 
 
 /**
- * @method
- * Returns a normalized copy of this
- * @returns {Vector3}
+ * @method normalized
+ * @description return a normalized copy of this
+ * @return {Vector3}
  */
 Vector3.prototype.normalized = function() {
     var v = this.clone();
@@ -1032,10 +1027,10 @@ Vector3.prototype.normalized = function() {
 };
 
 /**
- * @method
- * Compute squared distance to other
+ * @method distanceToSquared
+ * @description Compute squared distance to other
  * @param v {Vector3}
- * @returns {number}
+ * @return {number}
  */
 Vector3.prototype.distanceToSquared = function(v) {
     if (vector_math.USE_SIMD()) {
@@ -1062,20 +1057,20 @@ Vector3.simd.distanceToSquared = function(that, v) {
 };
 
 /**
- * @method
- * Compute distance to other
+ * @method distanceTo
+ * @description Compute distance to other
  * @param v {Vector3}
- * @returns {number}
+ * @return {number}
  */
 Vector3.prototype.distanceTo = function(v) {
    return Math.sqrt(this.distanceToSquared(v));
 };
 
 /**
- * @method
- * Returns the angle between [this] vector and [other] in radians.
+ * @method angleTo
+ * @description return the angle between [this] vector and [other] in radians.
  * @param other {Vector3}
- * @returns {number}
+ * @return {number}
  */
 Vector3.prototype.angleTo = function(other) {
     var otherStorage = other.storage;
@@ -1091,11 +1086,11 @@ Vector3.prototype.angleTo = function(other) {
 };
 
 /**
- * @method
- * Returns the signed angle between [this] and [other] around [normal] in radians.
+ * @method angleToSigned
+ * @description return the signed angle between [this] and [other] around [normal] in radians.
  * @param other {Vector3}
  * @param normal {Vector3}
- * @returns {number}
+ * @return {number}
  */
 Vector3.prototype.angleToSigned = function(other, normal) {
     var angle = this.angleTo(other);
@@ -1106,9 +1101,9 @@ Vector3.prototype.angleToSigned = function(other, normal) {
 };
 
 /**
- * @method
- * Floor entries in [this].
- * @returns {Vector3}
+ * @method floor
+ * @description Floor entries in [this].
+ * @return {Vector3}
  */
 Vector3.prototype.floor = function() {
     this.storage[0] = Math.floor(this.x);
@@ -1118,9 +1113,9 @@ Vector3.prototype.floor = function() {
 };
 
 /**
- * @method
- * Ceil entries in [this].
- * @returns {Vector3}
+ * @method ceil
+ * @description Ceil entries in [this].
+ * @return {Vector3}
  */
 Vector3.prototype.ceil = function() {
     this.storage[0] = Math.ceil(this.x);
@@ -1130,9 +1125,9 @@ Vector3.prototype.ceil = function() {
 };
 
 /**
- * @method
- * Round entries in [this].
- * @returns {Vector3}
+ * @method round
+ * @description Round entries in [this].
+ * @return {Vector3}
  */
 Vector3.prototype.round = function() {
     this.storage[0] = Math.round(this.x);
@@ -1142,9 +1137,9 @@ Vector3.prototype.round = function() {
 };
 
 /**
- * @method
- * Round entries in [this] towards zero.
- * @returns {Vector3}
+ * @method roundToZero
+ * @description Round entries in [this] towards zero.
+ * @return {Vector3}
  */
 Vector3.prototype.roundToZero = function() {
     this.storage[0] = this.storage[0] < 0.0

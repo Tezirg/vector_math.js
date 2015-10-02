@@ -9,8 +9,8 @@ var SIMD = require("simd");
 
 /**
  * @class Vector2
- * @param x
- * @param y
+ * @param x {number}
+ * @param y {number}
  * @constructor
  */
 function Vector2(x, y){
@@ -96,7 +96,7 @@ Vector2.prototype.__defineSetter__("length", function(value) {
 
 /**
  * @static
- * Scalar version of set length
+ * @description Scalar version of set length
  * @param vector {Vector2}
  * @param value {Number}
  * @private
@@ -141,7 +141,11 @@ Vector2.zero = function() {
     return v;
 };
 
-/// Zero the vector.
+/**
+ * @method setZero
+ * @description Zero the vector.
+ * @return {Vector2}
+ */
 Vector2.prototype.setZero = function() {
     this.storage[0] = 0.0;
     this.storage[1] = 0.0;
@@ -149,10 +153,10 @@ Vector2.prototype.setZero = function() {
 };
 
 /**
- * @static
- * Constructs Vector2 with a given [Float32Array] as [storage].
+ * @static fromFloat32Array
+ * @description Constructs Vector2 with a given [Float32Array] as [storage].
  * @param array {Float32Array}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Vector2.fromFloat32Array = function(array) {
     var vec = Vector2.zero();
@@ -162,12 +166,12 @@ Vector2.fromFloat32Array = function(array) {
 
 
 /**
- * @static
- * Constructs Vector2 with a [storage] that views given [buffer] starting at
+ * @static fromBuffer
+ * @description Constructs Vector2 with a [storage] that views given [buffer] starting at
  * [offset]. [offset] has to be multiple of [Float32Array.BYTES_PER_ELEMENT].
  * @param buffer {buffer}
  * @param offset {number}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Vector2.fromBuffer = function(buffer, offset) {
     var vec = Vector2.zero();
@@ -175,7 +179,13 @@ Vector2.fromBuffer = function(buffer, offset) {
     return vec.clone();
 };
 
-/// Set the values of the vector.
+/**
+ * @method setValues
+ * @description Set the values of the vector.
+ * @param x
+ * @param y
+ * @returns {Vector2}
+ */
 Vector2.prototype.setValues = function(x, y) {
     this.storage[0] = x;
     this.storage[1] = y;
@@ -183,17 +193,15 @@ Vector2.prototype.setValues = function(x, y) {
 };
 
 /**
- * @static
  * @property copy
- * @param v
- * @returns {Vector2}
+ * @type {Vector2}
  */
 Vector2.copy = function(v) {
     return new Vector2(v.x, v.y);
 };
 
 /**
- * @static
+ * @static all
  * @property {Vector2} all
  */
 Vector2.all = function(value) {
@@ -203,8 +211,8 @@ Vector2.all = function(value) {
 };
 
 /**
+ * @static min
  * @description Set the values of [result] to the minimum of [a] and [b] for each line.
- * @static
  * @param a {Vector2}
  * @param b {Vector2}
  * @param result {Vector2}
@@ -229,6 +237,7 @@ Vector2.simd.min = function(a, b, result) {
     Vector2.simd.store(result);
 };
 /**
+ * @static max
  * @description Set the values of [result] to the maximum of [a] and [b] for each line.
  * @static
  * @param a {Vector2}
@@ -256,7 +265,9 @@ Vector2.simd.max = function(a, b, result) {
     result.simd_storage = SIMD.Float32x4.max(a.simd_storage, b.simd_storage);
     Vector2.simd.store(result);
 };
+
 /**
+ * @static mix
  * @description Interpolate between [min] and [max] with the amount of [a] using a linear
  * interpolation and store the values in [result].
  * @static
@@ -287,19 +298,19 @@ Vector2.simd.mix = function(min, max, a, result) {
 };
 
 /**
- * @method
- * Returns a copy of this
- * @returns {Vector2}
+ * @method clone
+ * @description return a copy of this
+ * @return {Vector2}
  */
 Vector2.prototype.clone = function() {
     return Vector2.copy(this);
 };
 
 /**
- * @method
- * Set this to be equal to [v]
+ * @method setFrom
+ * @description Set this to be equal to [v]
  * @param v {Vector2}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Vector2.prototype.setFrom = function(v) {
     this.storage[0] = v.storage[0];
@@ -308,8 +319,8 @@ Vector2.prototype.setFrom = function(v) {
 };
 
 /**
- * @description Splat [arg] into all lanes of the vector.
  * @method splat
+ * @description Splat [arg] into all lanes of the vector.
  * @param value {Number}
  */
 Vector2.prototype.splat = function(value) {
@@ -332,11 +343,11 @@ Vector2.simd.splat = function(that, value) {
 };
 
 /**
- * @method
- * Returns if this is almost equal to other
+ * @method almostEquals
+ * @description return if this is almost equal to other
  * @param v {Vector2}
  * @param precision {number}
- * @returns {boolean}
+ * @return {boolean}
  */
 Vector2.prototype.almostEquals = function(v, precision) {
     if (precision === undefined) {
@@ -371,20 +382,20 @@ Vector2.simd.almostEquals = function(that, v, p) {
 };
 
 /**
- * @method
- * Returns if this is equal to other
+ * @method equals
+ * @description return if this is equal to other
  * @param v {Vector2}
- * @returns {boolean}
+ * @return {boolean}
  */
 Vector2.prototype.equals = function(v) {
     return (this.x == v.x && this.y == v.y);
 };
 
 /**
- * @method
- * Returns if this is almost a zero vector
+ * @method almostZero
+ * @description return if this is almost a zero vector
  * @param precision {number}
- * @returns {boolean}
+ * @return {boolean}
  */
 Vector2.prototype.almostZero = function(precision) {
     if (precision === undefined) {
@@ -398,18 +409,18 @@ Vector2.prototype.almostZero = function(precision) {
 };
 
 /**
- * @method
- * Returns if this is a Zero vector
- * @returns {boolean}
+ * @method isZero
+ * @description return if this is a Zero vector
+ * @return {boolean}
  */
 Vector2.prototype.isZero = function() {
   return (this.x == 0 && this.y == 0);
 };
 
 /**
- * @method
- * Negate this
- * @returns {Vector2}
+ * @method negate
+ * @description Negate this
+ * @return {Vector2}
  */
 Vector2.prototype.negate = function() {
     if (vector_math.USE_SIMD()) {
@@ -420,7 +431,6 @@ Vector2.prototype.negate = function() {
     }
     return this;
 };
-
 Vector2.scalar.negate = function(that) {
     that.storage[0] = - that.storage[0];
     that.storage[1] = - that.storage[1];
@@ -432,10 +442,10 @@ Vector2.simd.negate = function(that) {
 };
 
 /**
- * @method
- * Subtract other to this
+ * @method sub
+ * @description Subtract other to this
  * @param other {Vector2}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Vector2.prototype.sub = function(other) {
     if (vector_math.USE_SIMD()) {
@@ -459,10 +469,10 @@ Vector2.simd.sub = function(that, other) {
 };
 
 /**
- * @method
- * Add other to this
+ * @method add
+ * @description Add other to this
  * @param other {Vector2}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Vector2.prototype.add = function(other) {
     if (vector_math.USE_SIMD()) {
@@ -486,10 +496,10 @@ Vector2.simd.add = function(that, other) {
 };
 
 /**
- * @method
- * Multiply other to this
+ * @method mul
+ * @description Multiply other to this
  * @param other
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Vector2.prototype.mul = function(other) {
     if (vector_math.USE_SIMD()) {
@@ -513,10 +523,10 @@ Vector2.simd.mul = function(that, other) {
 };
 
 /**
- * @method
- * Divide this by other
+ * @method div
+ * @description Divide this by other
  * @param other {Vector2}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Vector2.prototype.div = function(other) {
     if (vector_math.USE_SIMD()) {
@@ -541,10 +551,10 @@ Vector2.simd.div = function(that, other) {
 
 
 /**
- * @method
- * Scale this
+ * @method scale
+ * @description Scale this
  * @param arg {number}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Vector2.prototype.scale = function(arg) {
     if (vector_math.USE_SIMD()) {
@@ -566,10 +576,10 @@ Vector2.simd.scale = function(that, s) {
     Vector2.simd.store(that);
 };
 /**
- * @method
- * Returns Scaled copy of this
+ * @method scaled
+ * @description return Scaled copy of this
  * @param arg {number}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Vector2.prototype.scaled = function(arg) {
     var v = this.clone();
@@ -579,10 +589,10 @@ Vector2.prototype.scaled = function(arg) {
 
 
 /**
- * @method
- * Reflect [this].
- * @param normal
- * @returns {Vector2}
+ * @method reflect
+ * @description Reflect [this].
+ * @param normal {Vector2}
+ * @return {Vector2}
  */
 Vector2.prototype.reflect = function(normal) {
     var n_copy = normal.clone();
@@ -594,7 +604,7 @@ Vector2.prototype.reflect = function(normal) {
 /**
  * @method dot
  * @param v {Vector2}
- * @returns {Number}
+ * @return {Number}
  */
 Vector2.prototype.dot = function(v) {
     if (vector_math.USE_SIMD()) {
@@ -619,10 +629,10 @@ Vector2.simd.dot = function(that, v) {
 };
 
 /**
- * @method
- * Compute cross product
+ * @method cross
+ * @description Compute cross product
  * @param v {Vector2}
- * @returns {number}
+ * @return {number}
  */
 Vector2.prototype.cross = function(v) {
     return this.storage[0] * v.storage[1] -
@@ -630,8 +640,8 @@ Vector2.prototype.cross = function(v) {
 };
 
 /**
- * @method
- * Sets this to absolute values
+ * @method absolute
+ * @description Sets this to absolute values
  */
 Vector2.prototype.absolute = function() {
     if (vector_math.USE_SIMD()) {
@@ -651,11 +661,11 @@ Vector2.simd.absolute = function(that) {
     Vector2.store(that);
 };
 /**
- * @method
- * Clamp each entry n in [this] in the range [min[n]]-[max[n]].
+ * @method clamp
+ * @description Clamp each entry n in [this] in the range [min[n]]-[max[n]].
  * @param min {Vector2}
  * @param max {Vector2}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Vector2.prototype.clamp = function(min, max) {
     if (vector_math.USE_SIMD()) {
@@ -682,11 +692,11 @@ Vector2.simd.clamp = function(that, min, max) {
     Vector2.simd.store(that);
 };
 /**
- * @method
- * Clamp entries in [this] in the range [min]-[max].
+ * @method clampScalar
+ * @description Clamp entries in [this] in the range [min]-[max].
  * @param min {number}
  * @param max {number}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Vector2.prototype.clampScalar = function(min, max) {
     if (vector_math.USE_SIMD()) {
@@ -712,9 +722,9 @@ Vector2.simd.clampScalar = function(that, min, max) {
 };
 
 /**
- * @method
- * Check if this contains NaN values
- * @returns {boolean}
+ * @method isNaN
+ * @description Check if this contains NaN values
+ * @return {boolean}
  */
 Vector2.prototype.isNaN = function() {
     var is_nan = false;
@@ -724,9 +734,9 @@ Vector2.prototype.isNaN = function() {
 };
 
 /**
- * @method
- * Check if this contains infinite values
- * @returns {boolean}
+ * @method isInfinite
+ * @description Check if this contains infinite values
+ * @return {boolean}
  */
 Vector2.prototype.isInfinite = function() {
     var is_inf = false;
@@ -736,9 +746,9 @@ Vector2.prototype.isInfinite = function() {
 };
 
 /**
- * @method
- * Printable string
- * @returns {string}
+ * @method toString
+ * @description Printable string
+ * @return {string}
  */
 Vector2.prototype.toString = function() {
     return '[x=' + this.storage[0] + ', y=' + this.storage[1] + ']';
@@ -746,18 +756,18 @@ Vector2.prototype.toString = function() {
 
 
 /**
- * @method
- * Squared length
- * @returns {number}
+ * @method length2
+ * @description Squared length
+ * @return {number}
  */
 Vector2.prototype.length2 = function() {
     return this.x * this.x + this.y * this.y;
 };
 
 /**
- * @method
- * Normalize this
- * @returns {Vector2}
+ * @method normalize
+ * @description Normalize this
+ * @return {Vector2}
  */
 Vector2.prototype.normalize = function() {
     if (vector_math.USE_SIMD()) {
@@ -787,9 +797,9 @@ Vector2.simd.normalize = function(that) {
     }
 };
 /**
- * @method
- * Returns a normalized copy of this
- * @returns {Vector2}
+ * @method normalized
+ * @description return a normalized copy of this
+ * @return {Vector2}
  */
 Vector2.prototype.normalized = function() {
     var v = this.clone();
@@ -797,10 +807,10 @@ Vector2.prototype.normalized = function() {
 };
 
 /**
- * @method
- * Compute squared distance to oter
+ * @method distanceToSquared
+ * @description Compute squared distance to oter
  * @param v {Vector2}
- * @returns {number}
+ * @return {number}
  */
 Vector2.prototype.distanceToSquared = function(v) {
     var dx = this.x - v.x;
@@ -809,19 +819,19 @@ Vector2.prototype.distanceToSquared = function(v) {
 };
 
 /**
- * @method
- * Compute distance to other
+ * @method distanceTo
+ * @description Compute distance to other
  * @param v {Vector2}
- * @returns {number}
+ * @return {number}
  */
 Vector2.prototype.distanceTo = function(v) {
    return Math.sqrt(this.distanceToSquared(v));
 };
 
 /**
- * @method
- * Floor entries in [this].
- * @returns {Vector2}
+ * @method floor
+ * @description Floor entries in [this].
+ * @return {Vector2}
  */
 Vector2.prototype.floor = function() {
     this.storage[0] = Math.floor(this.x);
@@ -830,9 +840,9 @@ Vector2.prototype.floor = function() {
 };
 
 /**
- * @method
- * Ceil entries in [this].
- * @returns {Vector2}
+ * @method ceil
+ * @description Ceil entries in [this].
+ * @return {Vector2}
  */
 Vector2.prototype.ceil = function() {
     this.storage[0] = Math.ceil(this.x);
@@ -841,9 +851,9 @@ Vector2.prototype.ceil = function() {
 };
 
 /**
- * @method
- * Round entries in [this].
- * @returns {Vector2}
+ * @method round
+ * @description Round entries in [this].
+ * @return {Vector2}
  */
 Vector2.prototype.round = function() {
     this.storage[0] = Math.round(this.x);
@@ -852,9 +862,9 @@ Vector2.prototype.round = function() {
 };
 
 /**
- * @method
- * Round entries in [this] towards zero.
- * @returns {Vector2}
+ * @method roundToZero
+ * @description Round entries in [this] towards zero.
+ * @return {Vector2}
  */
 Vector2.prototype.roundToZero = function() {
     this.storage[0] = this.storage[0] < 0.0

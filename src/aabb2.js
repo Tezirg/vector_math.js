@@ -8,7 +8,7 @@ var Vector2 = require('./vector2.js');
 
 /**
  * @class Aabb2
- * Defines a 2-dimensional axis-aligned bounding box between a [min] and a [max] position.
+ * @description Defines a 2-dimensional axis-aligned bounding box between a [min] and a [max] position.
  * @constructor
  */
 function Aabb2() {
@@ -28,8 +28,8 @@ function Aabb2() {
 }
 
 /**
- * @method
- * Returns the center of this
+ * @method center
+ * @description Returns the center of this
  */
 Aabb2.prototype.__defineGetter__("center", function() {
     var tmp = this.min.clone();
@@ -40,8 +40,8 @@ Aabb2.prototype.__defineGetter__("center", function() {
 
 
 /**
- * @static
- * Create a new AABB as a copy of [other].
+ * @static copy
+ * @description Create a new AABB as a copy of [other].
  * @param other {Aabb2}
  * @return {Aabb2}
  */
@@ -53,11 +53,11 @@ Aabb2.copy = function(other) {
 };
 
 /**
- * @static
- * Create a new AABB with a [min] and [max].
+ * @static minMax
+ * @description Create a new AABB with a [min] and [max].
  * @param min {Vector2}
  * @param max {Vector2}
- * @returns {Aabb2}
+ * @return {Aabb2}
  */
 Aabb2.minMax = function(min,  max) {
     var bb = new Aabb2();
@@ -67,11 +67,11 @@ Aabb2.minMax = function(min,  max) {
 };
 
 /**
- * @static
- * Create a new AABB with a [center] and [halfExtents].
+ * @static centerAndHalfExtends
+ * @description Create a new AABB with a [center] and [halfExtents].
  * @param center {Vector2}
  * @param halfExtents {Vector2}
- * @returns {Aabb2}
+ * @return {Aabb2}
  */
 Aabb2.centerAndHalfExtents = function(center, halfExtents) {
     var bb = new Aabb2();
@@ -80,13 +80,13 @@ Aabb2.centerAndHalfExtents = function(center, halfExtents) {
 };
 
 /**
- * @static
- * Constructs [Aabb2] with a min/max [storage] that views given [buffer]
+ * @static from buffer
+ * @description Constructs [Aabb2] with a min/max [storage] that views given [buffer]
  * starting at [offset]. [offset] has to be multiple of
  * [Float32Array.BYTES_PER_ELEMENT].
  * @param buffer {buffer}
  * @param offset {number}
- * @returns {Aabb2}
+ * @return {Aabb2}
  */
 Aabb2.fromBuffer = function(buffer, offset) {
     var bb = new Aabb2();
@@ -96,8 +96,8 @@ Aabb2.fromBuffer = function(buffer, offset) {
 };
 
 /**
- * @method
- * Set the AABB by a [center] and [halfExtents].
+ * @method setCenterAndHalfExtends
+ * @description Set the AABB by a [center] and [halfExtents].
  * @param center {Vector2}
  * @param halfExtents {Vector2}
  */
@@ -109,8 +109,8 @@ Aabb2.prototype.setCenterAndHalfExtents = function(center, halfExtents) {
 };
 
 /**
- * @method
- * Copy the [center] and the [halfExtends] of [this].
+ * @method copyCenterAndHalfExtends
+ * @description Copy the [center] and the [halfExtends] of [this].
  * @param center {Vector2}
  * @param halfExtents {Vector2}
  */
@@ -124,8 +124,8 @@ Aabb2.prototype.copyCenterAndHalfExtents = function(center, halfExtents) {
 };
 
 /**
- * @method
- * Copy the [min] and [max] from [other] into [this].
+ * @method copyFrom
+ * @description Copy the [min] and [max] from [other] into [this].
  * @param other {Aabb2}
  */
 Aabb2.prototype.copyFrom = function(other) {
@@ -134,10 +134,10 @@ Aabb2.prototype.copyFrom = function(other) {
 };
 
 /**
- * @method
- * Transform [this] by the transform [t].
+ * @method transform
+ * @description Transform [this] by the transform [t].
  * @param t {Matrix3}
- * @returns {Aabb2}
+ * @return {Aabb2}
  */
 Aabb2.prototype.transform = function(t) {
     var center = Vector2.zero();
@@ -153,10 +153,10 @@ Aabb2.prototype.transform = function(t) {
 };
 
 /**
- * @method
- * Rotate [this] by the rotation matrix [t].
+ * @method rotate
+ * @description Rotate [this] by the rotation matrix [t].
  * @param t {Matrix3}
- * @returns {Aabb2}
+ * @return {Aabb2}
  */
 Aabb2.prototype.rotate = function(t) {
     var center = Vector2.zero();
@@ -171,8 +171,8 @@ Aabb2.prototype.rotate = function(t) {
 };
 
 /**
- * @method
- * Create a copy of [this] that is transformed by the transform [t] and store
+ * @method transformed
+ * @description Create a copy of [this] that is transformed by the transform [t] and store
  * it in [out].
  * @param t {Matrix3}
  * @param out {Aabb2}
@@ -183,8 +183,8 @@ Aabb2.prototype.transformed = function(t, out) {
 };
 
 /**
- * @method
- * Create a copy of [this] that is rotated by the rotation matrix [t] and
+ * @method rotated
+ * @description Create a copy of [this] that is rotated by the rotation matrix [t] and
  * store it in [out].
  * @param t {Matrix3}
  * @param out {Aabb2}
@@ -195,9 +195,9 @@ Aabb2.prototype.rotated = function(t, out) {
 };
 
 /**
- * @method
- * Set the min and max of [this] so that [this] is a hull of [this] and [other].
- * @param other
+ * @method hull
+ * @description Set the min and max of [this] so that [this] is a hull of [this] and [other].
+ * @param other {Aabb2}
  */
 Aabb2.prototype.hull = function(other) {
     Vector2.min(this.min, other.min, this.min);
@@ -205,8 +205,8 @@ Aabb2.prototype.hull = function(other) {
 };
 
 /**
- * @method
- * Set the min and max of [this] so that [this] contains [point].
+ * @method hullPoint
+ * @description Set the min and max of [this] so that [this] contains [point].
  * @param point {Vector2}
  */
 Aabb2.prototype.hullPoint = function(point) {
@@ -215,10 +215,10 @@ Aabb2.prototype.hullPoint = function(point) {
 };
 
 /**
- * @method
- * Return if [this] contains [other].
+ * @method containsAabb2
+ * @description Return if [this] contains [other].
  * @param other {Aabb2}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb2.prototype.containsAabb2 = function(other) {
     var otherMax = other.max;
@@ -231,10 +231,10 @@ Aabb2.prototype.containsAabb2 = function(other) {
 };
 
 /**
- * @method
- * Return if [this] contains [other].
+ * @method containsVector2
+ * @description Return if [this] contains [other].
  * @param other {Vector2}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb2.prototype.containsVector2 = function(other) {
     return (this.min.x < other.x) &&
@@ -244,10 +244,10 @@ Aabb2.prototype.containsVector2 = function(other) {
 };
 
 /**
- * @method
- * Return if [this] intersects with [other].
+ * @method intersectsWithAabb2
+ * @description Return if [this] intersects with [other].
  * @param other {Aabb2}
- * @returns {boolean}
+ * @return {boolean}
  */
 Aabb2.prototype.intersectsWithAabb2 = function(other) {
     var otherMax = other.max;
@@ -259,7 +259,12 @@ Aabb2.prototype.intersectsWithAabb2 = function(other) {
            (this.max.y >= otherMin.y);
 };
 
-/// Return if [this] intersects with [other].
+/**
+ * @method intersectsWithVector2
+ * @description Return if [this] intersects with [other].
+ * @param other {Aabb2}
+ * @returns {boolean}
+ */
 Aabb2.prototype.intersectsWithVector2 = function(other) {
     return (this.min.x <= other.x) &&
            (this.min.y <= other.y) &&

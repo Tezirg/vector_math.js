@@ -11,16 +11,16 @@ var Quaternion = require('./quaternion.js');
 
 /**
  * @class Matrix3
- * /// 3D Matrix. Values are stored in column major order.
- * @param m00
- * @param m10
- * @param m20
- * @param m01
- * @param m11
- * @param m21
- * @param m02
- * @param m12
- * @param m22
+ * @description 3D Matrix. Values are stored in column major order.
+ * @param m00 {number}
+ * @param m10 {number}
+ * @param m20 {number}
+ * @param m01 {number}
+ * @param m11 {number}
+ * @param m21 {number}
+ * @param m02 {number}
+ * @param m12 {number}
+ * @param m22 {number}
  * @constructor
  */
 function Matrix3(m00, m10, m20, m01, m11, m21, m02, m12, m22) {
@@ -56,19 +56,19 @@ function Matrix3(m00, m10, m20, m01, m11, m21, m02, m12, m22) {
 }
 
 /**
-* @static
-* SIMD specialization
+* @property simd
+* @description SIMD specialization
 */
 Matrix3.simd = {};
 /**
- * @static
- * Scalar specialization
+ * @property scalar
+ * @description Scalar specialization
  */
 Matrix3.scalar = {};
 
 /**
- * @static
- * Load SIMD.Float32x4 into vector.simd_storage
+ * @static load
+ * @description Load SIMD.Float32x4 into vector.simd_storage
  * @param matrix {Matrix3}.
  */
 Matrix3.simd.load = function(matrix) {
@@ -78,8 +78,8 @@ Matrix3.simd.load = function(matrix) {
 };
 
 /**
- * @static
- * Store SIMD.Float32x4 at vector.simd_storage into vector.storage
+ * @static store
+ * @description Store SIMD.Float32x4 at vector.simd_storage into vector.storage
  * @param matrix {Matrix3}
  */
 Matrix3.simd.store = function(matrix) {
@@ -89,10 +89,10 @@ Matrix3.simd.store = function(matrix) {
 };
 
 /**
- * @static
- * /// Constructs Matrix3 with a given [Float32Array] as [storage].
+ * @static fromFloat32Array
+ * @description Constructs Matrix3 with a given [Float32Array] as [storage].
  * @param array {Float32Array}
- * @return {Matrix3.
+ * @return {Matrix3}
  */
 Matrix3.fromFloat32Array = function(array) {
     var m = Matrix3.zero();
@@ -101,8 +101,8 @@ Matrix3.fromFloat32Array = function(array) {
 };
 
 /**
- * @static
- * /// Constructs Matrix3 with a [storage] that views given [buffer] starting at
+ * @static fromBuffer
+ * @description Constructs Matrix3 with a [storage] that views given [buffer] starting at
  * [offset]. [offset] has to be multiple of [Float32List.BYTES_PER_ELEMENT].
  * @param buffer {buffer}
  * @param offset {number}
@@ -116,8 +116,8 @@ Matrix3.fromBuffer = function(buffer, offset) {
 
 
 /**
- * @static
- * Solve [A] * [x] = [b].
+ * @static solve2
+ * @description Solve [A] * [x] = [b].
  * @param A {Matrix3}
  * @param x {Vector2}
  * @param b {Vector2}
@@ -140,8 +140,8 @@ Matrix3.solve2 = function(A, x, b) {
 };
 
 /**
- * @static
- * Solve [A] * [x] = [b].
+ * @static solve
+ * @description Solve [A] * [x] = [b].
  * @param A {Matrix3}
  * @param x {Vector3}
  * @param b {Vector3}
@@ -193,10 +193,10 @@ Matrix3.solve = function(A, x, b) {
 };
 
 /**
- * Return index in storage for [row], [col] value.
  * @method index
- * @param row
- * @param col
+ * @description Return index in storage for [row], [col] value.
+ * @param row {number}
+ * @param col {number}
  */
 Matrix3.prototype.index = function(row, col) {
     return (col * 3) + row;
@@ -204,10 +204,11 @@ Matrix3.prototype.index = function(row, col) {
 
 
 /**
- * Value at [row], [col].
+ * @method entry
+ * @description Value at [row], [col].
  * @param row {Number}
  * @param col {Number}
- * @returns {Number} {null}
+ * @return {Number} {null}
  */
 Matrix3.prototype.entry = function(row, col) {
     if (((row >= 0) && (row < this.dimension)) == false) {
@@ -221,11 +222,12 @@ Matrix3.prototype.entry = function(row, col) {
 };
 
 /**
- * Set value at [row], [col] to be [v].
+ * @method setEntry
+ * @description Set value at [row], [col] to be [v].
  * @param row {Number}
  * @param col {Number}
  * @param v {Number}
- * @returns {null}
+ * @return {null}
  */
 Matrix3.prototype.setEntry = function(row, col, v) {
     if (((row >= 0) && (row < this.dimension)) == false) {
@@ -239,9 +241,9 @@ Matrix3.prototype.setEntry = function(row, col, v) {
 };
 
 /**
- * Zero matrix.
- * @static
- * @returns {Matrix3}
+ * @static zero
+ * @description Zero matrix.
+ * @return {Matrix3}
  */
 Matrix3.zero = function() {
     var m = new Matrix3(0.0, 0.0, 0.0,
@@ -251,9 +253,9 @@ Matrix3.zero = function() {
 };
 
 /**
- * Identity matrix.
- * @static
- * @returns {Matrix3}
+ * @static identity
+ * @description Identity matrix.
+ * @return {Matrix3}
  */
 Matrix3.identity = function() {
     var m = Matrix3.zero();
@@ -262,10 +264,10 @@ Matrix3.identity = function() {
 };
 
 /**
- * Copies values from [other].
- * @static
+ * @static copy
+ * @description Copies values from [other].
  * @param other {Matrix3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.copy = function(other) {
     var m = Matrix3.zero();
@@ -274,12 +276,12 @@ Matrix3.copy = function(other) {
 };
 
 /**
- * /// Matrix with values from column arguments.
- * @static
+ * @static columns
+ * @description Matrix with values from column arguments.
  * @param arg0 {Vector3}
  * @param arg1 {Vector3}
  * @param arg2 {Vector3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.columns = function(arg0, arg1, arg2) {
     var m = Matrix3.zero();
@@ -288,11 +290,11 @@ Matrix3.columns = function(arg0, arg1, arg2) {
 };
 
 /**
- * /// Outer product of [u] and [v].
- * @static
+ * @static outer
+ * @description Outer product of [u] and [v].
  * @param u {Vector3}
  * @param v {Vector3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.outer = function(u, v) {
     var m = Matrix3.zero();
@@ -302,9 +304,10 @@ Matrix3.outer = function(u, v) {
 
 
 /**
- * /// Rotation of [radians].
+ * @static rotation
+ * @description Rotation of [radians].
  * @param radians {Number}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.rotation = function(radians) {
     var m = Matrix3.zero();
@@ -314,9 +317,10 @@ Matrix3.rotation = function(radians) {
 
 
 /**
- * /// Rotation of [radians] on X.
+ * @static rotationX
+ * @description Rotation of [radians] on X.
  * @param radians {Number}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.rotationX = function(radians) {
     var m = Matrix3.zero();
@@ -325,9 +329,10 @@ Matrix3.rotationX = function(radians) {
 };
 
 /**
- * /// Rotation of [radians] on Y.
+ * @static rotationY
+ * @description Rotation of [radians] on Y.
  * @param radians {Number}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.rotationY = function(radians) {
     var m = Matrix3.zero();
@@ -336,9 +341,10 @@ Matrix3.rotationY = function(radians) {
 };
 
 /**
- * /// Rotation of [radians] on Z.
+ * @static rotationZ
+ * @description Rotation of [radians] on Z.
  * @param radians {Number}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.rotationZ = function(radians) {
     var m = Matrix3.zero();
@@ -348,8 +354,8 @@ Matrix3.rotationZ = function(radians) {
 
 
 /**
- * @method
- * /// Sets the matrix with specified values.
+ * @method setValues
+ * @description Sets the matrix with specified values.
  * @param arg0 {Number}
  * @param arg1 {Number}
  * @param arg2 {Number}
@@ -359,7 +365,7 @@ Matrix3.rotationZ = function(radians) {
  * @param arg6 {Number}
  * @param arg7 {Number}
  * @param arg8 {Number}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.setValues = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
     this.storage[8] = arg8;
@@ -376,12 +382,12 @@ Matrix3.prototype.setValues = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6,
 
 
 /**
- * @method
- * /// Sets the entire matrix to the column values.
+ * @method setColumns
+ * @description Sets the entire matrix to the column values.
  * @param arg0 {Vector3}
  * @param arg1 {Vector3}
  * @param arg2 {Vector3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.setColumns = function(arg0, arg1, arg2) {
     var arg0Storage = arg0.storage;
@@ -401,10 +407,10 @@ Matrix3.prototype.setColumns = function(arg0, arg1, arg2) {
 
 
 /**
- * @method
- * /// Sets the entire matrix to the matrix in [arg].
+ * @methodsetFrom
+ * @description Sets the entire matrix to the matrix in [arg].
  * @param arg {Matrix3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.setFrom = function(arg) {
     var argStorage = arg.storage;
@@ -421,11 +427,11 @@ Matrix3.prototype.setFrom = function(arg) {
 };
 
 /**
- * @method
- * /// Set [this] to the outer product of [u] and [v].
+ * @method setOuter
+ * @description Set [this] to the outer product of [u] and [v].
  * @param u {Vector3}
  * @param v {Vector3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.setOuter = function(u, v) {
     var uStorage = u.storage;
@@ -443,10 +449,10 @@ Matrix3.prototype.setOuter = function(u, v) {
 };
 
 /**
- * @method
- * /// Sets the diagonal to [arg].
+ * @method splatDiagonal
+ * @description Sets the diagonal to [arg].
  * @param arg {Number}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.splatDiagonal = function(arg) {
     this.storage[0] = arg;
@@ -456,10 +462,10 @@ Matrix3.prototype.splatDiagonal = function(arg) {
 };
 
 /**
- * @method
- * /// Sets the diagonal of the matrix to be [arg].
+ * @method setDiagonal
+ * @description Sets the diagonal of the matrix to be [arg].
  * @param arg {Vector3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.setDiagonal = function(arg) {
     var argStorage = arg.storage;
@@ -470,9 +476,9 @@ Matrix3.prototype.setDiagonal = function(arg) {
 };
 
 /**
- * @method
- * Printable string
- * @returns {string}
+ * @method toString
+ * @description Printable string
+ * @return {string}
  */
 Matrix3.prototype.toString = function() {
     return '[0] ' + this.getRow(0).toString() +
@@ -481,18 +487,18 @@ Matrix3.prototype.toString = function() {
 };
 
 /**
- * /// Access the element of the matrix at the index [i].
- * @method
+ * @method getAt
+ * @description Access the element of the matrix at the index [i].
  * @param i {number}
- * @returns {Number}
+ * @return {Number}
  */
 Matrix3.prototype.getAt = function(i) {
     return this.storage[i];
 };
 
 /**
- * /// Set the element of the matrix at the index [i].
- * @method
+ * @method setAt
+ * @description Set the element of the matrix at the index [i].
  * @param i {number}
  * @param v {number}
  */
@@ -501,10 +507,10 @@ Matrix3.prototype.setAt = function(i, v) {
 };
 
 /**
- * @method
- * /// Check if two matrices are the same.
+ * @method equals
+ * @description Check if two matrices are the same.
  * @param other {Matrix3}
- * @returns {boolean}
+ * @return {boolean}
  */
 Matrix3.prototype.equals = function(other) {
     if (other.dimension == null || other.dimension != 3) {
@@ -522,11 +528,12 @@ Matrix3.prototype.equals = function(other) {
 };
 
 /**
- * @method
- * /// Check if two matrices are almost the same.
+ * @method almostEquals
+ * @description Check if two matrices are almost the same.
  * @param other {Matrix3}
  * @param precision {number}
- * @returns {boolean}
+ * @optional
+ * @return {boolean}
  */
 Matrix3.prototype.almostEquals = function(other, precision) {
     if (other.dimension == null || other.dimension != 3) {
@@ -587,8 +594,8 @@ Matrix3.prototype.__defineSetter__("row2", function(v) {
 
 
 /**
- * @method
- * /// Sets [row] of the matrix to values in [arg]
+ * @method setRow
+ * @description Sets [row] of the matrix to values in [arg]
  * @param row {Number}
  * @param arg {Vector2}
  */
@@ -600,10 +607,10 @@ Matrix3.prototype.setRow = function(row, arg) {
 };
 
 /**
- * @method
- * /// Gets the [row] of the matrix
+ * @method getRow
+ * @description Gets the [row] of the matrix
  * @param row {Number}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Matrix3.prototype.getRow = function(row) {
     var r = Vector3.zero();
@@ -615,8 +622,8 @@ Matrix3.prototype.getRow = function(row) {
 };
 
 /**
- * @method
- * /// Assigns the [column] of the matrix [arg]
+ * @method setColumn
+ * @description Assigns the [column] of the matrix [arg]
  * @param column {Number}
  * @param arg {Vector3}
  */
@@ -630,10 +637,10 @@ Matrix3.prototype.setColumn = function(column, arg) {
 };
 
 /**
- * @method
- * /// Gets the [column] of the matrix
+ * @method getColumn
+ * @description Gets the [column] of the matrix
  * @param column {Number}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Matrix3.prototype.getColumn = function(column) {
     var r = Vector3.zero();
@@ -646,17 +653,19 @@ Matrix3.prototype.getColumn = function(column) {
 };
 
 /**
- * /// Create a copy of [this].
- * @returns {Matrix3}
+ * @method clone
+ * @description  Create a copy of [this].
+ * @return {Matrix3}
  */
 Matrix3.prototype.clone = function() {
     return Matrix3.copy(this);
 };
 
 /**
- * /// Copy [this] into [arg].
+ * @method copyInto
+ * @description  Copy [this] into [arg].
  * @param arg {Matrix3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.copyInto = function(arg) {
     arg.setFrom(this);
@@ -664,9 +673,10 @@ Matrix3.prototype.copyInto = function(arg) {
 };
 
 /**
- * /// Returns a new vector or matrix by multiplying [this] with [arg].
+ * @method mult
+ * @description return a new vector or matrix by multiplying [this] with [arg].
  * @param arg
- * @returns {*}
+ * @return {*}
  */
 Matrix3.prototype.mult = function(arg) {
     if (typeof arg == "Number") {
@@ -682,10 +692,10 @@ Matrix3.prototype.mult = function(arg) {
 };
 
 /**
- * @method
- * /// Returns new matrix after component wise [this] + [arg]
+ * @method added
+ * @description return new matrix after component wise [this] + [arg]
  * @param arg {Matrix3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.added = function(arg) {
     var m = this.clone();
@@ -694,10 +704,10 @@ Matrix3.prototype.added = function(arg) {
 };
 
 /**
- * @method
- * /// Returns new matrix after component wise [this] - [arg]
+ * @method subbed
+ * @description return new matrix after component wise [this] - [arg]
  * @param arg {Matrix3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.subbed = function(arg) {
     var m = this.clone();
@@ -706,9 +716,9 @@ Matrix3.prototype.subbed = function(arg) {
 };
 
 /**
- * @method
- * /// Returns new matrix after negating [this]
- * @returns {Matrix3}
+ * @method negated
+ * @description return new matrix after negating [this]
+ * @return {Matrix3}
  */
 Matrix3.prototype.negated = function() {
     var m = this.clone();
@@ -717,9 +727,9 @@ Matrix3.prototype.negated = function() {
 };
 
 /**
- * @method
- * /// Zeros [this].
- * @returns {Matrix3}
+ * @method setZero
+ * @description Zeros [this].
+ * @return {Matrix3}
  */
 Matrix3.prototype.setZero = function()  {
     this.storage[0] = 0.0;
@@ -735,9 +745,9 @@ Matrix3.prototype.setZero = function()  {
 };
 
 /**
- * @method
- * /// Makes [this] into the identity matrix.
- * @returns {Matrix3}
+ * @method setIdentity
+ * @description  Makes [this] into the identity matrix.
+ * @return {Matrix3}
  */
 Matrix3.prototype.setIdentity = function () {
     this.storage[0] = 1.0;
@@ -753,9 +763,9 @@ Matrix3.prototype.setIdentity = function () {
 };
 
 /**
- * @method
- * /// Returns the tranpose of this.
- * @returns {Matrix3}
+ * @method transposed
+ * @description return the tranpose of this.
+ * @return {Matrix3}
  */
 Matrix3.prototype.transposed = function() {
     var m = this.clone();
@@ -764,9 +774,9 @@ Matrix3.prototype.transposed = function() {
 };
 
 /**
- * @method
- * Transpose [this]
- * @returns {Matrix3}
+ * @method transpose
+ * @description Transpose [this]
+ * @return {Matrix3}
  */
 Matrix3.prototype.transpose = function() {
     var temp = this.storage[3];
@@ -782,8 +792,9 @@ Matrix3.prototype.transpose = function() {
 };
 
 /**
- * /// Returns the component wise absolute value copy of this.
- * @returns {Matrix3}
+ * @method absolute
+ * @description return the component wise absolute value copy of this.
+ * @return {Matrix3}
  */
 Matrix3.prototype.absolute = function() {
     if (vector_math.USE_SIMD()) {
@@ -809,15 +820,19 @@ Matrix3.scalar.absolute = function(that) {
     return r;
 };
 Matrix3.simd.absolute = function(that) {
+    var r = Matrix3.zero();
     Matrix3.simd.load(that);
-    that.simd_c0 = SIMD.Float32x4.abs(that.simd_c0);
-    that.simd_c1 = SIMD.Float32x4.abs(that.simd_c1);
-    that.simd_c2 = SIMD.Float32x4.abs(that.simd_c2);
-    Matrix3.simd.store(that);
+    r.simd_c0 = SIMD.Float32x4.abs(that.simd_c0);
+    r.simd_c1 = SIMD.Float32x4.abs(that.simd_c1);
+    r.simd_c2 = SIMD.Float32x4.abs(that.simd_c2);
+    Matrix3.simd.store(r);
+    return r;
 };
+
 /**
- * /// Returns the determinant of this matrix.
- * @returns {number}
+ * @method determinant
+ * @description return the determinant of this matrix.
+ * @return {number}
  */
 Matrix3.prototype.determinant = function() {
     var x = this.storage[0] *
@@ -830,11 +845,11 @@ Matrix3.prototype.determinant = function() {
 };
 
 /**
- * @method
- * /// Returns the dot product of row [i] and [v].
+ * @method dotRow
+ * @description return the dot product of row [i] and [v].
  * @param i {Number}
  * @param v {Vector3}
- * @returns {number}
+ * @return {number}
  */
 Matrix3.prototype.dotRow = function(i, v) {
     var vStorage = v.storage;
@@ -844,11 +859,11 @@ Matrix3.prototype.dotRow = function(i, v) {
 };
 
 /**
- * @method
- * /// Returns the dot product of column [j] and [v].
+ * @method dotColumn
+ * @description return the dot product of column [j] and [v].
  * @param j {number}
  * @param v {Vector3}
- * @returns {number}
+ * @return {number}
  */
 Matrix3.prototype.dotColumn = function(j, v) {
     var vStorage = v.storage;
@@ -858,9 +873,9 @@ Matrix3.prototype.dotColumn = function(j, v) {
 };
 
 /**
- * @method
- * /// Trace of the matrix.
- * @returns {number}
+ * @method trace
+ * @description Trace of the matrix.
+ * @return {number}
  */
 Matrix3.prototype.trace = function() {
     var t = 0.0;
@@ -871,9 +886,9 @@ Matrix3.prototype.trace = function() {
 };
 
 /**
- * @method
- * /// Returns infinity norm of the matrix. Used for numerical analysis.
- * @returns {number}
+ * @method infinityNorm
+ * @description return infinity norm of the matrix. Used for numerical analysis.
+ * @return {number}
  */
 Matrix3.prototype.infinityNorm = function() {
     var norm = 0.0;
@@ -902,7 +917,12 @@ Matrix3.prototype.infinityNorm = function() {
 };
 
 
-/// Returns relative error between [this] and [correct]
+/**
+ * @method relativeError
+ * @description return relative error between [this] and [correct]
+ * @param correct
+ * @returns {number}
+ */
 Matrix3.prototype.relativeError = function(correct) {
     var diff = correct.subbed(this);
     var correct_norm = correct.infinityNorm();
@@ -911,9 +931,10 @@ Matrix3.prototype.relativeError = function(correct) {
 };
 
 /**
- * /// Returns absolute error between [this] and [correct]
+ * @method absoluteError
+ * @description return absolute error between [this] and [correct]
  * @param correct {Matrix3}
- * @returns {number|*}
+ * @return {number|*}
  */
 Matrix3.prototype.absoluteError = function(correct) {
     var this_norm = this.infinityNorm();
@@ -923,18 +944,19 @@ Matrix3.prototype.absoluteError = function(correct) {
 };
 
 /**
- * /// Invert the matrix. Returns the determinant.
- * @returns {number}
+ * @method invert
+ * @description Invert the matrix. return the determinant.
+ * @return {number}
  */
 Matrix3.prototype.invert = function () {
     return this.copyInverse(this);
 };
 
 /**
- * @method
- * /// Set this matrix to be the inverse of [arg]
+ * @method copyInverse
+ * @description Set this matrix to be the inverse of [arg]
  * @param arg {Matrix3}
- * @returns {number}
+ * @return {number}
  */
 Matrix3.prototype.copyInverse = function(arg) {
     var det = arg.determinant();
@@ -976,10 +998,10 @@ Matrix3.prototype.copyInverse = function(arg) {
 
 
 /**
- * @method
- * /// Set this matrix to be the normal matrix of [arg].
+ * @method copyNormalMatrix
+ * @description Set this matrix to be the normal matrix of [arg].
  * @param arg {Matrix3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.copyNormalMatrix = function(arg) {
     this.copyInverse(arg.getRotation());
@@ -988,8 +1010,8 @@ Matrix3.prototype.copyNormalMatrix = function(arg) {
 };
 
 /**
- * @method
- * /// Turns the matrix into a rotation of [radians] around X
+ * @method setRotationX
+ * @description  Turns the matrix into a rotation of [radians] around X
  * @param radians
  */
 Matrix3.prototype.setRotationX = function(radians) {
@@ -1007,8 +1029,8 @@ Matrix3.prototype.setRotationX = function(radians) {
 };
 
 /**
- * @method
- * /// Turns the matrix into a rotation of [radians] around Y
+ * @method setRotationY
+ * @description Turns the matrix into a rotation of [radians] around Y
  * @param radians {number}
  */
 Matrix3.prototype.setRotationY = function(radians) {
@@ -1026,8 +1048,8 @@ Matrix3.prototype.setRotationY = function(radians) {
 };
 
 /**
- * @method
- * /// Turns the matrix into a rotation of [radians] around Z
+ * @method setRotationZ
+ * @description Turns the matrix into a rotation of [radians] around Z
  * @param radians
  */
 Matrix3.prototype.setRotationZ = function(radians) {
@@ -1045,9 +1067,10 @@ Matrix3.prototype.setRotationZ = function(radians) {
 };
 
 /**
- * /// Converts into Adjugate matrix and scales by [scale]
+ * @method scaleAdjoint
+ * @description Converts into Adjugate matrix and scales by [scale]
  * @param scale
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.scaleAdjoint = function(scale) {
     var m00 = this.storage[0];
@@ -1072,11 +1095,11 @@ Matrix3.prototype.scaleAdjoint = function(scale) {
 };
 
 /**
- * /// Rotates [arg] by the absolute rotation of [this]
- * /// Returns [arg].
- * /// Primarily used by AABB transformation code.
+ * @method absoluteRotate
+ * @description Rotates [arg] by the absolute rotation of [this]
+ * return [arg]. Primarily used by AABB transformation code.
  * @param arg {Vector2}
- * @returns {Vector2}
+ * @return {Vector2}
  */
 Matrix3.prototype.absoluteRotate = function(arg) {
     var m00 = Math.abs(this.storage[0]);
@@ -1099,10 +1122,9 @@ Matrix3.prototype.absoluteRotate = function(arg) {
 };
 
 /**
- * @method
- * /// Rotates [arg] by the absolute rotation of [this]
- * /// Returns [arg].
- * /// Primarily used by AABB transformation code.
+ * @method absoluteRotate2
+ * @description Rotates [arg] by the absolute rotation of [this] return [arg].
+ * Primarily used by AABB transformation code.
  * @param arg {Vector2}
  */
 Matrix3.prototype.absoluteRotate2 = function(arg) {
@@ -1119,8 +1141,8 @@ Matrix3.prototype.absoluteRotate2 = function(arg) {
 };
 
 /**
- * @method
- * /// Transforms [arg] with [this].
+ * @method transform2
+ * @description Transforms [arg] with [this].
  * @param arg {Vector2}
  * @return {Vector2}
  */
@@ -1138,9 +1160,9 @@ Matrix3.prototype.transform2 = function(arg) {
 };
 
 /**
- * @method
- * /// Scales [this] by [scale].
- * @param scale
+ * @method scale
+ * @description Scales [this] by [scale].
+ * @param scale {number}
  */
 Matrix3.prototype.scale = function(scale) {
     this.storage[0] = this.storage[0] * scale;
@@ -1155,10 +1177,10 @@ Matrix3.prototype.scale = function(scale) {
 };
 
 /**
- * @method
- * /// Create a copy of [this] and scale it by [scale].
- * @param scale
- * @returns {Matrix3}
+ * @method scaled
+ * @description Create a copy of [this] and scale it by [scale].
+ * @param scale {number}
+ * @return {Matrix3}
  */
 Matrix3.prototype.scaled = function(scale) {
     var m = this.clone();
@@ -1167,10 +1189,10 @@ Matrix3.prototype.scaled = function(scale) {
 };
 
 /**
- * @method
- * /// Add [o] to [this].
+ * @method add
+ * @description Add [o] to [this].
  * @param o {Matrix3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.add = function(o) {
     if (vector_math.USE_SIMD()) {
@@ -1203,10 +1225,10 @@ Matrix3.simd.add = function(that, o) {
 };
 
 /**
- * @method
- * /// Subtract [o] from [this].
+ * @method sub
+ * @description Subtract [o] from [this].
  * @param o {Matrix3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.sub = function(o) {
     if (vector_math.USE_SIMD()) {
@@ -1239,9 +1261,9 @@ Matrix3.simd.sub = function(that, o) {
 };
 
 /**
- * @method
- * /// Negate [this].
- * @returns {Matrix3}
+ * @method negate
+ * @description Negate [this].
+ * @return {Matrix3}
  */
 Matrix3.prototype.negate = function() {
     if (vector_math.USE_SIMD()) {
@@ -1273,10 +1295,10 @@ Matrix3.simd.neg = function(that) {
 
 
 /**
- * @method
- * /// Multiply [this] by [arg].
+ * @method multiply
+ * @description Multiply [this] by [arg].
  * @param arg {Matrix3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.multiply = function(arg) {
     var m00 = this.storage[0];
@@ -1311,10 +1333,10 @@ Matrix3.prototype.multiply = function(arg) {
 };
 
 /**
- * @method
- * /// Create a copy of [this] and multiply it by [arg].
+ * @method multiplied
+ * @description Create a copy of [this] and multiply it by [arg].
  * @param arg {Matrix3}
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.multiplied = function(arg) {
     var m = this.clone();
@@ -1323,9 +1345,9 @@ Matrix3.prototype.multiplied = function(arg) {
 };
 
 /**
- * @method
- * @param arg
- * @returns {Matrix3}
+ * @method transposeMultiply
+ * @param arg {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.transposeMultiply = function(arg) {
     var m00 = this.storage[0];
@@ -1360,9 +1382,9 @@ Matrix3.prototype.transposeMultiply = function(arg) {
 };
 
 /**
- * @method
+ * @method multiplyTranspose
  * @param arg
- * @returns {Matrix3}
+ * @return {Matrix3}
  */
 Matrix3.prototype.multiplyTranspose = function(arg) {
     var m00 = this.storage[0];
@@ -1397,10 +1419,10 @@ Matrix3.prototype.multiplyTranspose = function(arg) {
 };
 
 /**
- * @method
- * /// Transform [arg] of type [Vector3] using the transformation defined by [this].
+ * @method transform
+ * @description Transform [arg] of type [Vector3] using the transformation defined by [this].
  * @param arg {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Matrix3.prototype.transform = function(arg) {
     var argStorage = arg.storage;
@@ -1420,10 +1442,10 @@ Matrix3.prototype.transform = function(arg) {
 };
 
 /**
- * @method
- * /// Transform a copy of [arg] of type [Vector3] using the transformation defined by [this].
+ * @method transformed
+ * @description  Transform a copy of [arg] of type [Vector3] using the transformation defined by [this].
  * @param arg {Vector3}
- * @returns {Vector3}
+ * @return {Vector3}
  */
 Matrix3.prototype.transformed = function(arg) {
     var out = Vector3.copy(arg);
@@ -1431,8 +1453,8 @@ Matrix3.prototype.transformed = function(arg) {
 };
 
 /**
- * @method
- * /// Copies elements from [array] into [this] starting at [offset].
+ * @method copyFromArray
+ * @description Copies elements from [array] into [this] starting at [offset].
  * @param array
  * @param offset
  */
@@ -1453,11 +1475,11 @@ Matrix3.prototype.copyFromArray = function(array, offset) {
 };
 
 /**
- * @method
- * /// Multiply [this] to each set of xyz values in [array] starting at [offset].
+ * @method applyToVector3Array
+ * @description  Multiply [this] to each set of xyz values in [array] starting at [offset].
  * @param array {Array}
  * @param offset {number}
- * @returns {Array}
+ * @return {Array}
  */
 Matrix3.prototype.applyToVector3Array = function(array, offset) {
     var j = offset;
