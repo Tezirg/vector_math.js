@@ -1,5 +1,5 @@
 # vector_math.js
-### A Vector math library for 3D and 2D applications
+### A Node.js vector math library for 3D and 2D applications
 Javascript version of [vector_math.dart](https://github.com/google/vector_math.dart) with SIMD implementation from [glMatrix](https://github.com/toji/gl-matrix)
 
 ## Features
@@ -14,10 +14,12 @@ Javascript version of [vector_math.dart](https://github.com/google/vector_math.d
 * Utilities like color and common rendering related operations
 * Flexible getters and setters, for example, position.xwz = color.grb;.
 
-### Browser install
 
-```html
-<scrpit src="vector_math.min.js"></script>
+### Npm install
+```json
+"dependencies": {
+  "vector_math.js": "https://github.com/Tezirg/vector_math.js"
+}
 ```
 
 ### Example
