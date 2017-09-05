@@ -8,10 +8,8 @@ Javascript version of [vector_math.dart](https://github.com/google/vector_math.d
 * Quaternion type for animating rotations.
 * Collision detection: AABB, rays, spheres, ...
 * Fully documented.
-* Well tested.
-* Heavily optimized.
 
-###Missing features
+### Missing features
 
 * Utilities like color and common rendering related operations
 * Flexible getters and setters, for example, position.xwz = color.grb;.
