@@ -1,47 +1,28 @@
 var fs = require('fs')
 
 module.exports = function(grunt) {
-
-    var bundlePath = "build/vector_math.js",
-        minifiedBundlePath = "build/vector_math.min.js";
+	var package_json = grunt.file.readJSON('package.json');
+    var bundlePath = "build/vector_math." + package_json['version'] + ".js";
+    var minifiedBundlePath = "build/vector_math." + package_json['version'] + ".min.js";
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
-        concat: {
-            options: {
-                separator: '\n\n'
-            }
-        },
-
         browserify : {
             vector_math : {
                 src : ["src/vector_math.js"],
                 dest : bundlePath,
-                options : {
-                    bundleOptions: {
-                        standalone : "vector_math"
-                    }
+                browserifyOptions: {
+                    standalone : "vector_math"
                 }
             }
         },
+		concat: {
+			// concat task configuration goes here.
+		},
 
         uglify : {
             build : {
                 src : [bundlePath],
                 dest : minifiedBundlePath
-            }
-        },
-
-        yuidoc: {
-            compile: {
-                name: '<%= pkg.name %>',
-                description: '<%= pkg.description %>',
-                version: '<%= pkg.version %>',
-                url: '<%= pkg.homepage %>',
-                options: {
-                    outdir: "docs",
-                    paths: ["./src/"]
-                }
             }
         },
 
@@ -80,12 +61,11 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-yuidoc');
-    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
+    grunt.registerTask('test', ['nodeunit']);
+    
+	grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-browserify');
     //@todo: Add code linling for SIMD .load and .store functions
-    grunt.registerTask('build', ['concat', 'browserify', 'uglify']);
-    grunt.registerTask('test', ['nodeunit']);
+    grunt.registerTask('build', ['browserify', 'uglify']);
 };
