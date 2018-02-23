@@ -1,13 +1,18 @@
 {
   "name": "vector_math.js",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A Vector math library for 3D and 2D applications",
   "author": "jean Grizet <jean.grizet@gmail.com>",
   "license": "MIT",
   "keywords": [
-    "vector_math", "vector_math.js",
-    "vector", "matrix", "3d",
-    "math", "aabb", "quaternion"
+    "vector_math",
+    "vector_math.js",
+    "vector",
+    "matrix",
+    "3d",
+    "math",
+    "aabb",
+    "quaternion"
   ],
   "main": "src/vector_math.js",
   "repository": {
@@ -16,7 +21,7 @@
   },
   "scripts": {
     "test": "grunt test",
-	"build": "grunt build"
+    "build": "grunt build"
   },
   "devDependencies": {
     "jshint": "latest",
