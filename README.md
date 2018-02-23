@@ -1,4 +1,7 @@
 # vector_math.js
+
+build status: ![circle-ci-badge](https://circleci.com/gh/Tezirg/vector_math.js.png?circle-token=:circle-token)
+
 ### A Node.js vector math library for 3D and 2D applications
 Javascript version of [vector_math.dart](https://github.com/google/vector_math.dart) with SIMD implementation from [glMatrix](https://github.com/toji/gl-matrix)
 
