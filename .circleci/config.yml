@@ -12,17 +12,17 @@ general:
 jobs:
  test:
   docker:
-   - image: circleci/node:8.9.4
-   steps:
-      - checkout
-      - run: npm install
-      - run: npm test
+  - image: circleci/node:8.9.4
+  steps:
+   - checkout
+   - run: npm install
+   - run: npm test
  build:
   docker:
-   - image: circleci/node:8.9.4
-   steps:
-   - checkout
-   - run: echo "coucou hibou"
+  - image: circleci/node:8.9.4
+  steps:
+  - checkout
+  - run: echo "coucou hibou"
    
 		 
 workflows:
