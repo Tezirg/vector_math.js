@@ -1,68 +1,4 @@
-// Fri, 02 Oct 2015 10:53:22 GMT
-
-/*
- * Copyright (c) 2015 vector_math.js
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies
- * of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&false)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.vectormath=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-(function (global){
-/* global window, global, self */
-
-module.exports = function getGlobal() {
-	if (typeof window !== 'undefined') { return window; }
-	if (typeof global !== 'undefined') { return global; }
-	if (typeof self !== 'undefined') { return self; }
-	return Function('return this')();
-};
-
-
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],2:[function(_dereq_,module,exports){
-var installShim = _dereq_('./simd');
-var define = _dereq_('define-properties');
-
-var fakeGlobal = {};
-installShim(fakeGlobal);
-
-var simd = fakeGlobal.SIMD;
-
-var getGlobal = _dereq_('./getGlobal');
-
-define(simd, {
-	shim: function shim() {
-		var globalObject = getGlobal();
-		var predicates = {
-			SIMD: function () {
-				// Firefox Nightly v41
-				return globalObject.SIMD && typeof globalObject.SIMD.float32x4.extractLane !== 'function';
-			}
-		};
-		define(globalObject, { SIMD: simd }, predicates);
-		return globalObject.SIMD || simd;
-	}
-});
-
-module.exports = simd;
-
-},{"./getGlobal":1,"./simd":7,"define-properties":3}],3:[function(_dereq_,module,exports){
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.vectormath=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 'use strict';
 
 var keys = _dereq_('object-keys');
@@ -78,10 +14,10 @@ var isFunction = function (fn) {
 var arePropertyDescriptorsSupported = function () {
 	var obj = {};
 	try {
-		Object.defineProperty(obj, 'x', { value: obj, enumerable: false });
-        /* eslint-disable no-unused-vars */
+		Object.defineProperty(obj, 'x', { enumerable: false, value: obj });
+        /* eslint-disable no-unused-vars, no-restricted-syntax */
         for (var _ in obj) { return false; }
-        /* eslint-enable no-unused-vars */
+        /* eslint-enable no-unused-vars, no-restricted-syntax */
 		return obj.x === obj;
 	} catch (e) { /* this is IE 8. */
 		return false;
@@ -97,8 +33,8 @@ var defineProperty = function (object, name, value, predicate) {
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable: false,
-			writable: true,
-			value: value
+			value: value,
+			writable: true
 		});
 	} else {
 		object[name] = value;
@@ -120,31 +56,7 @@ defineProperties.supportsDescriptors = !!supportsDescriptors;
 
 module.exports = defineProperties;
 
-},{"foreach":4,"object-keys":5}],4:[function(_dereq_,module,exports){
-
-var hasOwn = Object.prototype.hasOwnProperty;
-var toString = Object.prototype.toString;
-
-module.exports = function forEach (obj, fn, ctx) {
-    if (toString.call(fn) !== '[object Function]') {
-        throw new TypeError('iterator must be a function');
-    }
-    var l = obj.length;
-    if (l === +l) {
-        for (var i = 0; i < l; i++) {
-            fn.call(ctx, obj[i], i, obj);
-        }
-    } else {
-        for (var k in obj) {
-            if (hasOwn.call(obj, k)) {
-                fn.call(ctx, obj[k], k, obj);
-            }
-        }
-    }
-};
-
-
-},{}],5:[function(_dereq_,module,exports){
+},{"foreach":4,"object-keys":2}],2:[function(_dereq_,module,exports){
 'use strict';
 
 // modified from https://github.com/es-shims/es5-shim
@@ -152,8 +64,9 @@ var has = Object.prototype.hasOwnProperty;
 var toStr = Object.prototype.toString;
 var slice = Array.prototype.slice;
 var isArgs = _dereq_('./isArguments');
-var hasDontEnumBug = !({ 'toString': null }).propertyIsEnumerable('toString');
-var hasProtoEnumBug = function () {}.propertyIsEnumerable('prototype');
+var isEnumerable = Object.prototype.propertyIsEnumerable;
+var hasDontEnumBug = !isEnumerable.call({ toString: null }, 'toString');
+var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
 var dontEnums = [
 	'toString',
 	'toLocaleString',
@@ -167,32 +80,49 @@ var equalsConstructorPrototype = function (o) {
 	var ctor = o.constructor;
 	return ctor && ctor.prototype === o;
 };
-var blacklistedKeys = {
-	$window: true,
+var excludedKeys = {
 	$console: true,
-	$parent: true,
-	$self: true,
+	$external: true,
+	$frame: true,
+	$frameElement: true,
 	$frames: true,
+	$innerHeight: true,
+	$innerWidth: true,
+	$outerHeight: true,
+	$outerWidth: true,
+	$pageXOffset: true,
+	$pageYOffset: true,
+	$parent: true,
+	$scrollLeft: true,
+	$scrollTop: true,
+	$scrollX: true,
+	$scrollY: true,
+	$self: true,
 	$webkitIndexedDB: true,
-	$webkitStorageInfo: true
+	$webkitStorageInfo: true,
+	$window: true
 };
 var hasAutomationEqualityBug = (function () {
 	/* global window */
 	if (typeof window === 'undefined') { return false; }
 	for (var k in window) {
-		if (!blacklistedKeys['$' + k] && has.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
-			try {
-				equalsConstructorPrototype(window[k]);
-			} catch (e) {
-				return true;
+		try {
+			if (!excludedKeys['$' + k] && has.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
+				try {
+					equalsConstructorPrototype(window[k]);
+				} catch (e) {
+					return true;
+				}
 			}
+		} catch (e) {
+			return true;
 		}
 	}
 	return false;
 }());
 var equalsConstructorPrototypeIfNotBuggy = function (o) {
 	/* global window */
-	if (typeof window === 'undefined' && !hasAutomationEqualityBug) {
+	if (typeof window === 'undefined' || !hasAutomationEqualityBug) {
 		return equalsConstructorPrototype(o);
 	}
 	try {
@@ -245,9 +175,7 @@ var keysShim = function keys(object) {
 };
 
 keysShim.shim = function shimObjectKeys() {
-	if (!Object.keys) {
-		Object.keys = keysShim;
-	} else {
+	if (Object.keys) {
 		var keysWorksWithArguments = (function () {
 			// Safari 5.0 bug
 			return (Object.keys(arguments) || '').length === 2;
@@ -262,13 +190,15 @@ keysShim.shim = function shimObjectKeys() {
 				}
 			};
 		}
+	} else {
+		Object.keys = keysShim;
 	}
 	return Object.keys || keysShim;
 };
 
 module.exports = keysShim;
 
-},{"./isArguments":6}],6:[function(_dereq_,module,exports){
+},{"./isArguments":3}],3:[function(_dereq_,module,exports){
 'use strict';
 
 var toStr = Object.prototype.toString;
@@ -287,7 +217,71 @@ module.exports = function isArguments(value) {
 	return isArgs;
 };
 
-},{}],7:[function(_dereq_,module,exports){
+},{}],4:[function(_dereq_,module,exports){
+
+var hasOwn = Object.prototype.hasOwnProperty;
+var toString = Object.prototype.toString;
+
+module.exports = function forEach (obj, fn, ctx) {
+    if (toString.call(fn) !== '[object Function]') {
+        throw new TypeError('iterator must be a function');
+    }
+    var l = obj.length;
+    if (l === +l) {
+        for (var i = 0; i < l; i++) {
+            fn.call(ctx, obj[i], i, obj);
+        }
+    } else {
+        for (var k in obj) {
+            if (hasOwn.call(obj, k)) {
+                fn.call(ctx, obj[k], k, obj);
+            }
+        }
+    }
+};
+
+
+},{}],5:[function(_dereq_,module,exports){
+(function (global){
+/* global window, global, self */
+
+module.exports = function getGlobal() {
+	if (typeof window !== 'undefined') { return window; }
+	if (typeof global !== 'undefined') { return global; }
+	if (typeof self !== 'undefined') { return self; }
+	return Function('return this')();
+};
+
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],6:[function(_dereq_,module,exports){
+var installShim = _dereq_('./simd');
+var define = _dereq_('define-properties');
+
+var fakeGlobal = {};
+installShim(fakeGlobal);
+
+var simd = fakeGlobal.SIMD;
+
+var getGlobal = _dereq_('./getGlobal');
+
+define(simd, {
+	shim: function shim() {
+		var globalObject = getGlobal();
+		var predicates = {
+			SIMD: function () {
+				// Firefox Nightly v41
+				return globalObject.SIMD && typeof globalObject.SIMD.float32x4.extractLane !== 'function';
+			}
+		};
+		define(globalObject, { SIMD: simd }, predicates);
+		return globalObject.SIMD || simd;
+	}
+});
+
+module.exports = simd;
+
+},{"./getGlobal":5,"./simd":7,"define-properties":1}],7:[function(_dereq_,module,exports){
 /*
   vim: set ts=8 sts=2 et sw=2 tw=79:
   Copyright (C) 2013
@@ -6052,11 +6046,15 @@ module.exports={
     "type": "git",
     "url": "https://github.com/Tezirg/vector_math.js.git"
   },
+  "scripts": {
+    "test": "grunt test",
+	"build": "grunt build"
+  },
   "devDependencies": {
     "jshint": "latest",
     "uglify-js": "latest",
     "nodeunit": "^0.9.0",
-    "grunt": "~0.4.5",
+    "grunt": "1.0.2",
     "grunt-contrib-jshint": "~0.1.1",
     "grunt-contrib-nodeunit": "^0.4.1",
     "grunt-contrib-concat": "~0.1.3",
@@ -6837,7 +6835,7 @@ vector_math.RANDOM = Math.random;
 vector_math.ENABLE_SIMD =  false;
 vector_math.SIMD_AVAILABLE = typeof SIMD !== undefined;
 vector_math.USE_SIMD = function() { return vector_math.ENABLE_SIMD && vector_math.SIMD_AVAILABLE };
-},{"simd":2}],11:[function(_dereq_,module,exports){
+},{"simd":6}],11:[function(_dereq_,module,exports){
 /**
  * Created by grizet_j on 9/21/2015.
  */
@@ -12411,7 +12409,7 @@ Matrix4.prototype.copyFromArray = function(array, offset) {
     this.storage[1] = array[i + 1];
     this.storage[0] = array[i + 0];
 };
-},{"./common.js":10,"./matrix3.js":12,"./quaternion.js":16,"./vector3.js":21,"./vector4.js":22,"simd":2}],14:[function(_dereq_,module,exports){
+},{"./common.js":10,"./matrix3.js":12,"./quaternion.js":16,"./vector3.js":21,"./vector4.js":22,"simd":6}],14:[function(_dereq_,module,exports){
 /**
  * Created by grizet_j on 9/21/2015.
  */
@@ -14818,7 +14816,7 @@ Vector2.prototype.roundToZero = function() {
         : Math.floor(this.storage[1]);
     return this;
 };
-},{"./common.js":10,"simd":2}],21:[function(_dereq_,module,exports){
+},{"./common.js":10,"simd":6}],21:[function(_dereq_,module,exports){
 /**
  * Created by grizet_j on 9/20/2015.
  */
@@ -15974,7 +15972,7 @@ Vector3.prototype.roundToZero = function() {
         : Math.floor(this.storage[2]);
     return this;
 };
-},{"./common.js":10,"./matrix3.js":12,"./matrix4.js":13,"simd":2}],22:[function(_dereq_,module,exports){
+},{"./common.js":10,"./matrix3.js":12,"./matrix4.js":13,"simd":6}],22:[function(_dereq_,module,exports){
 /**
  * Created by grizet_j on 9/21/2015.
  */
@@ -17022,7 +17020,7 @@ Vector4.prototype.roundToZero = function() {
     return this;
 };
 
-},{"./common.js":10,"simd":2}],23:[function(_dereq_,module,exports){
+},{"./common.js":10,"simd":6}],23:[function(_dereq_,module,exports){
 /**
  * Created by grizet_j on 9/20/2015.
  */
