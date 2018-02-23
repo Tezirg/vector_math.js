@@ -23,8 +23,7 @@ jobs:
   steps:
   - checkout
   - run: echo "coucou hibou"
-   
-		 
+
 workflows:
   version: 2
   test_build:
