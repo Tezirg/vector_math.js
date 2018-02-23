@@ -22,6 +22,7 @@ jobs:
   - image: circleci/node:8.9.4
   steps:
   - checkout
+  - run: npm install
   - run: npm build
 
 workflows:
